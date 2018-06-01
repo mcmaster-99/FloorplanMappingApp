@@ -23,76 +23,11 @@
     <script src="node_modules/svg.draggable.js/dist/svg.draggable.js"></script>
     <script src="node_modules/svg.draw.js/dist/svg.draw.js"></script>
     <script src="node_modules/svg.panzoom.js/dist/svg.panzoom.js"></script>
+
+    <script src="node_modules/aws-sdk/dist/aws-sdk.js"></script>
 </head>
 
 <body>
-
-    <div class="info panel panel-default">
-        <div class="panel-heading">
-            <button id="request" class="btn btn-primary" disabled="disabled">Set pickup</button>
-            <div class="dropdown pull-right">
-                <button id="accountLink" class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Account <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="accountLink">
-                    <li><a id="signOut" href="#">Sign out</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="panel-body">
-            <ol id="updates">
-                <li>Welcome! Click the map to set your pickup location.</li>
-            </ol>
-        </div>
-    </div>
-
-    <div id="noApiMessage" class="configMessage" style="display: none;">
-        <div class="backdrop"></div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Successfully Authenticated!</h3>
-            </div>
-            <div class="panel-body">
-                <p>This page is not functional yet because there is no API invoke URL configured in <a href="/js/config.js">/js/config.js</a>. You'll configure this in Module 3.</p>
-                <p>In the meantime, if you'd like to test the Amazon Cognito user pool authorizer for your API, use the auth token below:</p>
-                <textarea class="authToken"></textarea>
-            </div>
-        </div>
-    </div>
-
-    <div id="noCognitoMessage" class="configMessage" style="display: none;">
-        <div class="backdrop"></div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">No Cognito User Pool Configured</h3>
-            </div>
-            <div class="panel-body">
-                <p>There is no user pool configured in <a href="/js/config.js">/js/config.js</a>. You'll configure this in Module 2 of the workshop.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="main">
-        <div id="map">
-        </div>
-    </div>
-
-    <div id="authTokenModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="authToken">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Your Auth Token</h4>
-                </div>
-                <div class="modal-body">
-                    <textarea class="authToken"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <h2>Testing Environment</h2>
 
@@ -112,6 +47,9 @@
     <button id="resize">resize</button>
     <!-- <button id="resize">draw</button> -->
     <button id="clear">clear</button>
+    <button id="save">save</button>
+
+    <button id="print">print x/y coords</button>
 
     <button id="testlab"><a href="ride.html">Back to ride.html</a></button>
 
