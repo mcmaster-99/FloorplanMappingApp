@@ -13,6 +13,8 @@
                                     .panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
     
 
+        var shapes = [];
+
         // LIVING ROOM
         var livingRoom = drawing.rect(150, 100)
                                 .attr({
@@ -57,6 +59,8 @@
                                 stroke: '#CCCCCC',
                                 'stroke-width': 3
                             })
+        // push shape to shapes array
+        shapes.push(bedRoom);
 
         // INLO DEVICE
         var bedRoomDevice = drawing.rect(20, 10)
@@ -67,6 +71,8 @@
                                 stroke: '#CCCCCC',
                                 'stroke-width': 3
                             })
+        // push shape to shapes array
+        shapes.push(bedRoomDevice);
 
         var bedRoomDoor = drawing.line(
                         Number(bedRoom.node.attributes[3].nodeValue)+55,
@@ -74,6 +80,8 @@
                         Number(bedRoom.node.attributes[3].nodeValue)+70,
                         Number(bedRoom.node.attributes[4].nodeValue)+20)
                                     .stroke({color: '#CCCCCC', width: 3})
+        // push shape to shapes array
+        shapes.push(bedRoomDoor);
 
         // GROUPS LIVING ROOM, DOOR, AND DEVICE TOGETHER
         var bedRoomGroup = drawing.group()
@@ -133,23 +141,36 @@
 
 
         document.getElementById("drag").onclick = function() {
-            livingRoom.selectize(false).resize("stop");
+            console.log(shapes[1]);
+            /*for (var i = 0; i < shapes.length; i++) {
+                console.log("stop " + shapes[i] + " resize");
+                shapes[i].selectize(false).resize("stop");
+                console.log("start " + shapes[i] + " draggable");
+                shapes[i].draggable({snapToGrid: 20})
+            }*/
+            /*livingRoom.selectize(false).resize("stop");
             bedRoom.selectize(false).resize("stop");
 
-            /*livingRoom.draggable({snapToGrid: 20})
-            bedRoom.draggable({snapToGrid: 20})
-            device.draggable({snapToGrid: 20})*/
             livingRoomGroup.draggable({snapToGrid: 20})
-            bedRoomGroup.draggable({snapToGrid: 20})
+            bedRoomGroup.draggable({snapToGrid: 20})*/
         };
         document.getElementById("resize").onclick = function() {
             livingRoom.selectize().resize()
             bedRoom.selectize().resize()
         };
-        /*document.getElementById("draw").onclick = function() {
-            drawing = new SVG('draw').size(500, 500);
-            rect = drawing.rect().draw()
-        };*/ 
+        document.getElementById("draw-rect").onclick = function() {
+            rect = drawing.rect()
+                                .attr({
+                                    fill: 'white',
+                                    stroke: '#CCCCCC',
+                                    'stroke-width': 3
+                            })
+            rect.draw()
+
+            document.getElementById("resize").onclick = function() {
+                rect.selectize().resize()
+            };
+        };
         document.getElementById("clear").onclick = function() {
             $("#draw").empty();
         };

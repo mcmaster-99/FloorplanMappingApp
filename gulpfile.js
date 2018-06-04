@@ -5,9 +5,10 @@ var gulp = require('gulp');
 	concat = require('gulp-concat'),
 	connect = require('gulp-connect');
 
-var jsSource = ['scripts/*.js'],
-	sassSource = ['styles/*.scss'],
-	htmlSource = ['*.html']
+var jsSource = ['js/*.js'],
+	sassSource = ['scss/*.scss'],
+	htmlSource = ['*.html'],
+	cssOutput = "css",
 	output = 'assets';
 
 
@@ -24,15 +25,13 @@ gulp.task('sass', function(){
 	gulp.src(sassSource)
 	.pipe(sass({style: 'expanded'}))
 		.on('error', gutil.log)
-	.pipe(gulp.dest(output))
+	.pipe(gulp.dest(cssOutput))
 	.pipe(connect.reload())
 });
 
 gulp.task('js', function(){
 	gulp.src(jsSource)
-	.pipe(uglify().on('error', function(e){
-		console.log(e);
-	}))
+	.pipe(uglify())
 	.pipe(concat('script.js'))
 	.pipe(gulp.dest(output))
 	.pipe(connect.reload())
