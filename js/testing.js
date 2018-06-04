@@ -59,8 +59,6 @@
                                 stroke: '#CCCCCC',
                                 'stroke-width': 3
                             })
-        // push shape to shapes array
-        shapes.push(bedRoom);
 
         // INLO DEVICE
         var bedRoomDevice = drawing.rect(20, 10)
@@ -71,8 +69,6 @@
                                 stroke: '#CCCCCC',
                                 'stroke-width': 3
                             })
-        // push shape to shapes array
-        shapes.push(bedRoomDevice);
 
         var bedRoomDoor = drawing.line(
                         Number(bedRoom.node.attributes[3].nodeValue)+55,
@@ -80,14 +76,16 @@
                         Number(bedRoom.node.attributes[3].nodeValue)+70,
                         Number(bedRoom.node.attributes[4].nodeValue)+20)
                                     .stroke({color: '#CCCCCC', width: 3})
-        // push shape to shapes array
-        shapes.push(bedRoomDoor);
+
 
         // GROUPS LIVING ROOM, DOOR, AND DEVICE TOGETHER
         var bedRoomGroup = drawing.group()
         .add(bedRoom)
         bedRoomGroup.add(bedRoomDevice)
         bedRoomGroup.add(bedRoomDoor)
+
+        // push shape to shapes array
+        shapes.push(livingRoom, bedRoom);
 
 
         document.getElementById("print").onclick = function() {
@@ -155,8 +153,15 @@
             bedRoomGroup.draggable({snapToGrid: 20})*/
         };
         document.getElementById("resize").onclick = function() {
+
+            for (var i = 0; i < shapes.length; i++) {
+                //console.log("stop " + shapes[i] + " resize");
+                //console.log("start " + shapes[i] + " draggable");
+                shapes[i].selectize().resize()
+            }
+            /*
             livingRoom.selectize().resize()
-            bedRoom.selectize().resize()
+            bedRoom.selectize().resize()*/
         };
         document.getElementById("draw-rect").onclick = function() {
             rect = drawing.rect()
@@ -166,9 +171,14 @@
                                     'stroke-width': 3
                             })
             rect.draw()
+            shapes.push(rect);
 
             document.getElementById("resize").onclick = function() {
-                rect.selectize().resize()
+                for (var i = 0; i < shapes.length; i++) {
+                    //console.log("stop " + shapes[i] + " resize");
+                    //console.log("start " + shapes[i] + " draggable");
+                    shapes[i].selectize().resize()
+                }
             };
         };
         document.getElementById("clear").onclick = function() {
