@@ -77,7 +77,7 @@
 
         // GROUPS LIVING ROOM, DOOR, AND DEVICE TOGETHER
         var bedRoomGroup = drawing.group()
-        bedRoomGroup.add(bedRoom)
+        .add(bedRoom)
         bedRoomGroup.add(bedRoomDevice)
         bedRoomGroup.add(bedRoomDoor)
 
