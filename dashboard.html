@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--<meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>Wild Rydes</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Serverless web application example">
+    <meta name="author" content="">-->
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    
+</head>
+
+
+
+<body>
+
+
+    <div id="navbar-div">
+      <nav>
+        <a href="#"><img src="images/inlo.png" id="inlo-icon"></a>
+
+        <div id="side-menu">----</div>
+      </nav>
+    </div>
+
+
+    <div id="views-div">
+        <button id="list-view">
+            <img src="https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-21-128.png" class="views-icons">
+            <p class="views-text">List View</p>
+        </button>
+
+        <button id="map-view">
+            <img src="https://image.flaticon.com/icons/png/128/34/34250.png" class="views-icons">
+            <p class="views-text">Map View</p>
+        </button>
+    </div>
+
+
+    <div id="items-listed-div">
+
+
+        <div id="items-listed">
+
+            <div id="dropdown-sort-div">
+                <p>Sort By: Items</p>
+            </div>
+
+            <div id="item-icon-list">
+                <ol class="item-icons">[icon]</ol>
+                <ol class="item-icons">[icon]</ol>
+                <ol class="item-icons">[icon]</ol>
+                <ol class="item-icons">[icon]</ol>
+            </div>  
+
+            <div id="item-name-list">
+                <ol class="item-names">dog</ol>
+                <ol class="item-names">dog</ol>
+                <ol class="item-names">dog</ol>
+                <ol class="item-names">dog</ol>
+            </div>
+
+            <div id="item-room-list">
+                <ol class="item-rooms">room</ol>
+                <ol class="item-rooms">room</ol>
+                <ol class="item-rooms">room</ol>
+                <ol class="item-rooms">room</ol>
+            </div>         
+
+        </div>
+    </div>
+
+
+
+    <script src="node_modules/aws-sdk/dist/aws-sdk.js"></script>
+
+    <script src="js/vendor/jquery-3.1.0.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/aws-cognito-sdk.min.js"></script>
+    <script src="js/vendor/amazon-cognito-identity.min.js"></script>
+    <script src="https://js.arcgis.com/4.3/"></script>
+    <script src="js/config.js"></script>
+    <script src="js/cognito-auth.js"></script>
+    <script src="js/esri-map.js"></script>
+</body>
+
+</html>

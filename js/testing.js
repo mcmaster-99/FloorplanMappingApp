@@ -1,192 +1,189 @@
 
-//require(['aws-sdk'], function(AWS) {
+var dynamodb = new AWS.DynamoDB();
 
 
-    var dynamodb = new AWS.DynamoDB();
+//=============================================================
+//                          SVG.JS
+//=============================================================
+SVG.on(document, 'DOMContentLoaded', function() {
+    var drawing = new SVG('draw').size(500, 500)
+                                .panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
 
 
-    //=============================================================
-    //                          SVG.JS
-    //=============================================================
-    SVG.on(document, 'DOMContentLoaded', function() {
-        var drawing = new SVG('draw').size(500, 500)
-                                    .panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
-    
+    var shapes = [];
 
-        var shapes = [];
-
-        // LIVING ROOM
-        var livingRoom = drawing.rect(150, 100)
-                                .attr({
-                                    x: 80,
-                                    y: 50,
-                                    fill: 'white',
-                                    stroke: '#CCCCCC',
-                                    'stroke-width': 3
-                                })
-
-        // LIVING ROOM DOOR
-        var livingRoomDoor = drawing.line(
-                        Number(livingRoom.node.attributes[3].nodeValue)+55,
-                        Number(livingRoom.node.attributes[4].nodeValue),
-                        Number(livingRoom.node.attributes[3].nodeValue)+70,
-                        Number(livingRoom.node.attributes[4].nodeValue)+20)
-                                    .stroke({color: '#CCCCCC', width: 3})
-
-        // INLO DEVICE
-        var livingRoomDevice = drawing.rect(20, 10)
+    // LIVING ROOM
+    var livingRoom = drawing.rect(150, 100)
                             .attr({
-                                x: (Number(livingRoom.node.attributes[3].nodeValue)+15),
-                                y: (Number(livingRoom.node.attributes[4].nodeValue)),
+                                x: 80,
+                                y: 50,
                                 fill: 'white',
                                 stroke: '#CCCCCC',
                                 'stroke-width': 3
                             })
 
-        // GROUPS LIVING ROOM, DOOR, AND DEVICE TOGETHER
-        var livingRoomGroup = drawing.group()
-        livingRoomGroup.add(livingRoom)
-        livingRoomGroup.add(livingRoomDevice)
-        livingRoomGroup.add(livingRoomDoor)
+    // LIVING ROOM DOOR
+    var livingRoomDoor = drawing.line(
+                    Number(livingRoom.node.attributes[3].nodeValue)+55,
+                    Number(livingRoom.node.attributes[4].nodeValue),
+                    Number(livingRoom.node.attributes[3].nodeValue)+70,
+                    Number(livingRoom.node.attributes[4].nodeValue)+20)
+                                .stroke({color: '#CCCCCC', width: 3})
+
+    // INLO DEVICE
+    var livingRoomDevice = drawing.rect(20, 10)
+                        .attr({
+                            x: (Number(livingRoom.node.attributes[3].nodeValue)+15),
+                            y: (Number(livingRoom.node.attributes[4].nodeValue)),
+                            fill: 'white',
+                            stroke: '#CCCCCC',
+                            'stroke-width': 3
+                        })
+
+    // GROUPS LIVING ROOM, DOOR, AND DEVICE TOGETHER
+    var livingRoomGroup = drawing.group()
+    livingRoomGroup.add(livingRoom)
+    livingRoomGroup.add(livingRoomDevice)
+    livingRoomGroup.add(livingRoomDoor)
 
 
-        // BEDROOM
-        var bedRoom = drawing.rect(300, 100)
-                            .attr({
-                                x: 100,
-                                y: 205,
-                                fill: 'white',
-                                stroke: '#CCCCCC',
-                                'stroke-width': 3
-                            })
+    // BEDROOM
+    var bedRoom = drawing.rect(300, 100)
+                        .attr({
+                            x: 100,
+                            y: 205,
+                            fill: 'white',
+                            stroke: '#CCCCCC',
+                            'stroke-width': 3
+                        })
 
-        // INLO DEVICE
-        var bedRoomDevice = drawing.rect(20, 10)
-                            .attr({
-                                x: (Number(bedRoom.node.attributes[3].nodeValue)+15),
-                                y: (Number(bedRoom.node.attributes[4].nodeValue)),
-                                fill: 'white',
-                                stroke: '#CCCCCC',
-                                'stroke-width': 3
-                            })
+    // INLO DEVICE
+    var bedRoomDevice = drawing.rect(20, 10)
+                        .attr({
+                            x: (Number(bedRoom.node.attributes[3].nodeValue)+15),
+                            y: (Number(bedRoom.node.attributes[4].nodeValue)),
+                            fill: 'white',
+                            stroke: '#CCCCCC',
+                            'stroke-width': 3
+                        })
 
-        var bedRoomDoor = drawing.line(
-                        Number(bedRoom.node.attributes[3].nodeValue)+55,
-                        Number(bedRoom.node.attributes[4].nodeValue),
-                        Number(bedRoom.node.attributes[3].nodeValue)+70,
-                        Number(bedRoom.node.attributes[4].nodeValue)+20)
-                                    .stroke({color: '#CCCCCC', width: 3})
-
-
-        // GROUPS LIVING ROOM, DOOR, AND DEVICE TOGETHER
-        var bedRoomGroup = drawing.group()
-        .add(bedRoom)
-        bedRoomGroup.add(bedRoomDevice)
-        bedRoomGroup.add(bedRoomDoor)
-
-        // push shape to shapes array
-        shapes.push(livingRoom, bedRoom);
+    var bedRoomDoor = drawing.line(
+                    Number(bedRoom.node.attributes[3].nodeValue)+55,
+                    Number(bedRoom.node.attributes[4].nodeValue),
+                    Number(bedRoom.node.attributes[3].nodeValue)+70,
+                    Number(bedRoom.node.attributes[4].nodeValue)+20)
+                                .stroke({color: '#CCCCCC', width: 3})
 
 
-        document.getElementById("print").onclick = function() {
-            console.log(livingRoom.node.getBoundingClientRect().x);
-            console.log(livingRoom.node.getBoundingClientRect().y);
-            console.log(livingRoom.node.getBoundingClientRect().width);
-            console.log(livingRoom.node.getBoundingClientRect().height);
-        };
+    // GROUPS LIVING ROOM, DOOR, AND DEVICE TOGETHER
+    var bedRoomGroup = drawing.group()
+    .add(bedRoom)
+    bedRoomGroup.add(bedRoomDevice)
+    bedRoomGroup.add(bedRoomDoor)
 
-        // UPDATE ROOM DATABASE
-        document.getElementById("save").onclick = function() {  
+    // push shape to shapes array
+    shapes.push(livingRoom, bedRoom);
 
-            var params = {
-                Item: {
-                    "x": {
-                        S: String(livingRoom.node.getBoundingClientRect().x) //livingRoom.node.attributes[3].nodeValue
-                    },
-                    "y": {
-                        S: String(livingRoom.node.getBoundingClientRect().y)
-                    },
-                    "width": {
-                        S: String(livingRoom.node.getBoundingClientRect().width)
-                    },
-                    "height": {
-                        S: String(livingRoom.node.getBoundingClientRect().height)
-                    },
-                    "room_ID": {
-                        S: "livingRoom"
-                    },
-                    "floor": {
-                        S: livingRoom.node.attributes[3].nodeValue
-                    }
+
+    document.getElementById("print").onclick = function() {
+        console.log(livingRoom.node.getBoundingClientRect().x);
+        console.log(livingRoom.node.getBoundingClientRect().y);
+        console.log(livingRoom.node.getBoundingClientRect().width);
+        console.log(livingRoom.node.getBoundingClientRect().height);
+    };
+
+    // UPDATE ROOM DATABASE
+    document.getElementById("save").onclick = function() {  
+
+        var params = {
+            Item: {
+                "x": {
+                    S: String(livingRoom.node.getBoundingClientRect().x) //livingRoom.node.attributes[3].nodeValue
                 },
-                ReturnConsumedCapacity: "TOTAL", 
-                TableName: "FloorPlan.test-at-test.com"
-            };
-            dynamodb.putItem(params, function(err, data) {
-                if (err) console.log(err, err.stack); // an error occurred
-                else     console.log("Successfully saved and written to DB");           // successful response
-            /*
-            data = {
-            ConsumedCapacity: {
-             CapacityUnits: 1, 
-             TableName: "Music"
-            }
-            }
-            */
-            });
-        }
-
-
-
-        document.getElementById("drag").onclick = function() {
-            console.log(shapes[1]);
-            /*for (var i = 0; i < shapes.length; i++) {
-                console.log("stop " + shapes[i] + " resize");
-                shapes[i].selectize(false).resize("stop");
-                console.log("start " + shapes[i] + " draggable");
-                shapes[i].draggable({snapToGrid: 20})
-            }*/
-            /*livingRoom.selectize(false).resize("stop");
-            bedRoom.selectize(false).resize("stop");
-
-            livingRoomGroup.draggable({snapToGrid: 20})
-            bedRoomGroup.draggable({snapToGrid: 20})*/
+                "y": {
+                    S: String(livingRoom.node.getBoundingClientRect().y)
+                },
+                "width": {
+                    S: String(livingRoom.node.getBoundingClientRect().width)
+                },
+                "height": {
+                    S: String(livingRoom.node.getBoundingClientRect().height)
+                },
+                "room_ID": {
+                    S: "livingRoom"
+                },
+                "floor": {
+                    S: livingRoom.node.attributes[3].nodeValue
+                }
+            },
+            ReturnConsumedCapacity: "TOTAL", 
+            TableName: "FloorPlan.test-at-test.com"
         };
-        document.getElementById("resize").onclick = function() {
+        dynamodb.putItem(params, function(err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else     console.log("Successfully saved and written to DB");           // successful response
+        /*
+        data = {
+        ConsumedCapacity: {
+         CapacityUnits: 1, 
+         TableName: "Music"
+        }
+        }
+        */
+        });
+    }
 
+
+
+    document.getElementById("drag").onclick = function() {
+        console.log(shapes[1]);
+        /*for (var i = 0; i < shapes.length; i++) {
+            console.log("stop " + shapes[i] + " resize");
+            shapes[i].selectize(false).resize("stop");
+            console.log("start " + shapes[i] + " draggable");
+            shapes[i].draggable({snapToGrid: 20})
+        }*/
+        /*livingRoom.selectize(false).resize("stop");
+        bedRoom.selectize(false).resize("stop");
+
+        livingRoomGroup.draggable({snapToGrid: 20})
+        bedRoomGroup.draggable({snapToGrid: 20})*/
+    };
+    document.getElementById("resize").onclick = function() {
+
+        for (var i = 0; i < shapes.length; i++) {
+            //console.log("stop " + shapes[i] + " resize");
+            //console.log("start " + shapes[i] + " draggable");
+            shapes[i].selectize().resize()
+        }
+        /*
+        livingRoom.selectize().resize()
+        bedRoom.selectize().resize()*/
+    };
+    document.getElementById("draw-rect").onclick = function() {
+        rect = drawing.rect()
+                            .attr({
+                                fill: 'white',
+                                stroke: '#CCCCCC',
+                                'stroke-width': 3
+                        })
+        rect.draw()
+        shapes.push(rect);
+
+        document.getElementById("resize").onclick = function() {
             for (var i = 0; i < shapes.length; i++) {
                 //console.log("stop " + shapes[i] + " resize");
                 //console.log("start " + shapes[i] + " draggable");
                 shapes[i].selectize().resize()
             }
-            /*
-            livingRoom.selectize().resize()
-            bedRoom.selectize().resize()*/
         };
-        document.getElementById("draw-rect").onclick = function() {
-            rect = drawing.rect()
-                                .attr({
-                                    fill: 'white',
-                                    stroke: '#CCCCCC',
-                                    'stroke-width': 3
-                            })
-            rect.draw()
-            shapes.push(rect);
-
-            document.getElementById("resize").onclick = function() {
-                for (var i = 0; i < shapes.length; i++) {
-                    //console.log("stop " + shapes[i] + " resize");
-                    //console.log("start " + shapes[i] + " draggable");
-                    shapes[i].selectize().resize()
-                }
-            };
-        };
-        document.getElementById("clear").onclick = function() {
-            $("#draw").empty();
-        };
+    };
+    document.getElementById("clear").onclick = function() {
+        $("#draw").empty();
+    };
 
 
-    })
+})
 
 //=============================================================
 //                          D3.JS
