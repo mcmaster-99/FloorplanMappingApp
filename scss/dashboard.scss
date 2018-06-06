@@ -30,12 +30,17 @@ nav a img {
   margin: 100px 0px 0px 0px; 
 }
 
+#prompt {
+  text-align: center;
+  margin-top: 200px;
+}
 
-/* ---------------- VIEW SWITCHERS ---------------- */
+
+/* ---------------- VIEW SWITCHER BUTTONS ---------------- */
 #views-div {
   text-align: center;
 }
-#list-view, #map-view {
+#list-view-btn, #map-view-btn {
   text-align: center;
   font-weight: bold;
   width: 200px;
@@ -45,8 +50,9 @@ nav a img {
   display: inline-block;
   margin-top: 50px;
   padding: 3px;
+  border-radius: 15px;
 }
-#list-view:focus, #map-view:focus {
+#list-view-btn:focus, #map-view-btn:focus {
   background-color: #00D0A7;
   outline: none;
 }
@@ -54,6 +60,7 @@ nav a img {
   width: 15px;
   height: 15px;
   float: left;
+  margin-left: 10px;
 }
 .views-text {
   text-align: center;
@@ -63,26 +70,29 @@ nav a img {
 
 #items-listed-div {
   text-align: center;
+  display: none; // hide on page load
 }
 
 #dropdown-sort-div {
   width: 200px;
   height: 20px;
   border: 1px solid black;
+  margin: 25px auto;
 }
 
 
 #items-listed {
-  width: 250px;
+  width: 400px; // match list and map view buttons total width
   height: 400px;
   border: 2px solid #00D0A7;
   display: inline-block;
   margin-top: 50px;
   box-shadow: 1px 1px 20px 0px gray;
+  text-align: center;
 }
 
 #item-icon-list {
-  display: inline-block;
+  display: inline-block; // align item, icon, and room name together
 }
 .item-icons {
   padding: 0px;
@@ -90,7 +100,7 @@ nav a img {
 
 
 #item-name-list {
-  display: inline-block;
+  display: inline-block; // align item, icon, and room name together
 }
 .item-names {
   padding: 0px;
@@ -98,7 +108,7 @@ nav a img {
 
 
 #item-room-list {
-  display: inline-block;
+  display: inline-block; // align item, icon, and room name together
   margin-left: 50px;
 }
 .item-rooms {
@@ -108,4 +118,14 @@ nav a img {
 
 #item-icon-list, #item-name-list, #item-room-list {
   margin-top: 100px;
+}
+
+
+/* ---------------- MAP VIEW DIV ---------------- */
+#map-view-div {
+  text-align: center;
+}
+#map-view-text {
+  display: none; // hide on page load
+  margin-top: 200px;
 }
