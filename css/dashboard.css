@@ -27,7 +27,8 @@ nav a img {
 
 #prompt {
   text-align: center;
-  margin-top: 200px; }
+  margin-top: 200px;
+  display: none; }
 
 /* ---------------- VIEW SWITCHER BUTTONS ---------------- */
 #views-div {
@@ -60,14 +61,14 @@ nav a img {
 
 /* ---------------- ITEMS LISTED DIV ---------------- */
 #items-listed-div {
-  text-align: center;
-  display: none; }
+  text-align: center; }
 
-#dropdown-sort-div {
-  width: 200px;
-  height: 20px;
-  border: 1px solid black;
-  margin: 25px auto; }
+#sort-by-text {
+  margin-top: 20px;
+  display: inline-block; }
+
+#sort-selection {
+  background-color: white; }
 
 #items-listed {
   width: 400px;
@@ -76,7 +77,27 @@ nav a img {
   display: inline-block;
   margin-top: 50px;
   box-shadow: 1px 1px 20px 0px gray;
-  text-align: center; }
+  text-align: center;
+  border-radius: 15px;
+  padding-right: 10px; }
+
+#items-listed-content {
+  height: 325px;
+  overflow-y: scroll; }
+  #items-listed-content::-webkit-scrollbar {
+    width: 7px;
+    height: 5px;
+    border-radius: 50px; }
+  #items-listed-content::-webkit-scrollbar-track {
+    width: 7px;
+    height: 5px;
+    background-color: #D8D8D8;
+    border-radius: 50px; }
+  #items-listed-content::-webkit-scrollbar-thumb {
+    background-color: #00D0A7;
+    border-radius: 10px; }
+    #items-listed-content::-webkit-scrollbar-thumb:hover {
+      background: #00D0A7; }
 
 #item-icon-list {
   display: inline-block; }

@@ -54,31 +54,27 @@
         <div id="items-listed">
 
             <div id="dropdown-sort-div">
-                <p>Sort By: Items &emsp; &emsp; [icon]</p> <!--&emsp inserts space-->
+                <p id="sort-by-text">Sort By:</p>
+                <select id="sort-selection">
+                    <option value="1">Items</option>
+                    <option value="2">Rooms</option>
+                    <option value="3">Names</option>
+                </select>
             </div>
+            
+            <div id="items-listed-content">
+                <div id="item-icon-list">
+                </div>  
 
-            <div id="item-icon-list">
-                <ol class="item-icons">[icon]</ol>
-                <ol class="item-icons">[icon]</ol>
-                <ol class="item-icons">[icon]</ol>
-                <ol class="item-icons">[icon]</ol>
-            </div>  
+                <div id="item-name-list">
+                </div>
 
-            <div id="item-name-list">
-                <ol class="item-names">dog</ol>
-                <ol class="item-names">dog</ol>
-                <ol class="item-names">dog</ol>
-                <ol class="item-names">dog</ol>
-            </div>
-
-            <div id="item-room-list">
-                <ol class="item-rooms">room</ol>
-                <ol class="item-rooms">room</ol>
-                <ol class="item-rooms">room</ol>
-                <ol class="item-rooms">room</ol>
-            </div>         
+                <div id="item-room-list">
+                </div> 
+            </div>        
 
         </div>
+
     </div>
 
 
@@ -99,6 +95,7 @@
     <script src="js/cognito-auth.js"></script>
     <script src="js/esri-map.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/ride.js"></script>
 </body>
 
 </html>
