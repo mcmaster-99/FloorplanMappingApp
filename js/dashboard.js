@@ -63,7 +63,7 @@ $(document).ready(function(){
     	for (var i = 0; i < result.Items.length; i++) {
     		tmpDevicesArray.push(result.Items[i].name);
     	}
-    	
+
     	tmpDevicesArray.sort();
 
        	for (var i = 0; i < tmpDevicesArray.length; i++) {
@@ -74,7 +74,7 @@ $(document).ready(function(){
 				if (result.Items[y].name === tmpDevicesArray[i]) {
 					$("#item-name-list").append('<ol class="item-names">' + result.Items[y].name + '</ol>');
 	        		$("#item-room-list").append('<ol class="item-rooms">' + result.Items[y].room + '</ol>');
-	        		$("#item-icon-list").append('<ol class="item-icons">' + "[" + result.Items[y].icon + "]" + '</ol>');
+	        		$("#item-icon-list").append('<ol class="item-icons">' + "<img class='item-icons' src='images/" + result.Items[y].icon + ".png'>" + '</ol>');
 				} else {
 					continue;
 				}
@@ -96,20 +96,17 @@ $(document).ready(function(){
 
     // Register click handler for #request button
     $(function onDocReady() {
-        $('#list-view-btn').click(handleRequestClick);
-        WildRydes.authToken.then(function updateAuthMessage(token) {
-            if (token) {
-                displayUpdate('You are authenticated. Click to see your <a href="#authTokenModal" data-toggle="modal">auth token</a>.');
-                $('.authToken').text(token);
-            }
-        });
+    	handleRequestClick;
+        //$('#list-view-btn').click(handleRequestClick);
 
         if (!_config.api.invokeUrl) {
             $('#noApiMessage').show();
         }
+
+        requestUnicorn("UUID");
     });
 
-    function handleRequestClick(event) {
+    function handleRequestClick() {
         event.preventDefault();
         requestUnicorn("UUID");
     }

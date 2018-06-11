@@ -103,7 +103,9 @@ nav a img {
   display: inline-block; }
 
 .item-icons {
-  padding: 0px; }
+  padding: 0px;
+  width: 20px;
+  height: 20px; }
 
 #item-name-list {
   display: inline-block; }
