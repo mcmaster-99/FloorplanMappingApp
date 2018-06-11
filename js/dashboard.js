@@ -59,11 +59,12 @@ $(document).ready(function(){
         var devices = JSON.stringify(result.Items);
 
         var tmpDevicesArray = [];
+        // push item names to temporary array for sorting
     	for (var i = 0; i < result.Items.length; i++) {
     		tmpDevicesArray.push(result.Items[i].name);
     	}
+    	
     	tmpDevicesArray.sort();
-       	console.log("tmpDevicesArray is: " + tmpDevicesArray);
 
        	for (var i = 0; i < tmpDevicesArray.length; i++) {
 
@@ -71,9 +72,11 @@ $(document).ready(function(){
 			for (var y in result.Items) {
 				console.log("got here");
 				if (result.Items[y].name === tmpDevicesArray[i]) {
-					$("#item-name-list").append('<ol class="item-names">' + result.Items[i].name + '</ol>');
-	        		$("#item-room-list").append('<ol class="item-rooms">' + result.Items[i].room + '</ol>');
-	        		$("#item-icon-list").append('<ol class="item-icons">' + "[" + result.Items[i].icon + "]" + '</ol>');
+					$("#item-name-list").append('<ol class="item-names">' + result.Items[y].name + '</ol>');
+	        		$("#item-room-list").append('<ol class="item-rooms">' + result.Items[y].room + '</ol>');
+	        		$("#item-icon-list").append('<ol class="item-icons">' + "[" + result.Items[y].icon + "]" + '</ol>');
+				} else {
+					continue;
 				}
 			}
     	}

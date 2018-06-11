@@ -33,6 +33,7 @@ nav a img {
 #prompt {
   text-align: center;
   margin-top: 200px;
+  display:none;
 }
 
 
@@ -70,14 +71,15 @@ nav a img {
 
 #items-listed-div {
   text-align: center;
-  display: none; // hide on page load
+  //display: none; // hide on page load
 }
 
-#dropdown-sort-div {
-  width: 200px;
-  height: 20px;
-  border: 1px solid black;
-  margin: 25px auto;
+#sort-by-text {
+  margin-top: 20px;
+  display: inline-block;
+}
+#sort-selection {
+  background-color: white;
 }
 
 
@@ -89,6 +91,34 @@ nav a img {
   margin-top: 50px;
   box-shadow: 1px 1px 20px 0px gray;
   text-align: center;
+  border-radius: 15px;
+  padding-right: 10px; // pushes scroll bar a little bit to the right
+}
+#items-listed-content {
+  height: 325px;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 7px;
+    height: 5px;
+    border-radius: 50px;
+  }
+
+  &::-webkit-scrollbar-track {
+    width: 7px;
+    height: 5px;
+    background-color: #D8D8D8;
+    border-radius: 50px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+   background-color: #00D0A7;
+   border-radius: 10px;
+
+   &:hover {
+    background: #00D0A7;
+   }
+  }
 }
 
 #item-icon-list {
