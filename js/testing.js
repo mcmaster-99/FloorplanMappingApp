@@ -1,4 +1,9 @@
-
+// Set region and credentials for DynamoDB
+AWS.config.update({
+    region: 'us-west-2',
+    accessKeyId: "AKIAJBSRT3E7L7FXLPMA",
+    secretAccessKey: "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"
+});
 var dynamodb = new AWS.DynamoDB();
 
 
@@ -93,8 +98,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
     // push shape to shapes array
     shapes.push(bedRoom, bedRoomDevice, bedRoomDoor);
 
-
-
+    console.log(shapes);
+    // prints element data
     document.getElementById("print").onclick = function() {
         console.log(livingRoom.node.getBoundingClientRect().x);
         console.log(livingRoom.node.getBoundingClientRect().y);
@@ -135,40 +140,33 @@ SVG.on(document, 'DOMContentLoaded', function() {
             ReturnConsumedCapacity: "TOTAL", 
             TableName: "FloorPlan.test-at-test.com"
         };
-        
-        AWS.config.update({
-            accessKeyId: "AKIAJBSRT3E7L7FXLPMA",
-            secretAccessKey: "W6rs4ZdGbxsPNlHk0DsnZ6ppJQ5rLn7CAutD/cA",
-            region: 'us-west-2'
-        });
 
-        console.log(AWS.config.region);
         dynamodb.putItem(params, function(err, data) {
-            if (err) console.log(err, err.stack); // an error occurred
+            if (err) console.log(err, err.stack); // an error occurred 
             else     console.log("Successfully saved and written to DB");           // successful response
-        /*
-        data = {
-        ConsumedCapacity: {
-         CapacityUnits: 1, 
-         TableName: "Music"
-        }
-        }
-        */
+        
+        /*data = {
+            ConsumedCapacity: {
+             CapacityUnits: 1, 
+             TableName: "Music"
+            }
+        }*/
+        
         });
     }
 
 
-    // ========= SIDE BAR TOOL SET FUNCTIONALITY ================
+    // ================ SIDE BAR TOOL SET FUNCTIONALITY ====================
 
     document.getElementById("drag-resize").onclick = function() {
-        livingRoomGroup.selectize()
+        /*livingRoomGroup.selectize()
                     .resize({snapToAngle: 5})
-                    .draggable({snapToGrid: 5})
-        /*for (var i = 0; i < shapes.length; i++) {
+                    .draggable({snapToGrid: 5})*/
+        for (var i = 0; i < shapes.length; i++) {
             shapes[i].selectize()
                     .resize({snapToAngle: 5})
                     .draggable({snapToGrid: 5})
-        }*/
+        }
 
     };
     
