@@ -15,6 +15,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 //.panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
 
 
+    /* Temporary stack for storing all user's floor plan data.
+    ** Each index consists of an SVG object.
+    */
     var floorPlan = [];
 
     // LIVING ROOM
@@ -98,21 +101,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
     // push shape to floorPlan array
     floorPlan.push(bedRoom, bedRoomDevice, bedRoomDoor);
 
-    console.log(floorPlan);
-    // prints element data
-    document.getElementById("print").onclick = function() {
-        console.log(livingRoom.node.getBoundingClientRect().x);
-        console.log(livingRoom.node.getBoundingClientRect().y);
-        console.log(livingRoom.node.getBoundingClientRect().width);
-        console.log(livingRoom.node.getBoundingClientRect().height);
-    };
-
 
 
     // ================ SIDE BAR TOOL SET FUNCTIONALITY ====================
 
     // UPDATE ROOM DATABASE
-    document.getElementById("save").onclick = function() {  
+    document.getElementById("save-fp-data").onclick = function() {  
 
         // Stop dragging and resizing for all shapes
         for (var i = 0; i < floorPlan.length; i++) {
@@ -121,6 +115,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }
 
         /*
+        ** Writes all floor plan data from floorPlan stack/array to the database
         */
         for (var i = 0; i < floorPlan.length; i++) {
         
@@ -151,18 +146,22 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             dynamodb.putItem(params, function(err, data) {
                 if (err) console.log(err, err.stack); // an error occurred 
-                else     console.log("Successfully saved and written to DB");           // successful response
-            
-            /*data = {
-                ConsumedCapacity: {
-                 CapacityUnits: 1, 
-                 TableName: "Music"
-                }
-            }*/
+                else     console.log("Successfully saved and written to DB"); // successful response
             
             });
         }
     }
+
+    document.getElementById("load-fp-data").onclick = function() {
+        // Load floor plan data for the specific user
+        var params = {
+            TableName: "FloorPlan.test-at-test.com",
+        };
+        dynamodb.scan(params, function(err, data){
+            if (err) console.log(err, err.stack);
+            else    floorPlan.push(data); console.log(floorPlan);
+        })
+    };
 
     document.getElementById("drag-resize").onclick = function() {
         /*livingRoomGroup.selectize()
@@ -199,6 +198,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         
         var rect = drawing.rect();
 
+        // Draw rectangle while mouse is held down
         drawing.on('mousedown', function(e){
             rect.draw(e)
                 .attr({
@@ -208,6 +208,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 })
         }, false);
 
+        // Stop drawing on mouse up and
+        // push shapes to floorPlan stack
         drawing.on('mouseup', function(e){
             rect.draw('stop', e);
             floorPlan.push(rect);
@@ -217,7 +219,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
             rect.draw('stop');
         });
         
-        console.log(floorPlan);
         
     };
 
