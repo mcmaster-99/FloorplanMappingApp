@@ -103,9 +103,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 
 
-    // ================ SIDE BAR TOOL SET FUNCTIONALITY ====================
+    //              ===============================
+    //              SIDE BAR TOOL SET FUNCTIONALITY 
+    //              ===============================
 
-    // UPDATE ROOM DATABASE
+    // SAVE ALL DATA TO DYNAMODB
     document.getElementById("save-fp-data").onclick = function() {  
 
         // Stop dragging and resizing for all shapes
@@ -153,14 +155,27 @@ SVG.on(document, 'DOMContentLoaded', function() {
     }
 
     document.getElementById("load-fp-data").onclick = function() {
+
+        // Empty floorPlan array of any previous/excess data
+        while (floorPlan.length !== 0) {floorPlan.pop();}
+
         // Load floor plan data for the specific user
         var params = {
             TableName: "FloorPlan.test-at-test.com",
         };
         dynamodb.scan(params, function(err, data){
             if (err) console.log(err, err.stack);
-            else    floorPlan.push(data); console.log(floorPlan);
+            else    {
+
+                // Iterate through each object and push it to floorPlan array
+                data.Items.forEach(function(e) {
+                    floorPlan.push(e);
+                });
+
+            }
         })
+
+        console.log(floorPlan);
     };
 
     document.getElementById("drag-resize").onclick = function() {
