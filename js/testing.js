@@ -20,89 +20,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
     */
     var floorPlan = [];
 
-    // LIVING ROOM
-    var livingRoom = drawing.rect(150, 100)
-                            .attr({
-                                x: 80,
-                                y: 50,
-                                fill: 'white',
-                                stroke: '#CCCCCC',
-                                'stroke-width': 3
-                            })
-
-    // LIVING ROOM DOOR
-    var livingRoomDoor = drawing.line(
-                    Number(livingRoom.node.attributes[3].nodeValue)+55,
-                    Number(livingRoom.node.attributes[4].nodeValue),
-                    Number(livingRoom.node.attributes[3].nodeValue)+70,
-                    Number(livingRoom.node.attributes[4].nodeValue)+20)
-                                .stroke({color: '#CCCCCC', width: 3})
-
-    // INLO DEVICE
-    var livingRoomDevice = drawing.rect(20, 10)
-                        .attr({
-                            x: (Number(livingRoom.node.attributes[3].nodeValue)+15),
-                            y: (Number(livingRoom.node.attributes[4].nodeValue)),
-                            fill: 'white',
-                            stroke: '#CCCCCC',
-                            'stroke-width': 3
-                        })
-
-    // GROUPS LIVING ROOM, DOOR, AND DEVICE TOGETHER
-    var livingRoomGroup = drawing.group()
-    livingRoomGroup.add(livingRoom)
-                    .add(livingRoomDevice)
-                    .add(livingRoomDoor)
-    //livingRoomGroup.path('M20,20L30,40')
-    /*var livingRoomSet = drawing.set()
-    livingRoomSet.add(livingRoom)
-                .add(livingRoomDoor)
-                .add(livingRoomDevice)
-    floorPlan.push(livingRoomSet);*/
-
-    // push shape to floorPlan array
-    floorPlan.push(livingRoom, livingRoomDoor, livingRoomDevice);
-
-
-    // BEDROOM
-    var bedRoom = drawing.rect(300, 100)
-                        .attr({
-                            x: 100,
-                            y: 205,
-                            fill: 'white',
-                            stroke: '#CCCCCC',
-                            'stroke-width': 3
-                        })
-
-    // INLO DEVICE
-    var bedRoomDevice = drawing.rect(20, 10)
-                        .attr({
-                            x: (Number(bedRoom.node.attributes[3].nodeValue)+15),
-                            y: (Number(bedRoom.node.attributes[4].nodeValue)),
-                            fill: 'white',
-                            stroke: '#CCCCCC',
-                            'stroke-width': 3
-                        })
-
-    var bedRoomDoor = drawing.line(
-                    Number(bedRoom.node.attributes[3].nodeValue)+55,
-                    Number(bedRoom.node.attributes[4].nodeValue),
-                    Number(bedRoom.node.attributes[3].nodeValue)+70,
-                    Number(bedRoom.node.attributes[4].nodeValue)+20)
-                                .stroke({color: '#CCCCCC', width: 3})
-
-
-    // GROUPS LIVING ROOM, DOOR, AND DEVICE TOGETHER
-    /*var bedRoomGroup = drawing.group()
-                            .add(bedRoom)
-    bedRoomGroup.add(bedRoomDevice)
-    bedRoomGroup.add(bedRoomDoor)*/
-
-    // push shape to floorPlan array
-    floorPlan.push(bedRoom, bedRoomDevice, bedRoomDoor);
-
-
-
     //              ===============================
     //              SIDE BAR TOOL SET FUNCTIONALITY 
     //              ===============================
@@ -123,6 +40,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
         
             var params = {
                 Item: {
+                    "type": {
+                        S: String(floorPlan[i].node.getBoundingClientRect().type) //livingRoom.node.attributes[3].nodeValue
+                    },
                     "x": {
                         S: String(floorPlan[i].node.getBoundingClientRect().x) //livingRoom.node.attributes[3].nodeValue
                     },
@@ -169,13 +89,23 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                 // Iterate through each object and push it to floorPlan array
                 data.Items.forEach(function(e) {
-                    floorPlan.push(e);
+                    if (e.type.S === "rect") {
+                        var bedRoomDevice = drawing.rect(e.width.S, e.height.S)
+                            .attr({
+                                x: (e.x.S),
+                                y: (e.y.S),
+                                fill: 'white',
+                                stroke: '#CCCCCC',
+                                'stroke-width': 3
+                            })
+                    }
+                    console.log(e.width.S);
                 });
 
             }
         })
 
-        console.log(floorPlan);
+        console.log("floorPlan: " + floorPlan);
     };
 
     document.getElementById("drag-resize").onclick = function() {
@@ -236,5 +166,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
         
         
     };
+
+    // Methods/Functions
+
+    function drawFloorPlan() {
+
+    }
 
 })
