@@ -8,7 +8,9 @@ window._config = {
         region: 'us-west-2' 
     },
     api: {
-        invokeUrl: 'https://zd9se4rknj.execute-api.us-west-2.amazonaws.com/prod' // e.g. https://rc7nyt4tql.execute-api.us-west-2.amazonaws.com/prod',
+        invokeUrl: 'https://zd9se4rknj.execute-api.us-west-2.amazonaws.com/prod',
+        fpInvokeUrl: 'https://yi5fpaqi2d.execute-api.us-west-2.amazonaws.com/prod', 
+        fpGetInvokeUrl: 'https://r5qy1s6hz8.execute-api.us-west-2.amazonaws.com/prod'
     }
 };
 
