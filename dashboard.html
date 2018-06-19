@@ -25,23 +25,40 @@
 
     <div id="navbar-div">
       <nav>
-        <a href="#"><img src="images/inlo.png" id="inlo-icon"></a>
+        <a href="#"><img src="images/theinlo.png" id="inlo-banner"></a>
 
-        <div id="side-menu">----</div>
+        <div>
+            <a href="#"><img src="images/username.png" class="right-nav-icons"></a>
+            <a href="#"><img src="images/email.png" class="right-nav-icons"></a>
+            <a href="#"><img src="images/home.png" class="right-nav-icons"></a>
+        </div>
+
       </nav>
     </div>
 
 
     <div id="views-div">
+
+        <h3 id="page-title">Home</h3>
+
         <button id="list-view-btn">
             <img src="https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-21-128.png" class="views-icons">
-            <p class="views-text">List View</p>
+            <p class="views-text">List</p>
         </button>
 
         <button id="map-view-btn">
             <img src="https://image.flaticon.com/icons/png/128/34/34250.png" class="views-icons">
-            <p class="views-text">Map View</p>
+            <p class="views-text">Map</p>
         </button>
+
+        <div id="dropdown-sort-div">
+            <p id="sort-by-text">Sort By:</p>
+            <select id="sort-selection">
+                <option value="1">Items</option>
+                <option value="2">Names</option>
+                <option value="3">Rooms</option>
+            </select>
+        </div>
     </div>
 
 
@@ -52,25 +69,9 @@
 
 
         <div id="items-listed">
-
-            <div id="dropdown-sort-div">
-                <p id="sort-by-text">Sort By:</p>
-                <select id="sort-selection">
-                    <option value="1">Items</option>
-                    <option value="2">Names</option>
-                    <option value="3">Rooms</option>
-                </select>
-            </div>
             
             <div id="items-listed-content">
-                <div id="item-icon-list">
-                </div>  
-
-                <div id="item-name-list">
-                </div>
-
-                <div id="item-room-list">
-                </div> 
+                
             </div>        
 
         </div>

@@ -70,11 +70,12 @@ $(document).ready(function(){
 
 			// Check if value exists in Object
 			for (var y in result.Items) {
-				console.log("got here");
+
 				if (result.Items[y].name === tmpDevicesArray[i]) {
-					$("#item-name-list").append('<ol class="item-names">' + result.Items[y].name + '</ol>');
-	        		$("#item-room-list").append('<ol class="item-rooms">' + result.Items[y].room + '</ol>');
-	        		$("#item-icon-list").append('<ol class="item-icons">' + "<img class='item-icons' src='images/" + result.Items[y].icon + ".png'>" + '</ol>');
+					$("#items-listed-content").append(
+                        '<ol class="item-rows">' + '<p class="item-names">' + result.Items[y].name + '</p>' +
+                        '<p class="item-rooms">' + result.Items[y].room + '</p>' + '</ol><br>'
+                        );
 				} else {
 					continue;
 				}
