@@ -3,6 +3,7 @@ $(document).ready(function(){
 
 
 	$("#list-view-btn").click(function() {
+        $("#dropdown-sort-div").fadeIn();
 		$("#prompt").fadeOut();
 		$("#map-view-text").fadeOut();
 		$("#items-listed-div").delay(500).fadeIn("slow");
@@ -11,6 +12,7 @@ $(document).ready(function(){
 
 
 	$("#map-view-btn").click(function() {
+        $("#dropdown-sort-div").fadeOut();
 		$("#prompt").fadeOut();
 		$("#items-listed-div").fadeOut();
 		$("#map-view-text").delay(500).fadeIn("slow");
