@@ -3,11 +3,10 @@ $(document).ready(function(){
 
 
 	$("#list-view-btn").click(function() {
-        $("#dropdown-sort-div").fadeIn();
 		$("#prompt").fadeOut();
 		$("#map-view-text").fadeOut();
 		$("#items-listed-div").delay(500).fadeIn("slow");
-
+        $("#dropdown-sort-div").delay(500).fadeIn("slow");
 	});
 
 
