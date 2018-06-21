@@ -32,6 +32,7 @@ gulp.task('sass', function(){
 gulp.task('js', function(){
 	gulp.src(jsSource)
 	.pipe(uglify())
+	.on('error', (err) => { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
 	.pipe(concat('script.js'))
 	.pipe(gulp.dest(output))
 	.pipe(connect.reload())

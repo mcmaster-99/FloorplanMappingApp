@@ -127,5 +127,21 @@ nav {
   text-align: center; }
 
 #map-view-text {
-  display: none;
-  margin-top: 200px; }
+  display: none; }
+
+svg {
+  border: 3px solid black;
+  border-radius: 10px;
+  display: inline-block; }
+
+#tools {
+  display: inline-block; }
+
+button {
+  margin-top: 10px;
+  display: inline-block; }
+
+#rect {
+  border: 1px solid black;
+  width: 20px;
+  height: 20px; }
