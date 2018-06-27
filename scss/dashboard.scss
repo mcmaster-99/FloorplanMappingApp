@@ -144,8 +144,34 @@ nav {
 /* ---------------- MAP VIEW DIV ---------------- */
 #map-view-div {
   text-align: center;
+  //display: none; // hide on page load
 }
 #map-view-text {
   display: none; // hide on page load
-  margin-top: 200px;
+  //margin-top: 200px;
+}
+
+svg{
+  border: 3px solid black;
+  border-radius: 10px;
+  display: inline-block;
+}
+#tools {
+  display: inline-block;
+}
+button {
+  margin-top: 10px;
+  display: inline-block;
+}
+
+#rect{
+  border: 1px solid black;
+  width: 20px;
+  height: 20px;
+}
+
+#inlo-icon {
+  position: relative;
+  height: 10px;
+  width: 10px;
 }

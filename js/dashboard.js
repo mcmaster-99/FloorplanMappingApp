@@ -23,46 +23,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 //.panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
 
 
-    //rect[i] = drawing.rect();
-
-    /*var rect = [];
-
-    for (var i = 0; i < 5; i++) {
-        rect[i] = "rect" + i;
-    }
-
-    for (var i = 0; i < 4; i++) {
-
-        rect[i] = drawing.rect();
-        console.log("rect[i] " + rect[i]);
-
-        // Draw rectangle while mouse is held down
-        drawing.on('mousedown', function(e){
-            rect[i].draw(e)
-                .attr({
-                    fill: 'white',
-                    stroke: '#E3E3E3',
-                    'stroke-width': 3
-                })
-        });
-
-        // Stop drawing on mouse up and
-        // push shapes to floorPlan stack
-        drawing.on('mouseup', function(e){
-            rect[i].draw('stop', e);
-            floorPlan.push(rect);
-        });
-        
-        rect[i].on('drawstop', function(){
-            rect.draw('stop');
-        });
-    }*/
-
-
     /* Temporary stack for storing all user's floor plan data.
     ** Each index consists of an SVG object.
     */
-    var floorPlan = [];
+    var floorPlan = [],
+        loaded = false;
 
     /*
     var drawState = false,
@@ -100,22 +65,31 @@ SVG.on(document, 'DOMContentLoaded', function() {
     //              ===============================
 
     // SAVE ALL DATA TO DYNAMODB
-    /*document.getElementById("save-fp-data").onclick = function(){
+    document.getElementById("save-fp-data").onclick = function(){
 
-        for (var i = 0; i < floorPlan.length; i++) {
+        for (var i = floorPlan.length-1; i >= 0; i--) {
+
+            var index = (i === 0) ? floorPlan["0"] : floorPlan[i];
+
+            index.selectize(false).resize('stop').draggable(false);
+
             var Item = {
-                "room_ID": "test",
-                "floor": "test"
+                "room_ID": String(index.node.id),
+                "floor": String(1),
+                "height": String(index.node.attributes[2].nodeValue),
+                "width": String(index.node.attributes[1].nodeValue),
+                "x": String(index.node.attributes[3].nodeValue),
+                "y": String(index.node.attributes[4].nodeValue),
+                "type": String(index.type)
             }
+
             $.ajax({
                 method: 'POST',
-                url: _config.api.invokeUrl + '/floorplan/add',
+                url: _config.api.fpAddUrl + '/floorplan/add',
                 headers: {
                     Authorization: authToken
                 },
-                data: JSON.stringify(
-                    Item
-                ),
+                data: JSON.stringify(Item),
                 contentType: 'application/json',
                 success: completeRequest,
                 error: function ajaxError(jqXHR, textStatus, errorThrown) {
@@ -130,30 +104,36 @@ SVG.on(document, 'DOMContentLoaded', function() {
             console.log('Response received from API: ', result);
             devices = JSON.stringify(result.Items);
         }
-    };*/
+    };
 
     document.getElementById("load-fp-data").onclick = function() {
 
         // Empty floorPlan array of any previous/excess data
-        while (floorPlan.length !== 0) {floorPlan.pop();}
+        var i = floorPlan.length;
+        while (i !== 0) {floorPlan.pop(); i--}
 
-        $.ajax({
-            method: 'POST',
-            url: _config.api.fpGetURL + '/floorplan/get',
-            headers: {
-                Authorization: authToken
-            },
-            data: JSON.stringify({
-                "userName": "UUID"
-            }),
-            contentType: 'application/json',
-            success: completeRequest,
-            error: function ajaxError(jqXHR, textStatus, errorThrown) {
-                console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
-                console.error('Response: ', jqXHR.responseText);
-                alert('An error occured when requesting devices:\n' + jqXHR.responseText);
-            }
-        });
+        // Checks if floorplan is loaded
+        if (loaded === true) {
+            console.log("Your floorplan has already been loaded.");
+        } else { // if floorplan has not been loaded
+            $.ajax({
+                method: 'POST',
+                url: _config.api.fpGetUrl + '/floorplan/get',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify({
+                    "userName": "UUID"
+                }),
+                contentType: 'application/json',
+                success: completeRequest,
+                error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                    console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+                    console.error('Response: ', jqXHR.responseText);
+                    alert('An error occured when requesting devices:\n' + jqXHR.responseText);
+                }
+            });
+        }
 
         function completeRequest(result) {
             console.log('Response received from API: ', result);
@@ -165,18 +145,28 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 tmpDevicesArray.push(result.Items[i].name);
             }
 
-            tmpDevicesArray.sort();
+            tmpDevicesArray.sort(); // sort items
 
             if (devices === "No Dynamic Devices") {
                 $("#map-view-text").append("Map view not yet available");
             } else {
+                // Loop through all items in database and store in floorplan array/stack
                 for (var i = 0; i < result.Items.length; i++) {
-                    floorPlan.push(result.Items[i]);
-                }
-            }
-            console.log("==== floorPlan ====" + result.Items);
 
-            drawFloorPlan();
+                    var room_ID = drawing.rect(result.Items[i].width, result.Items[i].height)
+                        .attr({
+                            x: result.Items[i].x,
+                            y: result.Items[i].y,
+                            fill: 'white',
+                            stroke: '#E3E3E3',
+                            'stroke-width': 3
+                        }) 
+                    floorPlan.push(room_ID);    
+                }
+
+            }
+            // after done importing rooms, set loaded to true to prevent excess loading
+            loaded = true;
         }
     };
 
@@ -185,88 +175,75 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     .resize({snapToAngle: 5})
                     .draggable({snapToGrid: 5})*/
         for (var i = 0; i < floorPlan.length; i++) {
-            floorPlan[i].room_ID.selectize()
+            floorPlan[i].selectize()
                     .resize({snapToAngle: 5})
                     .draggable({snapToGrid: 5})
         }
     };
 
     
-    /*document.getElementById("print-fp-data").onclick = function() {
+    document.getElementById("print-fp-data").onclick = function() {
 
         for (var i = 0; i < floorPlan.length; i++) {
+            floorPlan[i].selectize(false).resize('stop').draggable(false);
             console.log(floorPlan[i]);
         }
-    };*/
+
+    };
     
 
-    /*document.getElementById("clear").onclick = function() {
-        //$("#draw").empty();
-        console.log(floorPlan);
-        for (var i = 0; i < floorPlan.length; i++) {
-            floorPlan.pop();
-        }
-        console.log(floorPlan);
-    };*/
+    document.getElementById("clear").onclick = function() {
+        drawing.clear()
+    };
 
 
 
-    $("#draw-rect").click(function() {
+    document.getElementById("draw-rect").onclick = function() {
+        
+        /*
+        var num = Math.floor((Math.random() * 100) + 1);
+        var rect = "rect"+num;*/
 
         var rect = drawing.rect();
-
-        // Draw rectangle while mouse is held down
-        drawing.on('mousedown', function(e){
-            rect.draw(e)
-                .attr({
-                    fill: 'white',
-                    stroke: '#E3E3E3',
-                    'stroke-width': 3
-                })
-        });
-
-        // Stop drawing on mouse up and
-        // push shape to floorPlan stack
-        drawing.on('mouseup', function(e){
-            rect.draw('stop', e);
-            floorPlan.push(rect);
-        });
-        
-        drawing.rect().on('drawstop', function(){
-            rect.draw('stop');
-        });
-    });
-
-    // Methods/Functions
-
-    function drawFloorPlan() {
-        for (var i = 0; i < floorPlan.length; i++) {
-
-            var type = floorPlan[i].type,
-                room_ID = floorPlan[i].room_ID,
-                width = Number(floorPlan[i].width),
-                height = Number(floorPlan[i].height),
-                x = Number(floorPlan[i].x),
-                y = Number(floorPlan[i].y);
+        //rect.draw();
 
 
-            console.log("==== rect " + i + " =====");
-            console.log("x: " + x);
-            console.log("y: " + y);
-            console.log("width: " + width);
-            console.log("height: " + height);
+        if ($('#draw-rect').hasClass('active')) {  }
+        else {
 
-            console.log("Now drawing: " + room_ID);
-            var room_ID = drawing.rect(width, height)
-                .attr({
-                    x: x,
-                    y: y,
-                    fill: 'white',
-                    stroke: '#E3E3E3',
-                    'stroke-width': 3
-                })  
+            // Draw rectangle while mouse is held down
+            drawing.on('mousedown', function(e){
+                rect.draw(e)
+                    .attr({
+                        fill: 'white',
+                        stroke: '#E3E3E3',
+                        'stroke-width': 3
+                    })
+            });
+
+            // Stop drawing on mouse up and
+            // push shape to floorPlan stack
+            drawing.on('mouseup', function(e){
+
+                if (floorPlan.length === 0) {floorPlan.push(rect);}
+
+                var matchCount = 0;
+
+                for (var i = 0; i < floorPlan.length; i++) {
+                    if (floorPlan[i].node.instance.node === rect.node.instance.node) {
+                        console.log(floorPlan[i].node.instance.node + " matches " + rect.node.instance.node);
+                        matchCount++;
+                    } 
+                }
+
+                if (matchCount === 0) floorPlan.push(rect);
+                rect.draw('stop');
+                //var ifPush = (floorPlan.has) ? floorPlan["0"] : floorPlan[i];floorPlan.push(rect);
+            });
         }
-    }
+
+        document.getElementById("draw-rect").classList.remove("active");
+    };
 
 })
 

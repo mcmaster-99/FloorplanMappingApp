@@ -9,8 +9,8 @@ window._config = {
     },
     api: {
         invokeUrl: 'https://zd9se4rknj.execute-api.us-west-2.amazonaws.com/prod',
-        fpAddURL: 'https://yi5fpaqi2d.execute-api.us-west-2.amazonaws.com/prod',
-        fpGetURL: 'https://r5qy1s6hz8.execute-api.us-west-2.amazonaws.com/prod'
+        fpAddUrl: 'https://yi5fpaqi2d.execute-api.us-west-2.amazonaws.com/prod',
+        fpGetUrl: 'https://r5qy1s6hz8.execute-api.us-west-2.amazonaws.com/prod'
     }
 };
 
