@@ -245,6 +245,76 @@ SVG.on(document, 'DOMContentLoaded', function() {
         document.getElementById("draw-rect").classList.remove("active");
     };
 
+    document.getElementById("render-icon").onclick = function(e) {
+
+        var rect1 = drawing.rect(100, 100);
+        rect1.attr({x: 10, y: 10, fill: "white", stroke: "#E3E3E3"})
+
+        var rect2 = drawing.rect(10, 5);
+        rect2.attr({x: 10, y: 50, fill: "white", stroke: "#E3E3E3"})
+
+        var svgX = document.getElementById("SvgjsSvg1006").getBoundingClientRect().x,
+            svgY = document.getElementById("SvgjsSvg1006").getBoundingClientRect().y;
+
+        var distance = "N",
+            x_node = document.getElementById("SvgjsRect1009").getBoundingClientRect().x - svgX,
+            y_node = document.getElementById("SvgjsRect1009").getBoundingClientRect().y - svgY, 
+            x = document.getElementById("SvgjsRect1008").getBoundingClientRect().x - svgX,
+            y = document.getElementById("SvgjsRect1008").getBoundingClientRect().y - svgY,
+            height = document.getElementById("SvgjsRect1008").getBoundingClientRect().height,
+            width = document.getElementById("SvgjsRect1008").getBoundingClientRect().width;
+
+            console.log("x_node: " + x_node);
+            console.log("y_node: " + y_node);
+            console.log("x: " + x);
+            console.log("y: " + y);
+            console.log("height: " + height);      
+            console.log("width: " + width);      
+
+            console.log("svgX: " + x);      
+            console.log("svgY: " + y);      
+
+        switch(distance){
+            case "N":
+                if (x_node < height/2) {
+                    x = width*0.25 + x + svgX;
+                    console.log("x is: " + x);
+                } else {
+                    x = width*0.75 + x + svgX;
+                    console.log("x is: " + x);
+                }
+
+                if (y_node < height/2) {
+                    y = height*0.25 + y + svgY;
+                    console.log("y is: " + y);
+                } else {
+                    y = height*0.75 + y + svgY;
+                    console.log("y is: " + y);
+                }
+                break;
+            case "F":
+                if (x_node < height/2) {
+                    x = width*0.75 + x + svgX;
+                    console.log("x is: " + x);
+                } else {
+                    x = width*0.25 + x + svgX;
+                    console.log("x is: " + x);
+                }
+
+                if (y_node < height/2) {
+                    y = height*0.75 + y + svgY;
+                    console.log("y is: " + y);
+                } else {
+                    y = height*0.25 + y + svgY;
+                    console.log("y is: " + y);
+                }
+                break;
+        }
+
+        $('#inlo-icon').offset({top: y, left: x});
+
+    }
+
 })
 
 
