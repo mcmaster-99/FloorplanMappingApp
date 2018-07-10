@@ -185,24 +185,22 @@ SVG.on(document, 'DOMContentLoaded', function() {
     document.getElementById("print-fp-data").onclick = function() {
 
         for (var i = 0; i < floorPlan.length; i++) {
+            // deselect room
             floorPlan[i].selectize(false).resize('stop').draggable(false);
             console.log(floorPlan[i]);
         }
 
     };
     
-
+    // clears floorplan from SVG
     document.getElementById("clear").onclick = function() {
         drawing.clear()
+        loaded = false;
     };
 
 
 
     document.getElementById("draw-rect").onclick = function() {
-        
-        /*
-        var num = Math.floor((Math.random() * 100) + 1);
-        var rect = "rect"+num;*/
 
         var rect = drawing.rect();
         //rect.draw();
@@ -245,73 +243,160 @@ SVG.on(document, 'DOMContentLoaded', function() {
         document.getElementById("draw-rect").classList.remove("active");
     };
 
-    document.getElementById("render-icon").onclick = function(e) {
+    /*var itemOriginalPosX = $('.inlo-icon').offset().left;
+    var itemOriginalPosY = $('.inlo-icon').offset().top;
 
-        var rect1 = drawing.rect(100, 100);
-        rect1.attr({x: 10, y: 10, fill: "white", stroke: "#E3E3E3"})
+    console.log("itemOriginalPosX = " + itemOriginalPosX);
+    console.log("itemOriginalPosY = " + itemOriginalPosY);*/
 
-        var rect2 = drawing.rect(10, 5);
-        rect2.attr({x: 10, y: 50, fill: "white", stroke: "#E3E3E3"})
 
-        var svgX = document.getElementById("SvgjsSvg1006").getBoundingClientRect().x,
-            svgY = document.getElementById("SvgjsSvg1006").getBoundingClientRect().y;
+    document.getElementById("render-icon-Near").onclick = function(e) {
 
-        var distance = "N",
-            x_node = document.getElementById("SvgjsRect1009").getBoundingClientRect().x - svgX,
-            y_node = document.getElementById("SvgjsRect1009").getBoundingClientRect().y - svgY, 
-            x = document.getElementById("SvgjsRect1008").getBoundingClientRect().x - svgX,
-            y = document.getElementById("SvgjsRect1008").getBoundingClientRect().y - svgY,
-            height = document.getElementById("SvgjsRect1008").getBoundingClientRect().height,
-            width = document.getElementById("SvgjsRect1008").getBoundingClientRect().width;
+        // Grab SVG coordinates so we can subtract from element coordinates 
+        // to give us the actual coordinates on the SVG document.
+        var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
+            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+
+        for (var i = 0; i < floorPlan.length; i++) {
+
+            var num = Math.random() * 1000;
+            var iconID = String("icon"+(~~num));
+
+            var distance = "N", 
+                // current coordinates of room
+                x = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().x - svgX,
+                y = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().y - svgY,
+                // current dimensions of room
+                height = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().height,
+                width = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().width;
+        
+            // sample device
+            var inloDevice = drawing.image("images/inlo-device.png", 15, 10);
+            inloDevice.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
+
+            // current coordinates of inlo device
+            x_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().x - x - svgX,
+            y_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().y - y - svgY;
 
             console.log("x_node: " + x_node);
             console.log("y_node: " + y_node);
             console.log("x: " + x);
             console.log("y: " + y);
-            console.log("height: " + height);      
-            console.log("width: " + width);      
+            console.log("height: " + height);
+            console.log("width: " + width);
+        
+            switch(distance){
+                case "N":
+                    // determine x coordinate of near item
+                    if (x_node < width/2) {
+                        x = x + width*0.25;
+                    } else {
+                        x = x + width*0.75;
+                    }
+                    // determine y coordinate of near item
+                    if (y_node < height/2) {
+                        y = y + height*0.25;
+                    } else {
+                        y = y + height*0.75;
+                    }
+                    break;
+                case "F":
+                    // determine x coordinate of far item
+                    if (x_node < width/2) {
+                        x = x + width*0.75;
+                    } else {
+                        x = x + width*0.25;
+                    }
+                    // determine y coordinate of far item
+                    if (y_node < height/2) {
+                        y = y + height*0.75;
+                    } else {
+                        y = y + height*0.25;
+                    }
+                    break;
+            }
 
-            console.log("svgX: " + x);      
-            console.log("svgY: " + y);      
+            var itemIcon = drawing.image("images/inlo.png", 10, 10);
+            console.log("x: " + x);
+            console.log("y: " + y);
+            itemIcon.attr({x: x, y: y})
 
-        switch(distance){
-            case "N":
-                if (x_node < height/2) {
-                    x = width*0.25 + x + svgX;
-                    console.log("x is: " + x);
-                } else {
-                    x = width*0.75 + x + svgX;
-                    console.log("x is: " + x);
-                }
+        }    
 
-                if (y_node < height/2) {
-                    y = height*0.25 + y + svgY;
-                    console.log("y is: " + y);
-                } else {
-                    y = height*0.75 + y + svgY;
-                    console.log("y is: " + y);
-                }
-                break;
-            case "F":
-                if (x_node < height/2) {
-                    x = width*0.75 + x + svgX;
-                    console.log("x is: " + x);
-                } else {
-                    x = width*0.25 + x + svgX;
-                    console.log("x is: " + x);
-                }
+    } 
 
-                if (y_node < height/2) {
-                    y = height*0.75 + y + svgY;
-                    console.log("y is: " + y);
-                } else {
-                    y = height*0.25 + y + svgY;
-                    console.log("y is: " + y);
-                }
-                break;
+
+    document.getElementById("render-icon-Far").onclick = function(e) {
+
+        // Grab SVG coordinates so we can subtract from element coordinates 
+        // to give us the actual coordinates on the SVG document.
+        var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
+            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+
+        for (var i = 0; i < floorPlan.length; i++) {
+
+            var num = Math.random() * 1000;
+            var iconID = String("icon"+(~~num));
+
+            var distance = "F", 
+                // current coordinates of room
+                x = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().x - svgX,
+                y = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().y - svgY,
+                // current dimensions of room
+                height = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().height,
+                width = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().width;
+        
+            // sample device
+            var inloDevice = drawing.image("images/inlo-device.png", 15, 10);
+            inloDevice.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
+
+            // current coordinates of inlo device
+            x_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().x - x - svgX,
+            y_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().y - y - svgY;
+
+            console.log("x_node: " + x_node);
+            console.log("y_node: " + y_node);
+            console.log("x: " + x);
+            console.log("y: " + y);
+            console.log("height: " + height);
+            console.log("width: " + width);
+        
+            switch(distance){
+                case "N":
+                    // determine x coordinate of near item
+                    if (x_node < width/2) {
+                        x = x + width*0.25;
+                    } else {
+                        x = x + width*0.75;
+                    }
+                    // determine y coordinate of near item
+                    if (y_node < height/2) {
+                        y = y + height*0.25;
+                    } else {
+                        y = y + height*0.75;
+                    }
+                    break;
+                case "F":
+                    // determine x coordinate of far item
+                    if (x_node < width/2) {
+                        x = x + width*0.75;
+                    } else {
+                        x = x + width*0.25;
+                    }
+                    // determine y coordinate of far item
+                    if (y_node < height/2) {
+                        y = y + height*0.75;
+                    } else {
+                        y = y + height*0.25;
+                    }
+                    break;
+            }
+
+            var itemIcon = drawing.image("images/inlo.png", 10, 10);
+            console.log("x: " + x);
+            console.log("y: " + y);
+            itemIcon.attr({x: x, y: y})
         }
-
-        $('#inlo-icon').offset({top: y, left: x});
 
     }
 
