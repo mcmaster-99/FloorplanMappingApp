@@ -14,6 +14,8 @@ WildRydes.authToken.then(function setAuthToken(token) {
     window.location.href = '/signin.html';
 });
 
+console.log("authToken" + authToken);
+
 
 //=============================================================
 //                          SVG.JS
@@ -180,17 +182,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     .draggable({snapToGrid: 5})
         }
     };
-
-    
-    document.getElementById("print-fp-data").onclick = function() {
-
-        for (var i = 0; i < floorPlan.length; i++) {
-            // deselect room
-            floorPlan[i].selectize(false).resize('stop').draggable(false);
-            console.log(floorPlan[i]);
-        }
-
-    };
     
     // clears floorplan from SVG
     document.getElementById("clear").onclick = function() {
@@ -243,6 +234,62 @@ SVG.on(document, 'DOMContentLoaded', function() {
         document.getElementById("draw-rect").classList.remove("active");
     };
 
+    document.getElementById("draw-door").onclick = function() {
+
+        for (var i = 0; i < floorPlan.length; i++) {
+            floorPlan[i].selectize(false).resize('stop').draggable(false);
+        }
+
+        console.log(floorPlan);
+
+        // grab SVG coords so we can subtract them from mouse
+        //coords to give us actual coords on SVG
+        var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
+            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y,
+            width = 10,
+            height = 30;
+
+        function addDoor(event) {
+            var rect = drawing.rect(width, height)
+                          .attr({
+                            x: event.clientX-svgX-(width*0.75), 
+                            y: event.clientY-svgY-(height*0.66), 
+                            fill: 'transparent',
+                            stroke: '#E3E3E3',
+                            'stroke-width': 2
+                          });
+
+            for (var i = 0; i < floorPlan.length; i++) {
+
+
+                // first index is a string
+                //i = (i === 0) ? floorPlan["0"] : floorPlan[i];
+
+                // Determine if user clicked the left side of the room
+                console.log("=== mouseX ===");
+                console.log(event.clientX-svgX);
+                console.log("floorPlan: " + floorPlan[i]);
+                console.log("=== roomX + 5 ===");
+                console.log(Number(floorPlan[i].node.attributes[3].nodeValue)+10);
+                console.log("=== roomX - 5 ===");
+                console.log(Number(floorPlan[i].node.attributes[3].nodeValue)-10);
+                if (event.clientX-svgX < Number(floorPlan[i].node.attributes[3].nodeValue)+10
+                    //&& event.clientX-svgX > Number(floorPlan[i].node.attributes[4].nodeValue)+5
+                 && event.clientX-svgX > Number(floorPlan[i].node.attributes[3].nodeValue)-10)
+                    //&& event.clientX-svgX > Number(floorPlan[i].node.attributes[4].nodeValue)+5)
+                {
+                    console.log("here");
+                    rect.node.attributes[3].nodeValue = Number(floorPlan[i].node.attributes[3].nodeValue)-5;
+                }
+            }
+        }
+
+        
+
+        document.addEventListener("click", addDoor);
+
+    };
+
     /*var itemOriginalPosX = $('.inlo-icon').offset().left;
     var itemOriginalPosY = $('.inlo-icon').offset().top;
 
@@ -259,6 +306,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         for (var i = 0; i < floorPlan.length; i++) {
 
+            // generate random variable for item icon ID
             var num = Math.random() * 1000;
             var iconID = String("icon"+(~~num));
 
