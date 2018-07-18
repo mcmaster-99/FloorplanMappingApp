@@ -250,36 +250,29 @@ SVG.on(document, 'DOMContentLoaded', function() {
             height = 30;
 
         function addDoor(event) {
-            var rect = drawing.rect(width, height)
-                          .attr({
-                            x: event.clientX-svgX-(width*0.75), 
-                            y: event.clientY-svgY-(height*0.66), 
-                            fill: 'transparent',
-                            stroke: '#E3E3E3',
-                            'stroke-width': 2
-                          });
+
+            var mouseX = event.clientX-svgX,
+                mouseY = event.clientY-svgY,
+                doorHeight = 30;
+
 
             for (var i = 0; i < floorPlan.length; i++) {
 
-
-                // first index is a string
-                //i = (i === 0) ? floorPlan["0"] : floorPlan[i];
+                var roomX = Number(floorPlan[i].node.attributes[3].nodeValue),
+                    roomY = Number(floorPlan[i].node.attributes[4].nodeValue);
 
                 // Determine if user clicked the left side of the room
-                console.log("=== mouseX ===");
-                console.log(event.clientX-svgX);
-                console.log("floorPlan: " + floorPlan[i]);
-                console.log("=== roomX + 5 ===");
-                console.log(Number(floorPlan[i].node.attributes[3].nodeValue)+10);
-                console.log("=== roomX - 5 ===");
-                console.log(Number(floorPlan[i].node.attributes[3].nodeValue)-10);
-                if (event.clientX-svgX < Number(floorPlan[i].node.attributes[3].nodeValue)+10
-                    //&& event.clientX-svgX > Number(floorPlan[i].node.attributes[4].nodeValue)+5
-                 && event.clientX-svgX > Number(floorPlan[i].node.attributes[3].nodeValue)-10)
-                    //&& event.clientX-svgX > Number(floorPlan[i].node.attributes[4].nodeValue)+5)
+                if (   mouseX < roomX+10
+                    && mouseY > roomY+(doorHeight/2) // below roomY
+                    && mouseX > roomX-10
+                    && mouseY < roomY+Number(floorPlan[i].node.attributes[2].nodeValue)-(doorHeight/2)) // above bottom roomY
                 {
-                    console.log("here");
-                    rect.node.attributes[3].nodeValue = Number(floorPlan[i].node.attributes[3].nodeValue)-5;
+                    var door = drawing.line(mouseX-3, mouseY-15, mouseX-3, mouseY+(doorHeight/2))
+                        .stroke({width: 3})
+                    door.node.attributes[3].nodeValue = Number(floorPlan[i].node.attributes[3].nodeValue);
+                    door.node.attributes[1].nodeValue = Number(floorPlan[i].node.attributes[3].nodeValue);
+                } else {
+                    continue;
                 }
             }
         }
