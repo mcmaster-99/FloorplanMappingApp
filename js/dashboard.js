@@ -236,41 +236,87 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
     document.getElementById("draw-door").onclick = function() {
 
+        console.log(floorPlan);
+
+        // Deselect are rooms
         for (var i = 0; i < floorPlan.length; i++) {
             floorPlan[i].selectize(false).resize('stop').draggable(false);
         }
 
-        console.log(floorPlan);
-
         // grab SVG coords so we can subtract them from mouse
-        //coords to give us actual coords on SVG
+        // coords to give us actual coords on SVG
         var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y,
-            width = 10,
-            height = 30;
+            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
 
         function addDoor(event) {
 
             var mouseX = event.clientX-svgX,
                 mouseY = event.clientY-svgY,
-                doorHeight = 30;
+                doorLength = 20,
+                clickMarginError = 10;
 
 
+            /* The purpose of this for loop is to go through each room
+            *  in the floorPlan stack and determine exactly which wall
+            *  the user clicked so that a door can be drawn and aligned
+            *  properly on that wall of the room. 
+            */
             for (var i = 0; i < floorPlan.length; i++) {
 
+                // Declare variables for room attributes: X, Y, Width, Height
                 var roomX = Number(floorPlan[i].node.attributes[3].nodeValue),
-                    roomY = Number(floorPlan[i].node.attributes[4].nodeValue);
+                    roomY = Number(floorPlan[i].node.attributes[4].nodeValue),
+                    roomWidth = Number(floorPlan[i].node.attributes[1].nodeValue),
+                    roomHeight = Number(floorPlan[i].node.attributes[2].nodeValue);
 
-                // Determine if user clicked the left side of the room
-                if (   mouseX < roomX+10
-                    && mouseY > roomY+(doorHeight/2) // below roomY
-                    && mouseX > roomX-10
-                    && mouseY < roomY+Number(floorPlan[i].node.attributes[2].nodeValue)-(doorHeight/2)) // above bottom roomY
+                // Determine if user clicked the [LEFT] wall
+                if (    mouseX < roomX+clickMarginError &&
+                        mouseY > roomY+(doorLength/2) && // if below roomY
+                        mouseX > roomX-clickMarginError &&
+                        mouseY < roomY+roomHeight-(doorLength/2) // above bottom roomY
+                    )
                 {
-                    var door = drawing.line(mouseX-3, mouseY-15, mouseX-3, mouseY+(doorHeight/2))
-                        .stroke({width: 3})
+                    var door = drawing.line(mouseX, mouseY-(doorLength/2), mouseX, mouseY+(doorLength/2))
+                        .stroke({color: '#888888', width: 3})
+                    // Set x1, x2 coordinates to that of the room to align door with room wall
                     door.node.attributes[3].nodeValue = Number(floorPlan[i].node.attributes[3].nodeValue);
                     door.node.attributes[1].nodeValue = Number(floorPlan[i].node.attributes[3].nodeValue);
+                } 
+                // Determine if user clicked the [TOP] wall
+                else if (   mouseY < roomY+clickMarginError && // if above click margin error
+                            mouseX > roomX+(doorLength/2) && // 
+                            mouseY > roomY-clickMarginError &&
+                            mouseX < roomX+roomWidth-(doorLength/2)
+                            ) {
+                    var door = drawing.line(mouseX-(doorLength/2), mouseY, mouseX+(doorLength/2), mouseY)
+                        .stroke({color: '#888888', width: 3})
+                    // Set y1, y2 coordinates to that of the room to align door with room wall
+                    door.node.attributes[2].nodeValue = Number(floorPlan[i].node.attributes[4].nodeValue);
+                    door.node.attributes[4].nodeValue = Number(floorPlan[i].node.attributes[4].nodeValue);
+                } 
+                // Determine if user clicked the [RIGHT] wall
+                else if (   mouseX < roomX+roomWidth+clickMarginError &&
+                            mouseY > roomY+(doorLength/2) && // if below roomY
+                            mouseX > roomX+roomWidth-clickMarginError &&
+                            mouseY < roomY+roomHeight-(doorLength/2)
+                            ) {
+                    var door = drawing.line(mouseX, mouseY-(doorLength/2), mouseX, mouseY+(doorLength/2))
+                        .stroke({color: '#888888', width: 3})
+                    // Set x1, x2 coordinates to that of the room to align door with room wall
+                    door.node.attributes[3].nodeValue = Number(floorPlan[i].node.attributes[3].nodeValue)+roomWidth;
+                    door.node.attributes[1].nodeValue = Number(floorPlan[i].node.attributes[3].nodeValue)+roomWidth;
+                } 
+                // Determine if user clicked the [BOTTOM] wall
+                else if (   mouseY < roomY+roomHeight+clickMarginError && // if above click margin error
+                            mouseX > roomX+(doorLength/2) && // 
+                            mouseY > roomY+roomHeight-clickMarginError &&
+                            mouseX < roomX+roomWidth-(doorLength/2)
+                            ) {
+                    var door = drawing.line(mouseX-(doorLength/2), mouseY, mouseX+(doorLength/2), mouseY)
+                        .stroke({color: '#888888', width: 3})
+                    // Set y1, y2 coordinates to that of the room to align door with room wall
+                    door.node.attributes[2].nodeValue = Number(floorPlan[i].node.attributes[4].nodeValue)+roomHeight;
+                    door.node.attributes[4].nodeValue = Number(floorPlan[i].node.attributes[4].nodeValue)+roomHeight;
                 } else {
                     continue;
                 }
