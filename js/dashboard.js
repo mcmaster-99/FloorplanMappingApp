@@ -29,7 +29,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
     ** Each index consists of an SVG object.
     */
     var floorPlan = [],
-        loaded = false;
+        loaded = false,
+        renderCount = 0;
 
     /*
     var drawState = false,
@@ -364,13 +365,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
             // current coordinates of inlo device
             x_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().x - x - svgX,
             y_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().y - y - svgY;
-
-            console.log("x_node: " + x_node);
-            console.log("y_node: " + y_node);
-            console.log("x: " + x);
-            console.log("y: " + y);
-            console.log("height: " + height);
-            console.log("width: " + width);
         
             switch(distance){
                 case "N":
@@ -404,9 +398,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
             }
 
             var itemIcon = drawing.image("images/inlo.png", 10, 10);
-            console.log("x: " + x);
-            console.log("y: " + y);
-            itemIcon.attr({x: x, y: y})
+            // animate items to correct position
+            itemIcon.animate().move(x, y)
 
         }    
 
@@ -440,13 +433,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
             // current coordinates of inlo device
             x_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().x - x - svgX,
             y_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().y - y - svgY;
-
-            console.log("x_node: " + x_node);
-            console.log("y_node: " + y_node);
-            console.log("x: " + x);
-            console.log("y: " + y);
-            console.log("height: " + height);
-            console.log("width: " + width);
         
             switch(distance){
                 case "N":
@@ -480,10 +466,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
             }
 
             var itemIcon = drawing.image("images/inlo.png", 10, 10);
-            console.log("x: " + x);
-            console.log("y: " + y);
-            itemIcon.attr({x: x, y: y})
+            // animate items to correct position
+            itemIcon.animate().move(x, y)
         }
+
 
     }
 
