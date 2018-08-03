@@ -1,9 +1,4 @@
-// Set region and credentials for DynamoDB
-/*AWS.config.update({
-    region: 'us-west-2',
-    accessKeyId: "AKIAJBSRT3E7L7FXLPMA",
-    secretAccessKey: "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"
-});*/
+
 var dynamodb = new AWS.DynamoDB();
 
 var authToken;
@@ -124,56 +119,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
     //              ===============================
 
     // SAVE ALL DATA TO DYNAMODB
-    /*document.getElementById("save-fp-data").onclick = function() {  
-
-        // Stop dragging and resizing for all shapes
-        for (var i = 0; i < floorPlan.length; i++) {
-            floorPlan[i].draggable(false)
-            floorPlan[i].selectize(false).resize("stop")
-        }
-
-        
-        ** Writes all floor plan data from floorPlan stack/array to the database
-        */
-        /*
-        for (var i = 0; i < floorPlan.length; i++) {
-            if (floorPlan[i].type === "rect") {
-                var params = {
-                    Item: {
-                        "type": {
-                            S: String(floorPlan[i].type) //livingRoom.node.attributes[3].nodeValue
-                        },
-                        "x": {
-                            S: String(floorPlan[i].node.getBoundingClientRect().x) //livingRoom.node.attributes[3].nodeValue
-                        },
-                        "y": {
-                            S: String(floorPlan[i].node.getBoundingClientRect().y)
-                        },
-                        "width": {
-                            S: String(floorPlan[i].node.getBoundingClientRect().width)
-                        },
-                        "height": {
-                            S: String(floorPlan[i].node.getBoundingClientRect().height)
-                        },
-                        "room_ID": {
-                            S: String(floorPlan[i])
-                        },
-                        "floor": {
-                            S: floorPlan[i].node.attributes[3].nodeValue
-                        }
-                    },
-                    ReturnConsumedCapacity: "TOTAL", 
-                    TableName: "FloorPlan.test-at-test.com"
-                };
-            }
-
-            dynamodb.putItem(params, function(err, data) {
-                if (err) console.log(err, err.stack); // an error occurred 
-                else     console.log("Successfully saved and written to DB"); // successful response
-            
-            });
-        }
-    }*/
     document.getElementById("save-fp-data").onclick = function(){
 
         for (var i = 0; i < floorPlan.length; i++) {
@@ -183,7 +128,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
             }
             $.ajax({
                 method: 'POST',
-                url: _config.api.fpInvokeUrl + '/floorplan/add',
+                url: _config.api.fpInvokeUrl + '/devices/get',
                 headers: {
                     Authorization: authToken
                 },

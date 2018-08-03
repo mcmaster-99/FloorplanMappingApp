@@ -1,4 +1,6 @@
-
+var AWS = require('aws-sdk')
+var AWSMqtt = require('aws-mqtt')
+var WebSocket = require('ws')
 
 var dynamodb = new AWS.DynamoDB();
 
@@ -14,7 +16,25 @@ WildRydes.authToken.then(function setAuthToken(token) {
     window.location.href = '/signin.html';
 });
 
-console.log("authToken" + authToken);
+// Initialize the Amazon Cognito credentials provider
+AWS.config.region = 'us-west-2'; // Region
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: 'us-west-2:426460a4-e0a6-488b-aaa0-3d7ccab6a91a',
+});
+
+var client = AWSMqtt.connect({
+  WebSocket: WebSocket, 
+  region: AWS.config.region,
+  credentials: AWS.config.credentials,
+  endpoint: '...iot.us-west-2.amazonaws.com', // NOTE: get this value with `aws iot describe-endpoint`
+  clientId: 'mqtt-client-' + (Math.floor((Math.random() * 100000) + 1)), // clientId to register with MQTT broker. Need to be unique per client
+  will: {
+    topic: 'WillMsg',
+    payload: 'Connection Closed abnormally..!',
+    qos: 0,
+    retain: false
+  } 
+})
 
 
 //=============================================================
@@ -29,6 +49,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     ** Each index consists of an SVG object.
     */
     var floorPlan = [],
+        deviceHistory = [],
         loaded = false,
         renderCount = 0;
 
@@ -398,10 +419,46 @@ SVG.on(document, 'DOMContentLoaded', function() {
             }
 
             var itemIcon = drawing.image("images/inlo.png", 10, 10);
+
+            deviceHistory.push(itemIcon);
+            console.log(deviceHistory);
+
             // animate items to correct position
             itemIcon.animate().move(x, y)
 
         }    
+
+        for (var i = 0; i < deviceHistory.length; i++) {
+
+            var index = (i === 0) ? deviceHistory["0"] : deviceHistory[i];
+
+            index.selectize(false).resize('stop').draggable(false);
+
+            var Item = {
+                "room_ID": "TEST"
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: _config.api.addHistoryUrl + '/history/add',
+                headers: {
+                    Authorization: authToken
+                },
+                data: JSON.stringify(Item),
+                contentType: 'application/json',
+                success: completeRequest,
+                error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                    console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+                    console.error('Response: ', jqXHR.responseText);
+                    alert('An error occured when requesting devices:\n' + jqXHR.responseText);
+                }
+            });
+        }
+
+        function completeRequest(result) {
+            console.log('Response received from API: ', result);
+            devices = JSON.stringify(result.Items);
+        }
 
     } 
 
