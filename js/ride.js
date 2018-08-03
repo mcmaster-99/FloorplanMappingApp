@@ -60,18 +60,6 @@ var WildRydes = window.WildRydes || {};
 
     function handleRequestClick(event) {
         event.preventDefault();
-        
-        var authToken;
-        WildRydes.authToken.then(function setAuthToken(token) {
-            if (token) {
-                authToken = token;
-            } else {
-                window.location.href = '/signin.html';
-            }
-        }).catch(function handleTokenError(error) {
-            alert(error);
-            window.location.href = '/signin.html';
-        });
 
         // Attempt to get cognito credentials
     var poolData = {
@@ -126,10 +114,13 @@ var WildRydes = window.WildRydes || {};
                             if (err) console.log(err, err.stack, "params", params); // an error occurred
                             else {
 
+                                var requestUrl = '';
+
                                 /**
                                * utilities to do sigv4
                                * @class SigV4Utils
                                */
+
                                 function SigV4Utils() {}
                                 
                                 SigV4Utils.getSignatureKey = function (key, date, region, service) {
@@ -141,15 +132,16 @@ var WildRydes = window.WildRydes || {};
                                 };
                                 
                                 SigV4Utils.getSignedUrl = function(host, region, credentials) {
+
                                     var datetime = AWS.util.date.iso8601(new Date()).replace(/[:\-]|\.\d{3}/g, '');
                                     var date = datetime.substr(0, 8);
                                 
                                     var method = 'GET';
-                                    var protocol = 'wss';
+                                    var protocol = 'ws';
                                     var uri = '/mqtt';
                                     var service = 'iotdevicegateway';
                                     var algorithm = 'AWS4-HMAC-SHA256';
-                                
+                                    
                                     var credentialScope = date + '/' + region + '/' + service + '/' + 'aws4_request';
                                     var canonicalQuerystring = 'X-Amz-Algorithm=' + algorithm;
                                     canonicalQuerystring += '&X-Amz-Credential=' + encodeURIComponent('AKIAJBSRT3E7L7FXLPMA' + '/' + credentialScope);
@@ -163,30 +155,31 @@ var WildRydes = window.WildRydes || {};
                                     var stringToSign = algorithm + '\n' + datetime + '\n' + credentialScope + '\n' + AWS.util.crypto.sha256(canonicalRequest, 'hex');
                                     var signingKey = SigV4Utils.getSignatureKey('W6rs4ZdGbxsPNlHk0DsnZq6ppJQ5rLn7CAutD/cA', date, region, service);
                                     var signature = AWS.util.crypto.hmac(signingKey, stringToSign, 'hex');
-                                
+                                    
                                     canonicalQuerystring += '&X-Amz-Signature=' + signature;
                                     if (data.Credentials.SessionToken) {
                                         canonicalQuerystring += '&X-Amz-Security-Token=' + encodeURIComponent(data.Credentials.SessionToken);
                                     }
                                 
-                                    var requestUrl = protocol + '://' + host + uri + '?' + canonicalQuerystring;
+                                    requestUrl = protocol + '://' + host + uri + '?' + canonicalQuerystring;
                                     return requestUrl;
-                                    
-                                    var client = new Paho.MQTT.Client(requestUrl, "clientId09");
-                                    var connectOptions = {
-                                        onSuccess: function(){
-                                            console.log("subbed!");
-                                        },
-                                        useSSL: true,
-                                        timeout: 3,
-                                        mqttVersion: 4,
-                                        onFailure: function() {
-                                            console.log("error");
-                                        }
-                                    };
-                                    client.connect(connectOptions);
-                                    
+
                                 };
+                                
+                                var client = new Paho.MQTT.Client(SigV4Utils.getSignedUrl('a17q59ygxtqaej.iot.us-west-2.amazonaws.com', 'us-west-2', data.Credentials), "clientId09");
+                                console.log(data.Credentials);
+                                var connectOptions = {
+                                    onSuccess: function(){
+                                        console.log("subbed!");
+                                    },
+                                    useSSL: true,
+                                    timeout: 3,
+                                    mqttVersion: 4,
+                                    onFailure: function() {
+                                        console.log("error");
+                                    }
+                                };
+                                client.connect(connectOptions);
 
                             }
                         });
