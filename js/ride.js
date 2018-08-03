@@ -114,8 +114,6 @@ var WildRydes = window.WildRydes || {};
                             if (err) console.log(err, err.stack, "params", params); // an error occurred
                             else {
 
-                                var requestUrl = '';
-
                                 /**
                                * utilities to do sigv4
                                * @class SigV4Utils
@@ -137,14 +135,14 @@ var WildRydes = window.WildRydes || {};
                                     var date = datetime.substr(0, 8);
                                 
                                     var method = 'GET';
-                                    var protocol = 'ws';
+                                    var protocol = 'wss';
                                     var uri = '/mqtt';
                                     var service = 'iotdevicegateway';
                                     var algorithm = 'AWS4-HMAC-SHA256';
                                     
                                     var credentialScope = date + '/' + region + '/' + service + '/' + 'aws4_request';
                                     var canonicalQuerystring = 'X-Amz-Algorithm=' + algorithm;
-                                    canonicalQuerystring += '&X-Amz-Credential=' + encodeURIComponent('AKIAJBSRT3E7L7FXLPMA' + '/' + credentialScope);
+                                    canonicalQuerystring += '&X-Amz-Credential=' + encodeURIComponent(data.Credentials.AccessKeyId + '/' + credentialScope);
                                     canonicalQuerystring += '&X-Amz-Date=' + datetime;
                                     canonicalQuerystring += '&X-Amz-SignedHeaders=host';
                                 
@@ -153,7 +151,7 @@ var WildRydes = window.WildRydes || {};
                                     var canonicalRequest = method + '\n' + uri + '\n' + canonicalQuerystring + '\n' + canonicalHeaders + '\nhost\n' + payloadHash;
                                 
                                     var stringToSign = algorithm + '\n' + datetime + '\n' + credentialScope + '\n' + AWS.util.crypto.sha256(canonicalRequest, 'hex');
-                                    var signingKey = SigV4Utils.getSignatureKey('W6rs4ZdGbxsPNlHk0DsnZq6ppJQ5rLn7CAutD/cA', date, region, service);
+                                    var signingKey = SigV4Utils.getSignatureKey(data.Credentials.SecretKey, date, region, service);
                                     var signature = AWS.util.crypto.hmac(signingKey, stringToSign, 'hex');
                                     
                                     canonicalQuerystring += '&X-Amz-Signature=' + signature;
@@ -161,12 +159,17 @@ var WildRydes = window.WildRydes || {};
                                         canonicalQuerystring += '&X-Amz-Security-Token=' + encodeURIComponent(data.Credentials.SessionToken);
                                     }
                                 
-                                    requestUrl = protocol + '://' + host + uri + '?' + canonicalQuerystring;
+                                    var requestUrl = protocol + '://' + host + uri + '?' + canonicalQuerystring;
                                     return requestUrl;
 
                                 };
+                                var clientId = "clientID" + (Math.floor((Math.random()*100000) + 1));
+                                var requestUrl = SigV4Utils.getSignedUrl('a17q59ygxtqaej.iot.us-west-2.amazonaws.com', 'us-west-2', data.Credentials);
                                 
-                                var client = new Paho.MQTT.Client(SigV4Utils.getSignedUrl('a17q59ygxtqaej.iot.us-west-2.amazonaws.com', 'us-west-2', data.Credentials), "clientId09");
+                                console.log(clientId);
+                                console.log(requestUrl);
+
+                                var client = new Paho.MQTT.Client(requestUrl, clientId);
                                 console.log(data.Credentials);
                                 var connectOptions = {
                                     onSuccess: function(){
