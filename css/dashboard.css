@@ -75,6 +75,9 @@ nav {
   font-weight: bold;
   margin-right: 275px; }
 
+#edit-mode-btn-div {
+  text-align: center; }
+
 /* ---------------- ITEMS LISTED DIV ---------------- */
 #items-listed-div {
   text-align: center; }
@@ -126,15 +129,15 @@ nav {
 #map-view-div {
   text-align: center; }
 
+#map-editing-div {
+  text-align: center; }
+
 #map-view-text {
   display: none; }
 
 svg {
   border: 3px solid black;
   border-radius: 10px;
-  display: inline-block; }
-
-#tools {
   display: inline-block; }
 
 button {

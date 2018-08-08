@@ -1,6 +1,3 @@
-var AWS = require('aws-sdk')
-var AWSMqtt = require('aws-mqtt')
-var WebSocket = require('ws')
 
 var dynamodb = new AWS.DynamoDB();
 
@@ -15,26 +12,6 @@ WildRydes.authToken.then(function setAuthToken(token) {
     alert(error);
     window.location.href = '/signin.html';
 });
-
-// Initialize the Amazon Cognito credentials provider
-AWS.config.region = 'us-west-2'; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-    IdentityPoolId: 'us-west-2:426460a4-e0a6-488b-aaa0-3d7ccab6a91a',
-});
-
-var client = AWSMqtt.connect({
-  WebSocket: WebSocket, 
-  region: AWS.config.region,
-  credentials: AWS.config.credentials,
-  endpoint: '...iot.us-west-2.amazonaws.com', // NOTE: get this value with `aws iot describe-endpoint`
-  clientId: 'mqtt-client-' + (Math.floor((Math.random() * 100000) + 1)), // clientId to register with MQTT broker. Need to be unique per client
-  will: {
-    topic: 'WillMsg',
-    payload: 'Connection Closed abnormally..!',
-    qos: 0,
-    retain: false
-  } 
-})
 
 
 //=============================================================
@@ -420,14 +397,16 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             var itemIcon = drawing.image("images/inlo.png", 10, 10);
 
+            // Record device history
             deviceHistory.push(itemIcon);
             console.log(deviceHistory);
 
-            // animate items to correct position
+            // Animate items to correct position
             itemIcon.animate().move(x, y)
 
         }    
 
+        /*// Push device history to database
         for (var i = 0; i < deviceHistory.length; i++) {
 
             var index = (i === 0) ? deviceHistory["0"] : deviceHistory[i];
@@ -458,7 +437,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         function completeRequest(result) {
             console.log('Response received from API: ', result);
             devices = JSON.stringify(result.Items);
-        }
+        }*/
 
     } 
 
@@ -541,12 +520,15 @@ SVG.on(document, 'DOMContentLoaded', function() {
 $(document).ready(function(){
 
     $("#items-listed-div").hide();
+    $("#dropdown-sort-div").hide();
+    $("#tools").hide();
 
 	$("#list-view-btn").click(function() {
         $("#prompt").fadeOut();
         $("#tools").fadeOut();
 		$("#draw").fadeOut();
-		$("#map-view-text").fadeOut();
+        $("#map-view-text").fadeOut();
+        $("#edit-mode-btn").fadeOut();
 		$("#items-listed-div").delay(500).fadeIn("slow");
         $("#dropdown-sort-div").delay(500).fadeIn("slow");
 	});
@@ -557,10 +539,13 @@ $(document).ready(function(){
 		$("#prompt").fadeOut();
 		$("#items-listed-div").fadeOut();
         $("#map-view-text").delay(500).fadeIn("slow");
+        $("#edit-mode-btn").delay(500).fadeIn("slow");
         $("#draw").delay(500).fadeIn("slow");
-		$("#tools").delay(500).fadeIn("slow");
-
 	});
+
+    $("#edit-mode-btn").click(function() {
+        $("#tools").toggle("slow");
+    });
 
 	/*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
 	    return a.text == b.text ? 0 : a.text < b.text ? -1 : 1

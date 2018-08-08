@@ -83,6 +83,9 @@ nav {
   font-weight: bold;
   margin-right: 275px;
 }
+#edit-mode-btn-div {
+  text-align: center;
+}
 
 /* ---------------- ITEMS LISTED DIV ---------------- */
 
@@ -146,6 +149,10 @@ nav {
   text-align: center;
   //display: none; // hide on page load
 }
+#map-editing-div {
+  text-align: center;
+  //display: none; // hide on page load
+}
 #map-view-text {
   display: none; // hide on page load
   //margin-top: 200px;
@@ -157,7 +164,7 @@ svg{
   display: inline-block;
 }
 #tools {
-  display: inline-block;
+  //display: inline-block;
 }
 button {
   margin-top: 10px;
