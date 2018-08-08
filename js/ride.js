@@ -11,7 +11,7 @@ var WildRydes = window.WildRydes || {};
         }
     }).catch(function handleTokenError(error) {
         alert(error);
-        window.location.href = '/signin.html';
+        window.location.href = '/webapp.theinlo/signin.html';
     });
 
 
@@ -142,7 +142,7 @@ var WildRydes = window.WildRydes || {};
                                     
                                     var credentialScope = date + '/' + region + '/' + service + '/' + 'aws4_request';
                                     var canonicalQuerystring = 'X-Amz-Algorithm=' + algorithm;
-                                    canonicalQuerystring += '&X-Amz-Credential=' + encodeURIComponent(data.Credentials.AccessKeyId + '/' + credentialScope);
+                                    canonicalQuerystring += '&X-Amz-Credential=' + encodeURIComponent(credentials.AccessKeyId + '/' + credentialScope);
                                     canonicalQuerystring += '&X-Amz-Date=' + datetime;
                                     canonicalQuerystring += '&X-Amz-SignedHeaders=host';
                                 
@@ -151,12 +151,12 @@ var WildRydes = window.WildRydes || {};
                                     var canonicalRequest = method + '\n' + uri + '\n' + canonicalQuerystring + '\n' + canonicalHeaders + '\nhost\n' + payloadHash;
                                 
                                     var stringToSign = algorithm + '\n' + datetime + '\n' + credentialScope + '\n' + AWS.util.crypto.sha256(canonicalRequest, 'hex');
-                                    var signingKey = SigV4Utils.getSignatureKey(data.Credentials.SecretKey, date, region, service);
+                                    var signingKey = SigV4Utils.getSignatureKey(credentials.SecretKey, date, region, service);
                                     var signature = AWS.util.crypto.hmac(signingKey, stringToSign, 'hex');
                                     
                                     canonicalQuerystring += '&X-Amz-Signature=' + signature;
-                                    if (data.Credentials.SessionToken) {
-                                        canonicalQuerystring += '&X-Amz-Security-Token=' + encodeURIComponent(data.Credentials.SessionToken);
+                                    if (credentials.SessionToken) {
+                                        canonicalQuerystring += '&X-Amz-Security-Token=' + encodeURIComponent(credentials.SessionToken);
                                     }
                                 
                                     var requestUrl = protocol + '://' + host + uri + '?' + canonicalQuerystring;
@@ -178,8 +178,8 @@ var WildRydes = window.WildRydes || {};
                                     useSSL: true,
                                     timeout: 3,
                                     mqttVersion: 4,
-                                    onFailure: function() {
-                                        console.log("error");
+                                    onFailure: function(err) {
+                                        console.log(err);
                                     }
                                 };
                                 client.connect(connectOptions);
