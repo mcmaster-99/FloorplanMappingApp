@@ -17,8 +17,8 @@ var WildRydes = window.WildRydes || {};
 
     function requestUnicorn(UUID) {
         $.ajax({
-            method: 'POST',
-            url:  'https://lq78cge1t4.execute-api.us-west-2.amazonaws.com/prod/attach_iot_policy',
+            method: 'GET',
+            url:  'https://3mrhnqd4c4.execute-api.us-west-2.amazonaws.com/prod/floorplan/get',
             headers: {
                 Authorization: authToken
             },
