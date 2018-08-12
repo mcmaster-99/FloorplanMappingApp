@@ -8,10 +8,7 @@ window._config = {
         region: 'us-west-2' 
     },
     api: {
-        invokeUrl: 'https://zd9se4rknj.execute-api.us-west-2.amazonaws.com/prod',
-        fpAddUrl: 'https://yi5fpaqi2d.execute-api.us-west-2.amazonaws.com/prod',
-        fpGetUrl: 'https://r5qy1s6hz8.execute-api.us-west-2.amazonaws.com/prod',
-        addHistoryUrl: 'https://vii9nz23ig.execute-api.us-west-2.amazonaws.com/prod'
+        coreFunctionsUrl: 'https://3mrhnqd4c4.execute-api.us-west-2.amazonaws.com/prod'
     }
 };
 

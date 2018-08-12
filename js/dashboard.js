@@ -86,10 +86,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             $.ajax({
                 method: 'POST',
-                url: _config.api.fpAddUrl + '/floorplan/add',
-                headers: {
-                    Authorization: authToken
-                },
+                url: String(_config.api.coreFunctionsUrl) + '/floorplan/add',
+                headers: {Authorization: authToken},
                 data: JSON.stringify(Item),
                 contentType: 'application/json',
                 success: completeRequest,
@@ -118,17 +116,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
             console.log("Your floorplan has already been loaded.");
         } else { // if floorplan has not been loaded
             $.ajax({
-                method: 'POST',
-                url: _config.api.fpGetUrl + '/floorplan/get',
-                headers: {
-                    Authorization: authToken
-                },
-                data: JSON.stringify({
-                    "userName": "UUID"
-                }),
+                method: 'GET',
+                url: String(_config.api.coreFunctionsUrl) + '/floorplan/get',
+                headers: {Authorization: authToken},
                 contentType: 'application/json',
                 success: completeRequest,
                 error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                    console.log(url);
                     console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
                     console.error('Response: ', jqXHR.responseText);
                     alert('An error occured when requesting devices:\n' + jqXHR.responseText);
@@ -171,16 +165,27 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }
     };
 
-    document.getElementById("drag-resize").onclick = function() {
+    document.getElementById("drag").onclick = function() {
+        /*livingRoomGroup.selectize()
+                    .resize({snapToAngle: 5})
+                    .draggable({snapToGrid: 5})*/
+        for (var i = 0; i < floorPlan.length; i++) {
+            floorPlan[i].selectize()
+                    .draggable({snapToGrid: 5})
+                    .resize('stop')
+        }
+    };
+
+    document.getElementById("resize").onclick = function() {
         /*livingRoomGroup.selectize()
                     .resize({snapToAngle: 5})
                     .draggable({snapToGrid: 5})*/
         for (var i = 0; i < floorPlan.length; i++) {
             floorPlan[i].selectize()
                     .resize({snapToAngle: 5})
-                    .draggable({snapToGrid: 5})
+                    .draggable(false)
         }
-    };
+    };    
     
     // clears floorplan from SVG
     document.getElementById("clear").onclick = function() {
@@ -196,39 +201,25 @@ SVG.on(document, 'DOMContentLoaded', function() {
         //rect.draw();
 
 
-        if ($('#draw-rect').hasClass('active')) {  }
-        else {
+        // Draw rectangle while mouse is held down
+        drawing.on('mousedown', function(e){
+            rect.draw(e)
+                .attr({
+                    fill: 'white',
+                    stroke: '#E3E3E3',
+                    'stroke-width': 3
+                })
+        });
 
-            // Draw rectangle while mouse is held down
-            drawing.on('mousedown', function(e){
-                rect.draw(e)
-                    .attr({
-                        fill: 'white',
-                        stroke: '#E3E3E3',
-                        'stroke-width': 3
-                    })
-            });
+        // Stop drawing on mouse up and
+        // push shape to floorPlan stack
+        drawing.on('mouseup', function(e){
 
-            // Stop drawing on mouse up and
-            // push shape to floorPlan stack
-            drawing.on('mouseup', function(e){
+            floorPlan.push(rect);
 
-                if (floorPlan.length === 0) {floorPlan.push(rect);}
-
-                var matchCount = 0;
-
-                for (var i = 0; i < floorPlan.length; i++) {
-                    if (floorPlan[i].node.instance.node === rect.node.instance.node) {
-                        console.log(floorPlan[i].node.instance.node + " matches " + rect.node.instance.node);
-                        matchCount++;
-                    } 
-                }
-
-                if (matchCount === 0) floorPlan.push(rect);
-                rect.draw('stop');
-                //var ifPush = (floorPlan.has) ? floorPlan["0"] : floorPlan[i];floorPlan.push(rect);
-            });
-        }
+            rect.draw('stop');
+            //var ifPush = (floorPlan.has) ? floorPlan["0"] : floorPlan[i];floorPlan.push(rect);
+        });
 
         document.getElementById("draw-rect").classList.remove("active");
     };
@@ -404,6 +395,15 @@ SVG.on(document, 'DOMContentLoaded', function() {
             // Animate items to correct position
             itemIcon.animate().move(x, y)
 
+            var roomGroup = drawing.group();
+
+            roomGroup.add(floorPlan[0]);
+            roomGroup.add(inloDevice);
+            roomGroup.add(itemIcon);
+            //floorPlan.push(roomGroup);
+            console.log("roomGroup", roomGroup);
+            roomGroup.selectize().resize({snapToAngle: 5}).draggable({snapToGrid: 5})
+
         }    
 
         /*// Push device history to database
@@ -419,7 +419,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             $.ajax({
                 method: 'POST',
-                url: _config.api.addHistoryUrl + '/history/add',
+                url: _config.api.coreFunctionsUrl + '/history/add',
                 headers: {
                     Authorization: authToken
                 },
@@ -567,7 +567,7 @@ $(document).ready(function(){
     function requestUnicorn(UUID) {
         $.ajax({
             method: 'POST',
-            url: _config.api.fpGetURL + '/floorplan/get',
+            url: _config.api.coreFunctionsUrl + '/floorplan/get',
             headers: {
                 Authorization: authToken
             },
