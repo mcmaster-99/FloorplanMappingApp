@@ -4,7 +4,7 @@ var WildRydes = window.WildRydes || {};
 var notifs = document.getElementById("notifs");
 
 (function scopeWrapper($) {
-    var signinUrl = 'signin.html';
+    var signinUrl = 'webapp.theinlo/signin.html';
 
     var poolData = {
         UserPoolId: _config.cognito.userPoolId,

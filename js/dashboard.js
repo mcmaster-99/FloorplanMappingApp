@@ -30,40 +30,162 @@ SVG.on(document, 'DOMContentLoaded', function() {
         loaded = false,
         renderCount = 0;
 
-    /*
-    var drawState = false,
-        dragResizeState = false;
+    load_floorplan();
 
-    while (drawState == true) {
-        console.log("here");
-        var rect = drawing.rect();
+    function load_floorplan() {
 
-        // Draw rectangle while mouse is held down
-        drawing.on('mousedown', function(e){
-            rect.draw(e)
-                .attr({
-                    fill: 'white',
-                    stroke: '#E3E3E3',
-                    'stroke-width': 3
-                })
-        });
+        // Empty floorPlan array of any previous/excess data
+        var i = floorPlan.length;
+        while (i !== 0) {floorPlan.pop(); i--}
 
-        // Stop drawing on mouse up and
-        // push shapes to floorPlan stack
-        drawing.on('mouseup', function(e){
-            rect.draw('stop', e);
-            floorPlan.push(rect);
-        });
+        // Checks if floorplan is loaded
+        if (loaded === true) {
+            console.log("Your floorplan has already been loaded.");
+        } else { // if floorplan has not been loaded
+            $.ajax({
+                method: 'GET',
+                url: String(_config.api.coreFunctionsUrl) + '/floorplan/get',
+                headers: {Authorization: authToken},
+                contentType: 'application/json',
+                success: completeRequest,
+                error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                    console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+                    console.error('Response: ', jqXHR.responseText);
+                    alert('An error occured when requesting devices:\n' + jqXHR.responseText);
+                }
+            });
+        }
+
+        function completeRequest(result) {
+            console.log('Response received from API: ', result);
+            var devices = JSON.stringify(result.Items);
+
+            var tmpDevicesArray = [];
+
+            // push item names to temporary array for sorting
+            for (var i = 0; i < result.Items.length; i++) {
+                tmpDevicesArray.push(result.Items[i].name);
+            }
+            tmpDevicesArray.sort(); // sort items
+
+            // if there are no devices
+            if (devices === "No Dynamic Devices") {
+                $("#map-view-text").append("Map view not yet available");
+            } else {
+                // Loop through all items in database and store in floorplan array/stack
+                for (var i = 0; i < result.Items.length; i++) {
+
+                    var room_ID = drawing.rect(result.Items[i].width, result.Items[i].height)
+                        .attr({
+                            x: result.Items[i].x,
+                            y: result.Items[i].y,
+                            fill: 'white',
+                            stroke: '#E3E3E3',
+                            'stroke-width': 3
+                        }) 
+                    floorPlan.push(room_ID);    
+                }
+                console.log("floorPlan", floorPlan);
+
+            }
+            render_devices("F");
+
+            // set loaded to true to prevent excess loading
+            loaded = true;
+        }
+    }
+
+
+    function render_devices(d) {
+
+        // Grab SVG coordinates so we can subtract from element coordinates 
+        // to give us the actual coordinates on the SVG document.
+        var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
+            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+            console.log("floorPlan", floorPlan);
+            console.log(floorPlan.length);
+
+        for (var i = 0; i < floorPlan.length; i++) {
+
+            console.log(floorPlan.length);
+            // generate random variable for device ID
+            var num = Math.random() * 1000;
+            var deviceID = String("icon"+(~~num));
+
+            var distance = d, 
+                // current coordinates of room
+                x = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().x - svgX,
+                y = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().y - svgY,
+                // current dimensions of room
+                height = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().height,
+                width = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().width;
         
-        rect.on('drawstop', function(){
-            rect.draw('stop');
-        });
-    }*/
+            // sample device
+            var inloNode = drawing.image("images/inlo-device.png", 15, 10);
+            console.log("inloNode:", inloNode);
+            inloNode.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
+
+            // current coordinates of inlo device
+            x_node = document.getElementById(inloNode.node.id).getBoundingClientRect().x - x - svgX,
+            y_node = document.getElementById(inloNode.node.id).getBoundingClientRect().y - y - svgY;
+        
+            switch(distance){
+                case "N":
+                    // determine x coordinate of near item
+                    if (x_node < width/2) {
+                        x = x + width*0.25;
+                    } else {
+                        x = x + width*0.75;
+                    }
+                    // determine y coordinate of near item
+                    if (y_node < height/2) {
+                        y = y + height*0.25;
+                    } else {
+                        y = y + height*0.75;
+                    }
+                    break;
+                case "F":
+                    // determine x coordinate of far item
+                    if (x_node < width/2) {
+                        x = x + width*0.75;
+                    } else {
+                        x = x + width*0.25;
+                    }
+                    // determine y coordinate of far item
+                    if (y_node < height/2) {
+                        y = y + height*0.75;
+                    } else {
+                        y = y + height*0.25;
+                    }
+                    break;
+            }
+
+            var deviceIcon = drawing.image("images/inlo.png", 10, 10);
+            console.log(deviceIcon);
+
+            // Animate items to correct position
+            deviceIcon.animate().move(x, y)
+
+            var roomGroup = drawing.group();
+
+            roomGroup.add(floorPlan[i]);
+            roomGroup.add(inloNode);
+            roomGroup.add(deviceIcon);
+
+            floorPlan[i] = roomGroup;
+
+            console.log("floorPlan" + i + ":", floorPlan[i]);
+            /*floorPlan.push(roomGroup);
+            console.log("roomGroup", roomGroup);
+            roomGroup.selectize().resize({snapToAngle: 5}).draggable({snapToGrid: 5})*/
+        }
+    }
 
 
-    //              ===============================
-    //              SIDE BAR TOOL SET FUNCTIONALITY 
-    //              ===============================
+
+    //              =================================
+    //              BOTTOM BAR TOOL SET FUNCTIONALITY 
+    //              =================================
 
     // SAVE ALL DATA TO DYNAMODB
     document.getElementById("save-fp-data").onclick = function(){
@@ -74,7 +196,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             index.selectize(false).resize('stop').draggable(false);
 
-            var Item = {
+            var Item = [{
                 "room_ID": String(index.node.id),
                 "floor": String(1),
                 "height": String(index.node.attributes[2].nodeValue),
@@ -82,10 +204,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 "x": String(index.node.attributes[3].nodeValue),
                 "y": String(index.node.attributes[4].nodeValue),
                 "type": String(index.type)
-            }
+            }];
 
             $.ajax({
-                method: 'POST',
+                method: 'PUT',
                 url: String(_config.api.coreFunctionsUrl) + '/floorplan/add',
                 headers: {Authorization: authToken},
                 data: JSON.stringify(Item),
@@ -107,62 +229,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
     document.getElementById("load-fp-data").onclick = function() {
 
-        // Empty floorPlan array of any previous/excess data
-        var i = floorPlan.length;
-        while (i !== 0) {floorPlan.pop(); i--}
-
-        // Checks if floorplan is loaded
-        if (loaded === true) {
-            console.log("Your floorplan has already been loaded.");
-        } else { // if floorplan has not been loaded
-            $.ajax({
-                method: 'GET',
-                url: String(_config.api.coreFunctionsUrl) + '/floorplan/get',
-                headers: {Authorization: authToken},
-                contentType: 'application/json',
-                success: completeRequest,
-                error: function ajaxError(jqXHR, textStatus, errorThrown) {
-                    console.log(url);
-                    console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
-                    console.error('Response: ', jqXHR.responseText);
-                    alert('An error occured when requesting devices:\n' + jqXHR.responseText);
-                }
-            });
-        }
-
-        function completeRequest(result) {
-            console.log('Response received from API: ', result);
-            var devices = JSON.stringify(result.Items);
-
-            var tmpDevicesArray = [];
-            // push item names to temporary array for sorting
-            for (var i = 0; i < result.Items.length; i++) {
-                tmpDevicesArray.push(result.Items[i].name);
-            }
-
-            tmpDevicesArray.sort(); // sort items
-
-            if (devices === "No Dynamic Devices") {
-                $("#map-view-text").append("Map view not yet available");
-            } else {
-                // Loop through all items in database and store in floorplan array/stack
-                for (var i = 0; i < result.Items.length; i++) {
-
-                    var room_ID = drawing.rect(result.Items[i].width, result.Items[i].height)
-                        .attr({
-                            x: result.Items[i].x,
-                            y: result.Items[i].y,
-                            fill: 'white',
-                            stroke: '#E3E3E3',
-                            'stroke-width': 3
-                        }) 
-                    floorPlan.push(room_ID);    
-                }
-
-            }
-            // after done importing rooms, set loaded to true to prevent excess loading
-            loaded = true;
-        }
+        
     };
 
     document.getElementById("drag").onclick = function() {
@@ -177,9 +244,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
     };
 
     document.getElementById("resize").onclick = function() {
-        /*livingRoomGroup.selectize()
-                    .resize({snapToAngle: 5})
-                    .draggable({snapToGrid: 5})*/
+
+        group.ungroup(drawing);
+
         for (var i = 0; i < floorPlan.length; i++) {
             floorPlan[i].selectize()
                     .resize({snapToAngle: 5})
@@ -218,15 +285,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
             floorPlan.push(rect);
 
             rect.draw('stop');
-            //var ifPush = (floorPlan.has) ? floorPlan["0"] : floorPlan[i];floorPlan.push(rect);
+            
         });
 
         document.getElementById("draw-rect").classList.remove("active");
     };
 
     document.getElementById("draw-door").onclick = function() {
-
-        console.log(floorPlan);
 
         // Deselect are rooms
         for (var i = 0; i < floorPlan.length; i++) {
@@ -335,9 +400,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         for (var i = 0; i < floorPlan.length; i++) {
 
-            // generate random variable for item icon ID
+            // generate random variable for device ID
             var num = Math.random() * 1000;
-            var iconID = String("icon"+(~~num));
+            var deviceID = String("icon"+(~~num));
 
             var distance = "N", 
                 // current coordinates of room
@@ -348,12 +413,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 width = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().width;
         
             // sample device
-            var inloDevice = drawing.image("images/inlo-device.png", 15, 10);
-            inloDevice.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
+            var inloNode = drawing.image("images/inlo-device.png", 15, 10);
+            console.log("inloNode:", inloNode);
+            inloNode.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
 
             // current coordinates of inlo device
-            x_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().x - x - svgX,
-            y_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().y - y - svgY;
+            x_node = document.getElementById(inloNode.node.id).getBoundingClientRect().x - x - svgX,
+            y_node = document.getElementById(inloNode.node.id).getBoundingClientRect().y - y - svgY;
         
             switch(distance){
                 case "N":
@@ -386,23 +452,24 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     break;
             }
 
-            var itemIcon = drawing.image("images/inlo.png", 10, 10);
-
-            // Record device history
-            deviceHistory.push(itemIcon);
-            console.log(deviceHistory);
+            var deviceIcon = drawing.image("images/inlo.png", 10, 10);
+            console.log(deviceIcon);
 
             // Animate items to correct position
-            itemIcon.animate().move(x, y)
+            deviceIcon.animate().move(x, y)
 
             var roomGroup = drawing.group();
 
-            roomGroup.add(floorPlan[0]);
-            roomGroup.add(inloDevice);
-            roomGroup.add(itemIcon);
-            //floorPlan.push(roomGroup);
+            roomGroup.add(floorPlan[i]);
+            roomGroup.add(inloNode);
+            roomGroup.add(deviceIcon);
+
+            floorPlan[i] = roomGroup;
+
+            console.log("floorPlan" + i + ":", floorPlan[i]);
+            /*floorPlan.push(roomGroup);
             console.log("roomGroup", roomGroup);
-            roomGroup.selectize().resize({snapToAngle: 5}).draggable({snapToGrid: 5})
+            roomGroup.selectize().resize({snapToAngle: 5}).draggable({snapToGrid: 5})*/
 
         }    
 
@@ -452,7 +519,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         for (var i = 0; i < floorPlan.length; i++) {
 
             var num = Math.random() * 1000;
-            var iconID = String("icon"+(~~num));
+            var deviceID = String("icon"+(~~num));
 
             var distance = "F", 
                 // current coordinates of room
@@ -463,12 +530,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 width = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().width;
         
             // sample device
-            var inloDevice = drawing.image("images/inlo-device.png", 15, 10);
-            inloDevice.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
+            var inloNode = drawing.image("images/inlo-device.png", 15, 10);
+            inloNode.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
 
             // current coordinates of inlo device
-            x_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().x - x - svgX,
-            y_node = document.getElementById(inloDevice.node.id).getBoundingClientRect().y - y - svgY;
+            x_node = document.getElementById(inloNode.node.id).getBoundingClientRect().x - x - svgX,
+            y_node = document.getElementById(inloNode.node.id).getBoundingClientRect().y - y - svgY;
         
             switch(distance){
                 case "N":
