@@ -25,20 +25,22 @@ SVG.on(document, 'DOMContentLoaded', function() {
     /* Temporary stack for storing all user's floor plan data.
     ** Each index consists of an SVG object.
     */
-    var floorPlan = [],
-        floorPlanRoomGroups = [],
+    var floorPlanSvg = [],
+        floorPlanData = {},
+        nodeLocations = {},
+        currentFloorPlan = {},
+        floorPlanChanges = {"delete" : [], "add" : {}, "update" : {}},
+        floorPlanGroups = {},
+
         loaded = false,
         rendered = false;
 
-    var floorPlanData = [];
+    initialize();
 
-    load_floorplan();
-
-    function load_floorplan() {
+    function initialize() {
 
         // Empty floorPlan array of any previous/excess data
-        var i = floorPlan.length;
-        while (i !== 0) {floorPlan.pop(); i--}
+        floorPlanData = {};
 
         // Checks if floorplan is loaded
         if (loaded === true) {
@@ -60,7 +62,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         function completeRequest(result) {
             console.log('Response received from API: ', result);
-            var devices = JSON.stringify(result.Items);
+            var rawFloorPlan = JSON.stringify(result.Items);
 
             /*var tmpDevicesArray = [];
 
@@ -71,13 +73,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
             tmpDevicesArray.sort(); // sort items*/
 
             // if there are no devices
-            if (devices === "No Dynamic Devices") {
+            if (rawFloorPlan === "Empty") {
                 $("#map-view-text").append("Map view not yet available");
             } else {
                 // Loop through all items in database and store in floorplan array/stack
                 for (var i = 0; i < result.Items.length; i++) {
 
-                    var room_ID = drawing.rect(result.Items[i].width, result.Items[i].height)
+                    var room = drawing.rect(result.Items[i].width, result.Items[i].height)
                         .attr({
                             x: result.Items[i].x,
                             y: result.Items[i].y,
@@ -85,14 +87,48 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             stroke: '#E3E3E3',
                             'stroke-width': 3
                         }) 
-                    room_ID.node.id = result.Items[i].room_ID;
-                    floorPlan.push(room_ID);    
-                    floorPlanData[result.Items[i].room_ID] = result.Items[i];
-                    console.log("ID", room_ID.node);
+
+                    var room_ID = result.Items[i].room_ID;
+
+                    room.node.id = room_ID;
+                    floorPlanSvg.push(room);    
+                    floorPlanData[room_ID] = result.Items[i];
+                    console.log(result.Items[i]);
+                    for (var j=0; j < result.Items[i].nodes.length; j++) {
+
+                        var node_ID = result.Items[i].nodes[j];
+
+                        var node_xy =  compute_node_xy(room_ID, node_ID);
+                        var node_x = node_xy[0];
+                        var node_y = node_xy[1];
+
+
+                        // draw and store device object initializer in deviceLocations object
+                        nodeLocations[node_ID] = {};
+                        nodeLocations[node_ID]["Icon"] = drawing.image("images/inlo-device.png", 15, 10);
+                        nodeLocations[node_ID]["Icon"].attr({x: node_x, y: node_y, fill: "white", stroke: "#E3E3E3"})
+
+
+
+                    }
+                    if (rendered === false) {
+
+                        var groupID = room_ID + "group";
+                        var roomGroup = drawing.group().addClass(groupID);
+
+                        roomGroup.add(floorPlanSvg[i].addClass(groupID));
+                        roomGroup.add(nodeLocations[node_ID]["Icon"].addClass(groupID));
+
+                        floorPlanGroups[room_ID] = roomGroup;
+                    }
+
                 }
-                console.log("floorPlanData", floorPlanData);
+                rendered = true;
             }
-            render_floorplan("F");
+
+            // 
+            currentFloorPlan = floorPlanData;
+            floorPlanChanges = {"delete": {}, "add": {}, "update": {}};
 
             // set loaded to true to prevent excess loading
             loaded = true;
@@ -100,169 +136,31 @@ SVG.on(document, 'DOMContentLoaded', function() {
     }
 
 
-    function render_devices_single_room(room, d) {
+    function compute_node_xy(room_ID, node_ID) {
+        var node_x,
+            node_y;
 
         // Grab SVG coordinates so we can subtract from element coordinates 
         // to give us the actual coordinates on the SVG document.
         var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y,
+        // current coordinates of room
+            room_x = document.getElementById(room_ID).getBoundingClientRect().x - svgX,
+            room_y = document.getElementById(room_ID).getBoundingClientRect().y - svgY,
+        // current dimensions of room
+            height = document.getElementById(room_ID).getBoundingClientRect().height,
+            width = document.getElementById(room_ID).getBoundingClientRect().width;
 
-        // generate random variable for device ID
-        var num = Math.random() * 1000;
-        var deviceID = String("icon"+(~~num));
+        // grab raw node coordinates from floorPlanData array to determine actual node coords
+        console.log(floorPlanData);
+        node_x_frac = floorPlanData[room_ID][node_ID].x,
+        node_y_frac = floorPlanData[room_ID][node_ID].y,
 
-        console.log("room", room);
+        // use raw node coordinates to compute actual node coordinates
+        node_x = node_x_frac*width + room_x,
+        node_y = node_y_frac*height + room_y;
 
-        var distance = d, 
-            // current coordinates of room
-            x = document.getElementById(room.node.id).getBoundingClientRect().x - svgX,
-            y = document.getElementById(room.node.id).getBoundingClientRect().y - svgY,
-            // current dimensions of room
-            height = document.getElementById(room.node.id).getBoundingClientRect().height,
-            width = document.getElementById(room.node.id).getBoundingClientRect().width;
-    
-        // sample device
-        var inloNode = drawing.image("images/inlo-device.png", 15, 10);
-        inloNode.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
-
-        // current coordinates of inlo device
-        x_node = document.getElementById(inloNode.node.id).getBoundingClientRect().x - x - svgX,
-        y_node = document.getElementById(inloNode.node.id).getBoundingClientRect().y - y - svgY;
-    
-        switch(distance){
-            case "N":
-                // determine x coordinate of near item
-                if (x_node < width/2) {
-                    x = x + width*0.25;
-                } else {
-                    x = x + width*0.75;
-                }
-                // determine y coordinate of near item
-                if (y_node < height/2) {
-                    y = y + height*0.25;
-                } else {
-                    y = y + height*0.75;
-                }
-                break;
-            case "F":
-                // determine x coordinate of far item
-                if (x_node < width/2) {
-                    x = x + width*0.75;
-                } else {
-                    x = x + width*0.25;
-                }
-                // determine y coordinate of far item
-                if (y_node < height/2) {
-                    y = y + height*0.75;
-                } else {
-                    y = y + height*0.25;
-                }
-                break;
-        }
-
-        var deviceIcon = drawing.image("images/inlo.png", 10, 10);
-
-        // Animate items to correct position
-        deviceIcon.animate().move(x, y)
-
-    }
-
-    function render_floorplan(d) {
-
-        // Grab SVG coordinates so we can subtract from element coordinates 
-        // to give us the actual coordinates on the SVG document.
-        var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
-
-        for (var i = 0; i < floorPlan.length; i++) {
-
-            // generate random variable for device ID
-            var num = Math.random() * 1000;
-            var groupID = String("group"+(~~num));
-
-            var distance = d, 
-                // current coordinates of room
-                x = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().x - svgX,
-                y = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().y - svgY,
-                // current dimensions of room
-                height = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().height,
-                width = document.getElementById(floorPlan[i].node.id).getBoundingClientRect().width;
-
-            // sample device
-            var roomID = floorPlan[i].node.id;
-        
-            var nodes = floorPlanData[roomID].nodes;
-
-            var inloNode = drawing.image("images/inlo-device.png", 15, 10);
-            if (nodes.length > 0) {
-                console.log(nodes.length);
-                for (var j = 0; j < nodes.length; j++) {
-                    var node_x = floorPlanData[roomID][nodes[j]].x;
-                    var node_y = floorPlanData[roomID][nodes[j]].y;
-                    inloNode.attr({x: node_x, y: node_y, fill: "white", stroke: "#E3E3E3"})
-                }
-            }
-
-            // /*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*/
-            // problem is that the nodes will always render in the same
-            // location since a node's location is remains the same in dynamoDB
-            // /*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*//*/*/*/*/
-           
-            //var inloNode = drawing.image("images/inlo-device.png", 15, 10);
-            //inloNode.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
-
-            // current coordinates of inlo device
-            x_node = document.getElementById(inloNode.node.id).getBoundingClientRect().x - x - svgX,
-            y_node = document.getElementById(inloNode.node.id).getBoundingClientRect().y - y - svgY;
-        
-            switch(distance){
-                case "N":
-                    // determine x coordinate of near item
-                    if (x_node < width/2) {
-                        x = x + width*0.25;
-                    } else {
-                        x = x + width*0.75;
-                    }
-                    // determine y coordinate of near item
-                    if (y_node < height/2) {
-                        y = y + height*0.25;
-                    } else {
-                        y = y + height*0.75;
-                    }
-                    break;
-                case "F":
-                    // determine x coordinate of far item
-                    if (x_node < width/2) {
-                        x = x + width*0.75;
-                    } else {
-                        x = x + width*0.25;
-                    }
-                    // determine y coordinate of far item
-                    if (y_node < height/2) {
-                        y = y + height*0.75;
-                    } else {
-                        y = y + height*0.25;
-                    }
-                    break;
-            }
-
-            if (rendered === false) {
-
-                var roomGroup = drawing.group().addClass(groupID);
-
-                roomGroup.add(floorPlan[i].addClass(groupID));
-                roomGroup.add(inloNode.addClass(groupID));
-
-                floorPlanRoomGroups[i] = roomGroup;
-            }
-
-
-            console.log("floorPlan", floorPlan);
-            console.log("floorPlanRoomGroups", floorPlanRoomGroups);
-
-            /*Room groups are ungrouped when resizing*/
-        }
-        rendered = true;
+        return [node_x, node_y];
     }
 
 
@@ -314,27 +212,55 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }*/
     };
 
-    //document.getElementById("load-fp-data").onclick = function() {        
-    //};
-
     document.getElementById("delete-rooms").onclick = function() {       
-        for (var i = 0; i < floorPlan.length; i++) {
+        for (var i = 0; i < floorPlanSvg.length; i++) {
             /*if (i === 1) {
                 console.log(floorPlan[i]);
                 floorPlan[i].remove()
             }*/
-            console.log(floorPlan);
+            console.log(floorPlanSvg);
         }
         //floorPlan[i].remove();
     };
 
     document.getElementById("drag").onclick = function() {
 
-        for (var i = 0; i < floorPlanRoomGroups.length; i++) {
-            floorPlanRoomGroups[i]
+        //var dragged = false;
+
+        for (var key in floorPlanGroups) {
+            floorPlanGroups[key]
                     .draggable({snapToGrid: 5})
                     .resize('stop')
         }
+
+        for (var key in floorPlanGroups) {
+            // After the room has been dragged
+            floorPlanGroups[key].on("dragend", function(e){
+
+                    // Grab room_ID
+                    var room_ID = e.target.children["0"].id;
+
+                    // Grab SVG coordinates so we can subtract from element coordinates 
+                    // to give us the actual coordinates on the SVG document.
+                    var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
+                        svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+
+                    // subtract SVG coords from new coords to get new device coords
+                    var new_room_x = document.getElementById(room_ID).getBoundingClientRect().x - svgX,
+                        new_room_y = document.getElementById(room_ID).getBoundingClientRect().y - svgY,
+                        floor = 1;
+
+                     // update currentFloorPlan
+                    currentFloorPlan[room_ID].x = new_room_x;
+                    currentFloorPlan[room_ID].y = new_room_y;
+
+                    // add to floorPlanChanges
+                    floorPlanChanges.update[room_ID] = [room_ID, floor, new_room_x, new_room_y];
+
+                })
+
+        }
+
     };
 
     document.getElementById("resize").onclick = function() {
@@ -345,13 +271,48 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             // when resizing is done
             this.instance.on('resizedone', function(e) {
-                // grab each element and remove it 
-                $('#draw g image').each(function() {
-                    console.log(this);
-                    this.remove();
-                })
-                // re-render nodes/devices
-                render_floorplan("F");
+
+                // get room_ID
+                var room_ID = e.srcElement.id;
+
+                // Grab SVG coordinates so we can subtract from element coordinates 
+                // to give us the actual coordinates on the SVG document.
+                var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
+                    svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+
+                // subtract SVG coords from new coords to get new device coords
+                var new_room_x = document.getElementById(room_ID).getBoundingClientRect().x - svgX,
+                    new_room_y = document.getElementById(room_ID).getBoundingClientRect().y - svgY;
+
+                var new_room_width = document.getElementById(room_ID).getBoundingClientRect().width,
+                    new_room_height = document.getElementById(room_ID).getBoundingClientRect().height;
+
+                // update currentFloorPlan with new coordinates, width and height
+                currentFloorPlan[room_ID].x = new_room_x;
+                currentFloorPlan[room_ID].y = new_room_y;
+                currentFloorPlan[room_ID].width = new_room_width;
+                currentFloorPlan[room_ID].height = new_room_height;
+
+                // Add to floorPlanChanges
+                floorPlanChanges.update[room_ID] = [room_ID, 1, new_room_x, new_room_y, new_room_width, new_room_height];
+
+
+                // see how many nodes there are and store in node_count
+                var node_count = currentFloorPlan[room_ID].nodes.length;
+
+                // Iterate over all nodes in the resized room and relocate them to their new locations
+                for (var node = 0; node < node_count; node++) {
+                    // get node_ID
+                    var node_ID = currentFloorPlan[room_ID].nodes[node],
+                        // grab node coordinates
+                        node_locations = compute_node_xy(room_ID, node_ID),
+                        node_x = node_locations[0],
+                        node_y = node_locations[1];
+
+                    // Move target node to new node location
+                    nodeLocations[node_ID].Icon.animate().move(node_x, node_y)
+
+                }
             })
         })
     };    
