@@ -8,7 +8,8 @@ window._config = {
         region: 'us-west-2' 
     },
     api: {
-        coreFunctionsUrl: 'https://3mrhnqd4c4.execute-api.us-west-2.amazonaws.com/prod'
+        coreFunctionsUrl: 'https://3mrhnqd4c4.execute-api.us-west-2.amazonaws.com/prod',
+        inloApiUrl: 'https://api.theinlo.com'
     }
 };
 

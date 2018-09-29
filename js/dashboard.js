@@ -2,7 +2,7 @@
 var dynamodb = new AWS.DynamoDB();
 
 var authToken;
-WildRydes.authToken.then(function setAuthToken(token) {
+Inlo.authToken.then(function setAuthToken(token) {
     if (token) {
         authToken = token;
     } else {
@@ -12,6 +12,7 @@ WildRydes.authToken.then(function setAuthToken(token) {
     alert(error);
     window.location.href = '/signin.html';
 });
+console.log(authToken);
 
 
 //=============================================================
@@ -19,25 +20,19 @@ WildRydes.authToken.then(function setAuthToken(token) {
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
     var drawing = new SVG('draw').size(500, 400)
-                                //.panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
+                                .panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
 
 
     /* Temporary stack for storing all user's floor plan data.
     ** Each index consists of an SVG object.
     */
 
-    // ARRAYS
-    var floorPlanSvg = [];
-    
-    // BOOLEANS
-    var loaded = false;
 
-    // OBJECTS
-    var floorPlanData = {},
-        deviceLocations = {},
-        deviceData = {};
-
-    load_floorplan();
+    var floorPlanSvg = [],      // stores SVG nodes
+        floorPlanData = {},     // stores initial data from database (room_ID as keys)
+        deviceLocations = {},   // stores device coordinates
+        deviceData = {},        // stores all device data
+        loaded = false;         // Loaded boolean is set to false as default
 
     function load_floorplan() {
 
@@ -106,6 +101,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         for (var key in deviceData) {
 
             if (deviceData[key].location === "unknown location") continue;
+
             var roomID = deviceData[key].location,
                 nodeID = deviceData[key].node_ID,
                 region = deviceData[key].region,
@@ -136,6 +132,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
             var inloNode = drawing.image("images/inlo-device.png", 15, 10);
             inloNode.attr({x: node_x, y: node_y, fill: "white", stroke: "#E3E3E3"})
 
+            // Determine device coordinates
             switch(region){
                 case "N":
                     // determine x coordinate of near device
@@ -175,15 +172,68 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }
     }
 
-    function relocate_devices(device_ID, new_room_ID, new_node_ID, new_region) {
+    function relocate_device(device_ID, new_room_ID, new_node_ID, new_region) {
 
-        //use new_room, new_node_ID and new_region to find new device x y coordinates
+        var device_x, device_y;
 
-        deviceLocations[device_ID]["Icon"].animate().move(x, y)
+        // Grab SVG coordinates so we can subtract from element coordinates 
+        // to give us the actual coordinates on the SVG document.
+        var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
+            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+        // current coordinates of room
+        var room_x = document.getElementById(new_room_ID).getBoundingClientRect().x - svgX,
+            room_y = document.getElementById(new_room_ID).getBoundingClientRect().y - svgY,
+        // current dimensions of room
+            height = document.getElementById(new_room_ID).getBoundingClientRect().height,
+            width = document.getElementById(new_room_ID).getBoundingClientRect().width;
+
+        // grab raw node coordinates from floorPlanData array to determine actual node coords
+        node_x_frac = floorPlanData[new_room_ID][new_node_ID].x,
+        node_y_frac = floorPlanData[new_room_ID][new_node_ID].y,
+
+        // use raw node coordinates to compute actual node coordinates
+        node_x = node_x_frac*width + room_x,
+        node_y = node_y_frac*height + room_y;
+
+        // Determine device coordinates
+        switch(new_region){
+            case "N":
+                // determine x coordinate of near device
+                if (node_x_frac < 0.5) {
+                    device_x = room_x + width*0.25;
+                } else {
+                    device_x = room_x + width*0.75;
+                }
+                // determine y coordinate of near device
+                if (node_y_frac < 0.5) {
+                    device_y = room_y + height*0.25;
+                } else {
+                    device_y = room_y + height*0.75;
+                }
+                break;
+            case "F":
+                // determine x coordinate of far device
+                if (node_x_frac < 0.5) {
+                    device_x = room_x + width*0.75;
+                } else {
+                    device_x = room_x + width*0.25;
+                }
+                // determine y coordinate of far device
+                if (node_y_frac < 0.5) {
+                    device_y = room_y + height*0.75;
+                } else {
+                    device_y = room_y + height*0.25;
+                }
+                break;
+        }
+
+        // Move device to its proper location
+        deviceLocations[device_ID]["Icon"].animate().move(device_x, device_y)
 
     }
 
-    function read_devices_database(onReadComplete) {
+
+    function read_devices_database(onReadComplete, relocate_device) {
         $.ajax({
             method: 'GET',
             url: String(_config.api.coreFunctionsUrl) + '/devices/get',
@@ -207,15 +257,16 @@ SVG.on(document, 'DOMContentLoaded', function() {
             }
 
             onReadComplete();
+            relocate_device("dd2", "rm3", "d3", "F");
+            relocate_device("dd2", "rm1", "d1", "N");
+            relocate_device("dd2", "rm1", "d1", "F");
 
         }
 
     }
 
-    read_devices_database(render_devices_initial);
-
-
-
+    load_floorplan();
+    read_devices_database(render_devices_initial, relocate_device);
 })
 
 $(document).ready(function(){
@@ -223,6 +274,7 @@ $(document).ready(function(){
     $("#items-listed-div").hide();
     $("#dropdown-sort-div").hide();
 
+    // When user clicks list view button
 	$("#list-view-btn").click(function() {
         $("#prompt").fadeOut();
 		$("#draw").fadeOut();
@@ -232,7 +284,7 @@ $(document).ready(function(){
         $("#dropdown-sort-div").delay(500).fadeIn("slow");
 	});
 
-
+    // When user clicks map view button
 	$("#map-view-btn").click(function() {
         $("#dropdown-sort-div").fadeOut();
 		$("#prompt").fadeOut();
@@ -242,109 +294,14 @@ $(document).ready(function(){
         $("#draw").delay(500).fadeIn("slow");
 	});
 
+    // When user clicks edit mode button
     $("#edit-mode-btn").click(function() {
-        window.location.href = '/mapedit.html';
+        window.location.href = 'mapedit.html';
     });
 
+    // Sorting listed items
 	/*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
 	    return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
 	}))*/
 
 })
-
-
-
-
-
-
-
-/*function render_floorplan(d) {
-
-        // Grab SVG coordinates so we can subtract from element coordinates 
-        // to give us the actual coordinates on the SVG document.
-        var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
-
-        for (var i = 0; i < floorPlanSvg.length; i++) {
-
-            // generate random variable for device ID
-            var num = Math.random() * 1000;
-            var groupID = String("group"+(~~num));
-
-            var distance = d, 
-                // current coordinates of room
-                x = document.getElementById(floorPlanSvg[i].node.id).getBoundingClientRect().x - svgX,
-                y = document.getElementById(floorPlanSvg[i].node.id).getBoundingClientRect().y - svgY,
-                // current dimensions of room
-                height = document.getElementById(floorPlanSvg[i].node.id).getBoundingClientRect().height,
-                width = document.getElementById(floorPlanSvg[i].node.id).getBoundingClientRect().width;
-
-            // sample device
-            var roomID = floorPlanSvg[i].node.id;
-        
-            var nodes = floorPlanData[roomID].nodes;
-
-            var inloNode = drawing.image("images/inlo-device.png", 15, 10);
-            if (nodes.length > 0) {
-                console.log(nodes.length);
-                for (var j = 0; j < nodes.length; j++) {
-                    var node_x = floorPlanData[roomID][nodes[j]].x;
-                    var node_y = floorPlanData[roomID][nodes[j]].y;
-                    inloNode.attr({x: node_x, y: node_y, fill: "white", stroke: "#E3E3E3"})
-                }
-            }
-           
-            //var inloNode = drawing.image("images/inlo-device.png", 15, 10);
-            //inloNode.attr({x: x+(width/2), y: y, fill: "white", stroke: "#E3E3E3"})
-
-            // current coordinates of inlo device
-            x_node = document.getElementById(inloNode.node.id).getBoundingClientRect().x - x - svgX,
-            y_node = document.getElementById(inloNode.node.id).getBoundingClientRect().y - y - svgY;
-
-            //inloNode.hide()
-        
-            switch(distance){
-                case "N":
-                    // determine x coordinate of near item
-                    if (x_node < width/2) {
-                        x = x + width*0.25;
-                    } else {
-                        x = x + width*0.75;
-                    }
-                    // determine y coordinate of near item
-                    if (y_node < height/2) {
-                        y = y + height*0.25;
-                    } else {
-                        y = y + height*0.75;
-                    }
-                    break;
-                case "F":
-                    // determine x coordinate of far item
-                    if (x_node < width/2) {
-                        x = x + width*0.75;
-                    } else {
-                        x = x + width*0.25;
-                    }
-                    // determine y coordinate of far item
-                    if (y_node < height/2) {
-                        y = y + height*0.75;
-                    } else {
-                        y = y + height*0.25;
-                    }
-                    break;
-            }
-
-
-            // draw device at coordinates 10, 10
-            //deviceLocations[deviceID].Icon = drawing.image("images/inlo.png", 10, 10)
-
-
-            //deviceLocations["DeviceID"].Icon.animate().move(x, y)
-
-            // Animate items to correct position
-            //deviceIcon.animate().move(x, y)
-
-            console.log("floorPlan", floorPlanSvg);
-
-        }
-    }*/

@@ -1,12 +1,11 @@
-/*global WildRydes _config AmazonCognitoIdentity AWSCognito*/
+var Inlo = window.Inlo || {};
 
-var WildRydes = window.WildRydes || {};
+// Notification section
 var notifs = document.getElementById("notifs");
 
 (function scopeWrapper($) {
-    var signinUrl = 'webapp.theinlo/signin.html';
 
-    var poolData = {
+    /*var poolData = {
         UserPoolId: _config.cognito.userPoolId,
         ClientId: _config.cognito.userPoolClientId
     };
@@ -46,82 +45,79 @@ var notifs = document.getElementById("notifs");
         } else {
             resolve(null);
         }
-    });
+    });*/
 
 
     /*
-     * Cognito User Pool functions
+     * User Pool functions
      */
 
-    function register(email, password, onSuccess, onFailure) {
-        var dataEmail = {
-            Name: 'email',
-            Value: email
-        };
-        var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+    function register(name, email, password, onSuccess, onFailure) {
+        var settings = {
+          "url": _config.api.inloApiUrl + "/user/add",
+          "crossDomain": true,
+          "method": "POST",
+          "headers": {
+            'Accept': 'application/json'
+          },
+          "contentType": "application/json",
+          "data": JSON.stringify({
+            "name": name,
+            "email": email,
+            "password": password
+          }),
+          "success": onSuccess,
+          "error": onFailure
+        }
 
-        userPool.signUp(toUsername(email), password, [attributeEmail], null,
-            function signUpCallback(err, result) {
-                if (!err) {
-                    onSuccess(result);
-                } else {
-                    onFailure(err);
-                }
-            }
-        );
+        $.ajax(settings).done(function (response) {
+          console.log(response);
+          console.log(settings);
+        });
     }
 
     function signin(email, password, onSuccess, onFailure) {
-        var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-            Username: toUsername(email),
-            Password: password
-        });
 
-        var cognitoUser = createCognitoUser(email);
-        cognitoUser.authenticateUser(authenticationDetails, {
-            onSuccess: onSuccess,
-            onFailure: onFailure
-        });
-    }
-
-    function verify(email, code, onSuccess, onFailure) {
-        createCognitoUser(email).confirmRegistration(code, true, function confirmCallback(err, result) {
-            if (!err) {
-                onSuccess(result);
-            } else {
-                onFailure(err);
-            }
-        });
-    }
-
-    function createCognitoUser(email) {
-        return new AmazonCognitoIdentity.CognitoUser({
-            Username: toUsername(email),
-            Pool: userPool
+        var settings = {
+          "url": _config.api.inloApiUrl + "/user/login",
+          "crossDomain": true,
+          "method": "POST",
+          "headers": {
+            'Accept': 'application/json'
+          },
+          "contentType": "application/json",
+          "data": JSON.stringify({
+            "email": email,
+            "password": password
+          }),
+          "success": onSuccess,
+          "error": onFailure
+        }
+        $.ajax(settings).done(function (response) {
+          console.log(response);
         });
     }
 
-    function toUsername(email) {
-        return email.replace('@', '-at-');
-    }
 
     /*
      *  Event Handlers
      */
-
     $(function onDocReady() {
         $('#signinForm').submit(handleSignin);
         $('#registrationForm').submit(handleRegister);
-        $('#verifyForm').submit(handleVerify);
     });
 
+
     function handleSignin(event) {
+
         var email = $('#emailInputSignin').val();
         var password = $('#passwordInputSignin').val();
         event.preventDefault();
         signin(email, password,
-            function signinSuccess() {
+            function signinSuccess(result) {
                 console.log('Successfully Logged In');
+                console.log("result", result);
+                Inlo.authToken = result.token;
                 window.location.href = 'dashboard.html';
             },
             function signinError(err) {
@@ -131,44 +127,34 @@ var notifs = document.getElementById("notifs");
     }
 
     function handleRegister(event) {
+        var name = $('#nameInputRegister').val();
         var email = $('#emailInputRegister').val();
         var password = $('#passwordInputRegister').val();
         var password2 = $('#password2InputRegister').val();
 
         var onSuccess = function registerSuccess(result) {
-            var cognitoUser = result.user;
-            console.log('user name is ' + cognitoUser.getUsername());
+            console.log(result);
+            console.log('user registered');
             var confirmation = ('Registration successful. Please check your email inbox or spam folder for your verification code.');
             if (confirmation) {
                 window.location.href = 'verify.html';
             }
         };
         var onFailure = function registerFailure(err) {
-            notifs.innerHTML = err;
+            console.log(err.status);
+            if (err.status === 409) {
+                notifs.innerHTML = "Oops, that email is already registered.";
+            } else if (err.status === 500) {
+                notifs.innerHTML = "Sorry, there was an internal error.";
+            }
         };
         event.preventDefault();
 
         if (password === password2) {
-            register(email, password, onSuccess, onFailure);
+            register(name, email, password, onSuccess, onFailure);
         } else {
             notifs.innerHTML = "Passwords do not match.";
         }
     }
 
-    function handleVerify(event) {
-        var email = $('#emailInputVerify').val();
-        var code = $('#codeInputVerify').val();
-        event.preventDefault();
-        verify(email, code,
-            function verifySuccess(result) {
-                console.log('call result: ' + result);
-                console.log('Successfully verified');
-                alert('Verification successful. You will now be redirected to the login page.');
-                window.location.href = signinUrl;
-            },
-            function verifyError(err) {
-                alert(err);
-            }
-        );
-    }
 }(jQuery));
