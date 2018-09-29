@@ -1,0 +1,20 @@
+{
+ "name": "inlo",
+ "version": "1.0.0",
+ "description": "Gulp",
+ "main": "index.js",
+ "scripts": {
+   "test": "echo \"Error: no test specified\" && exit 1"
+ },
+ "author": "Yash",
+ "license": "ISC",
+ "dependencies": {
+   "gulp": "latest",
+   "gulp-util": "latest",
+   "gulp-sass": "latest",
+   "gulp-coffee": "latest",
+   "gulp-uglify": "latest",
+   "gulp-concat": "latest",
+   "gulp-connect": "latest"
+ }
+}
