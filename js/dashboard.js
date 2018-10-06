@@ -121,8 +121,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 width = document.getElementById(roomID).getBoundingClientRect().width;
 
             // grab raw node coordinates from floorPlanData array to determine actual node coords
-            node_x_frac = floorPlanData[roomID][nodeID].x,
-            node_y_frac = floorPlanData[roomID][nodeID].y,
+            node_x_frac = floorPlanData[roomID][nodes][nodeID].x,
+            node_y_frac = floorPlanData[roomID][nodes][nodeID].y,
 
             // use raw node coordinates to compute actual node coordinates
             node_x = node_x_frac*width + room_x,
@@ -188,8 +188,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
             width = document.getElementById(new_room_ID).getBoundingClientRect().width;
 
         // grab raw node coordinates from floorPlanData array to determine actual node coords
-        node_x_frac = floorPlanData[new_room_ID][new_node_ID].x,
-        node_y_frac = floorPlanData[new_room_ID][new_node_ID].y,
+        node_x_frac = floorPlanData[new_room_ID][nodes][new_node_ID].x,
+        node_y_frac = floorPlanData[new_room_ID][nodes][new_node_ID].y,
 
         // use raw node coordinates to compute actual node coordinates
         node_x = node_x_frac*width + room_x,

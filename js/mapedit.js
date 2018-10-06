@@ -158,8 +158,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
             width = document.getElementById(room_ID).getBoundingClientRect().width;
 
         // grab raw node coordinates from floorPlanData array to determine actual node coords
-        node_x_frac = currentFloorPlan[room_ID][node_ID].x,
-        node_y_frac = currentFloorPlan[room_ID][node_ID].y,
+        node_x_frac = currentFloorPlan[room_ID][nodes][node_ID].x,
+        node_y_frac = currentFloorPlan[room_ID][nodes][node_ID].y,
 
         // use raw node coordinates to compute actual node coordinates
         node_x = node_x_frac*width + room_x,
@@ -412,10 +412,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 currentFloorPlan[room_ID].y = new_room_y;
 
                 // add to floorPlanChanges
-                floorPlanChanges.update[room_ID] = {"room_ID": String(room_ID),
-                                                    "floor": "1", 
-                                                    "x": String(new_room_x),
-                                                    "y": String(new_room_y)};
+                floorPlanChanges.update[room_ID] = {"room_ID": room_ID,
+                                                    "floor": 1, 
+                                                    "x": new_room_x,
+                                                    "y": new_room_y};
 
                 })
         }
@@ -463,12 +463,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 currentFloorPlan[room_ID].height = new_room_height;
 
                 // Add to floorPlanChanges
-                floorPlanChanges.update[room_ID] = {"room_ID": String(room_ID),
-                                                    "floor": "1",
-                                                    "x": String(new_room_x),
-                                                    "y": String(new_room_y),
-                                                    "width": String(new_room_width),
-                                                    "height": String(new_room_height)};
+                floorPlanChanges.update[room_ID] = {"room_ID": room_ID,
+                                                    "floor": 1,
+                                                    "x": new_room_x,
+                                                    "y": new_room_y,
+                                                    "width": new_room_width,
+                                                    "height": new_room_height};
 
 
                 // see how many nodes there are and store in node_count
@@ -556,11 +556,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
             drawing.off(); 
 
             //if (drawn === false) {
-                var x = String(room.node.attributes[3].nodeValue),
-                    y = String(room.node.attributes[4].nodeValue),
-                    floor = "1"
-                    width = String(room.node.attributes[1].nodeValue),
-                    height = String(room.node.attributes[2].nodeValue);
+                var x = room.node.attributes[3].nodeValue,
+                    y = room.node.attributes[4].nodeValue,
+                    floor = 1
+                    width = room.node.attributes[1].nodeValue,
+                    height = room.node.attributes[2].nodeValue;
 
 
                 var room_data = {"room_ID" : room_ID,
