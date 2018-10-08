@@ -111,15 +111,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                     roomGroup.add(floorPlanSvg[i].addClass(groupID));
 
+                    for (var key in result.Items[i].nodes) {
 
-                    for (var j=0; j < result.Items[i].nodes.length; j++) {
-
-                        var node_ID = result.Items[i].nodes[j];
+                        var node_ID = result.Items[i].nodes[key];
 
                         var node_xy =  compute_node_xy(room_ID, node_ID);
                         var node_x = node_xy[0];
                         var node_y = node_xy[1];
-
 
                         // draw and store device object initializer in deviceLocations object
                         nodeLocations[node_ID] = {};
@@ -158,8 +156,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
             width = document.getElementById(room_ID).getBoundingClientRect().width;
 
         // grab raw node coordinates from floorPlanData array to determine actual node coords
-        node_x_frac = currentFloorPlan[room_ID][nodes][node_ID].x,
-        node_y_frac = currentFloorPlan[room_ID][nodes][node_ID].y,
+        node_x_frac = currentFloorPlan[room_ID].nodes[node_ID].x,
+        node_y_frac = currentFloorPlan[room_ID].nodes[node_ID].y,
 
         // use raw node coordinates to compute actual node coordinates
         node_x = node_x_frac*width + room_x,
