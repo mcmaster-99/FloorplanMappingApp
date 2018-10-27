@@ -3,49 +3,33 @@ var Inlo = window.Inlo || {};
 // Notification section
 var notifs = document.getElementById("notifs");
 
-(function scopeWrapper($) {
 
-    /*var poolData = {
-        UserPoolId: _config.cognito.userPoolId,
-        ClientId: _config.cognito.userPoolClientId
-    };
+function setAuth(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
 
-    var userPool;
 
-    if (!(_config.cognito.userPoolId &&
-          _config.cognito.userPoolClientId &&
-          _config.cognito.region)) {
-        $('#noCognitoMessage').show();
-        return;
-    }
-
-    userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
-    if (typeof AWSCognito !== 'undefined') {
-        AWSCognito.config.region = _config.cognito.region;
-    }
-
-    WildRydes.signOut = function signOut() {
-        userPool.getCurrentUser().signOut();
-    };
-
-    WildRydes.authToken = new Promise(function fetchCurrentAuthToken(resolve, reject) {
-        var cognitoUser = userPool.getCurrentUser();
-
-        if (cognitoUser) {
-            cognitoUser.getSession(function sessionCallback(err, session) {
-                if (err) {
-                    reject(err);
-                } else if (!session.isValid()) {
-                    resolve(null);
-                } else {
-                    resolve(session.getIdToken().getJwtToken());
-                }
-            });
-        } else {
-            resolve(null);
+function getAuth(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
         }
-    });*/
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+
+(function scopeWrapper($) {
 
 
     /*
@@ -53,8 +37,9 @@ var notifs = document.getElementById("notifs");
      */
 
     function register(name, email, password, onSuccess, onFailure) {
+
         var settings = {
-          "url": _config.api.inloApiUrl + "/user/add",
+          "url": String(_config.api.inloApiUrl) + "/user/add",
           "crossDomain": true,
           "method": "POST",
           "headers": {
@@ -74,12 +59,16 @@ var notifs = document.getElementById("notifs");
           console.log(response);
           console.log(settings);
         });
+
+        /*
+        ** create floorplan here
+        */
     }
 
     function signin(email, password, onSuccess, onFailure) {
 
         var settings = {
-          "url": _config.api.inloApiUrl + "/user/login",
+          "url": String(_config.api.inloApiUrl) + "/v1/user/login",
           "crossDomain": true,
           "method": "POST",
           "headers": {
@@ -117,7 +106,10 @@ var notifs = document.getElementById("notifs");
             function signinSuccess(result) {
                 console.log('Successfully Logged In');
                 console.log("result", result);
-                Inlo.authToken = result.token;
+
+                setAuth("Authorization", result.token, 1);
+                console.log(getAuth("Authorization"));
+
                 window.location.href = 'dashboard.html';
             },
             function signinError(err) {

@@ -1,5 +1,4 @@
 
-console.log('Bearer ' + getAuth("Authorization"));
 // Prompt user if they're sure they want to leave on page exit
 $(window).bind('beforeunload', function(){
   return 'Are you sure you want to leave?';

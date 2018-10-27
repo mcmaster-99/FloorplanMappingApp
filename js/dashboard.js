@@ -1,6 +1,4 @@
 
-var auth = 'Bearer ' + getAuth("Authorization");
-console.log(auth);
 
 /*var authToken;
 Inlo.authToken.then(function setAuthToken(token) {
