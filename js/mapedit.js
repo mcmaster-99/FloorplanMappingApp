@@ -1,18 +1,5 @@
 
-var dynamodb = new AWS.DynamoDB();
-
-/*var authToken;
-WildRydes.authToken.then(function setAuthToken(token) {
-    if (token) {
-        authToken = token;
-    } else {
-        window.location.href = '/signin.html';
-    }
-}).catch(function handleTokenError(error) {
-    alert(error);
-    window.location.href = '/signin.html';
-});*/
-
+console.log('Bearer ' + getAuth("Authorization"));
 // Prompt user if they're sure they want to leave on page exit
 $(window).bind('beforeunload', function(){
   return 'Are you sure you want to leave?';
@@ -49,24 +36,24 @@ SVG.on(document, 'DOMContentLoaded', function() {
         floorPlanData = {};
 
         // Checks if floorplan is loaded
-        if (loaded === true) { drawing.clear(); floorPlanSvg = [] } 
+        if (loaded === true) { drawing.clear(); floorPlanSvg = [] }
         // if floorplan has not been loaded
         $.ajax({
             method: 'GET',
-            url: String(_config.api.coreFunctionsUrl) + '/floorplan/get',
-            headers: {Authorization: authToken},
-            contentType: 'application/json',
+            url: String(_config.api.inloApiUrl) + '/v1/floorplan',
+            headers: {
+                Authorization: 'Bearer ' + getAuth("Authorization")
+            },
             success: completeRequest,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
-                alert('An error occured when requesting devices:\n' + jqXHR.responseText);
             }
         });
 
         function completeRequest(result) {
             console.log('Response received from API: ', result);
-            var rawFloorPlan = JSON.stringify(result.Items);
+            var rawFloorPlan = JSON.stringify(result);
 
             /*var tmpDevicesArray = [];
 
@@ -80,30 +67,33 @@ SVG.on(document, 'DOMContentLoaded', function() {
             if (rawFloorPlan === "Empty") {
                 $("#map-view-text").append("Map view not yet available");
             } else {
+                console.log(result[0].rooms.length);
                 // Loop through all items in database and store in floorplan array/stack
-                for (var i = 0; i < result.Items.length; i++) {
+                for (var i = 0; i < result.length; i++) {
 
-                    var room = drawing.rect(result.Items[i].width, result.Items[i].height)
-                        .attr({
-                            x: result.Items[i].x,
-                            y: result.Items[i].y,
-                            fill: 'white',
-                            stroke: '#E3E3E3',
-                            'stroke-width': 3
-                        }) 
+                    if (result[i].rooms.length > 0) {
+                        // iterate over rooms
+                        for (var j = 0; j < result[i].rooms.length; j++) {
+                            var room_ID = drawing.rect(result[i].rooms[j].width, result[i].rooms[j].height)
+                                .attr({
+                                    x: result[i].rooms[j].x,
+                                    y: result[i].rooms[j].y,
+                                    fill: 'white',
+                                    stroke: '#E3E3E3',
+                                    'stroke-width': 3
+                                }) 
+                            room_ID.node.id = result[i].rooms[j].room_ID;
+                            floorPlanSvg.push(room_ID);    
+                            floorPlanData[result[i].room_ID] = result[i];
+                        }
+                    } else {continue;}
 
-                    var room_ID = result.Items[i].room_ID;
-
-                    // change room's ID to custom room_ID
-                    room.node.id = room_ID;
-
-                    floorPlanSvg.push(room);  
                     // populate floorPlanData.roomID with room data
-                    floorPlanData[room_ID] = result.Items[i];
+                    floorPlanData[room_ID] = result[i].rooms[i];
                     // set currentFloorPlan data equal to floorPlanData
                     currentFloorPlan = floorPlanData;
                     // initialize floorPlanChanges as empty template
-                    floorPlanChanges = {"delete": [], "add": {}, "update": {}};
+                    //floorPlanChanges = {"delete": [], "add": {}, "update": {}};
 
 
                     var groupID = room_ID + "group";
@@ -111,9 +101,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                     roomGroup.add(floorPlanSvg[i].addClass(groupID));
 
-                    for (var key in result.Items[i].nodes) {
+                    // iterate over nodes
+                    for (var j = 0; j < result[i].rooms[i].nodes.length; j++) {
 
-                        var node_ID = result.Items[i].nodes[key];
+                        var node_ID = result[i].rooms[i].nodes[i].nodeID;
 
                         var node_xy =  compute_node_xy(room_ID, node_ID);
                         var node_x = node_xy[0];
@@ -142,7 +133,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
     function compute_node_xy(room_ID, node_ID) {
         var node_x,
-            node_y;
+            node_y,
+            node_x_frac,
+            node_y_frac;
 
         // Grab SVG coordinates so we can subtract from element coordinates 
         // to give us the actual coordinates on the SVG document.
@@ -156,8 +149,18 @@ SVG.on(document, 'DOMContentLoaded', function() {
             width = document.getElementById(room_ID).getBoundingClientRect().width;
 
         // grab raw node coordinates from floorPlanData array to determine actual node coords
-        node_x_frac = currentFloorPlan[room_ID].nodes[node_ID].x,
-        node_y_frac = currentFloorPlan[room_ID].nodes[node_ID].y,
+        // Determine which node has the requested node_ID
+
+        for (var i = 0; i < currentFloorPlan[room_ID].nodes.length; i++) {
+
+            if (node_ID === currentFloorPlan[room_ID].nodes[i].nodeID) {
+
+                node_x_frac = currentFloorPlan[room_ID].nodes[i].x,
+                node_y_frac = currentFloorPlan[room_ID].nodes[i].y;
+            } else {
+                continue;
+            }
+        }
 
         // use raw node coordinates to compute actual node coordinates
         node_x = node_x_frac*width + room_x,
@@ -172,30 +175,33 @@ SVG.on(document, 'DOMContentLoaded', function() {
         initialize();
     }
 
+    function save_floorplan(currentFloorplan) {
 
-    function save_changes(floorPlanChanges) {
+        $.ajax({
 
-        // Add new rooms
-        var new_rooms = [];
-        for (var room in floorPlanChanges.add) {
-            new_rooms.push(floorPlanChanges.add[room]);
+            method: 'PATCH',
+            url: String(_config.api.inloApiUrl) + '/v1/floorplan/{'+floorID+'}',
+            headers: {Authorization: 'Bearer ' + getAuth("Authorization")},
+            data: JSON.stringify(currentFloorplan),
+            contentType: 'application/json',
+            success: completeRequest,
+
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+                alert('An error occured when requesting devices:\n' + jqXHR.responseText);
+
+            }
+
+        });
+
+        function completeRequest(result) {
+            console.log("save complete");
+            console.log("result is:", result);
         }
-        add_api_call(new_rooms);
 
-        // Delete rooms
-        delete_api_call(floorPlanChanges.delete);
-
-        // Update rooms
-        var updated_rooms = [];
-        for (var room in floorPlanChanges.update) {
-            updated_rooms.push(floorPlanChanges.update[room]);
-        }
-        update_api_call(updated_rooms);
 
         floorPlanData = currentFloorPlan;
-
-        // Reset floorPlanChanges
-        floorPlanChanges = {"delete" : [], "add" : {}, "update" : {}};
 
     }
 
@@ -204,12 +210,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
     //              ========================================
     //              ========== API CALL METHODS ============
     //              ========================================
-    function add_api_call(add_key) {
+    function add_room_api_call(add_key) {
 
         $.ajax({
-            method: 'PUT',
-            url: String(_config.api.coreFunctionsUrl) + '/floorplan/add',
-            headers: {Authorization: authToken},
+            method: 'PATCH',
+            url: String(_config.api.inloApiUrl) + '/v1/room',
+            headers: {Authorization: 'Bearer ' + getAuth("Authorization")},
             data: JSON.stringify(add_key),
             contentType: 'application/json',
             success: completeRequest,
@@ -221,6 +227,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
         });
 
         function completeRequest(result) {
+            /*
+            ** Excecute update_api_call here to add room to floorplan
+            */
             console.log("save complete");
             console.log("result is:", result);
         }
@@ -231,8 +240,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         $.ajax({
             method: 'PATCH',
-            url: String(_config.api.coreFunctionsUrl) + '/floorplan/update',
-            headers: {Authorization: authToken},
+            url: String(_config.api.inloApiUrl) + '/v1/floorplan/' + String(floorID),
+            headers: {Authorization: 'Bearer ' + getAuth("Authorization")},
             data: JSON.stringify(update_key),
             contentType: 'application/json',
             success: completeRequest,
@@ -253,8 +262,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         $.ajax({
             method: 'DELETE',
-            url: String(_config.api.coreFunctionsUrl) + '/floorplan/delete',
-            headers: {Authorization: authToken},
+            url: String(_config.api.inloApiUrl) + '/v1/floorplan/' + String(floorID),
+            headers: {Authorization: 'Bearer ' + getAuth("Authorization")},
             data: JSON.stringify(delete_key),
             contentType: 'application/json',
             success: completeRequest,
@@ -722,6 +731,7 @@ $(document).ready(function(){
 	$("#map-view-btn").click(function() {
         $("#dropdown-sort-div").fadeOut();
 		$("#prompt").fadeOut();
+        $("#tools").fadeOut();
 		$("#items-listed-div").fadeOut();
         $("#map-view-text").delay(500).fadeIn("slow");
         $("#draw").delay(500).fadeIn("slow");
@@ -731,101 +741,6 @@ $(document).ready(function(){
 	    return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
 	}))*/
 
-
-/*(function rideScopeWrapper($) {
-    var authToken;
-    WildRydes.authToken.then(function setAuthToken(token) {
-        if (token) {
-            authToken = token;
-        } else {
-            window.location.href = '/signin.html';
-        }
-    }).catch(function handleTokenError(error) {
-        alert(error);
-        window.location.href = '/signin.html';
-    });
-    function requestUnicorn(UUID) {
-        $.ajax({
-            method: 'POST',
-            url: _config.api.coreFunctionsUrl + '/floorplan/get',
-            headers: {
-                Authorization: authToken
-            },
-            data: JSON.stringify({
-                "userName": "UUID"
-            }),
-            contentType: 'application/json',
-            success: completeRequest,
-            error: function ajaxError(jqXHR, textStatus, errorThrown) {
-                console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
-                console.error('Response: ', jqXHR.responseText);
-                alert('An error occured when requesting devices:\n' + jqXHR.responseText);
-            }
-        });
-    }
-
-    function completeRequest(result) {
-        console.log('Response received from API: ', result);
-        var devices = JSON.stringify(result.Items);
-
-        var tmpDevicesArray = [];
-        // push item names to temporary array for sorting
-    	for (var i = 0; i < result.Items.length; i++) {
-    		tmpDevicesArray.push(result.Items[i].name);
-    	}
-
-    	tmpDevicesArray.sort();
-
-       	for (var i = 0; i < tmpDevicesArray.length; i++) {
-
-			// Check if value exists in Object
-			for (var y in result.Items) {
-
-				if (result.Items[y].name === tmpDevicesArray[i]) {
-					$("#items-listed-content").append(
-                        '<ol class="item-rows">' + '<p class="item-names">' + result.Items[y].name + '</p>' +
-                        '<p class="item-rooms">' + result.Items[y].room + '</p>' + '</ol><br>'
-                        );
-				} else {
-					continue;
-				}
-			}
-    	}
-        if (devices === "No Dynamic Devices") {
-        	$("#items-listed").append("<p>"+ result.Items[0].mac_address +"</p>");
-        } else {
-        	console.log("result" + result);
-        	for (var i = 0; i < result.Items.length; i++) {
-        		$("#item-name-list").append('<ol class="item-names">' + result.Items[i].name + '</ol>');
-        		$("#item-room-list").append('<ol class="item-rooms">' + result.Items[i].room + '</ol>');
-        		$("#item-icon-list").append('<ol class="item-icons">' + "[" + result.Items[i].icon + "]" + '</ol>');
-        	}
-        }
-        console.log("==== devices ====" + devices);
-        displayUpdate(devices);
-    }
-
-    // Register click handler for #request button
-    $(function onDocReady() {
-    	handleRequestClick;
-        //$('#list-view-btn').click(handleRequestClick);
-
-        if (!_config.api.invokeUrl) {
-            $('#noApiMessage').show();
-        }
-
-        requestUnicorn("UUID");
-    });
-
-    function handleRequestClick() {
-        event.preventDefault();
-        requestUnicorn("UUID");
-    }
-
-    function displayUpdate(text) {
-        $('#updates').append($('<li>' + text + '</li>'));
-    }
-}(jQuery));*/
 
 
 })

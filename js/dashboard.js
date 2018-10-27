@@ -1,7 +1,8 @@
 
-var dynamodb = new AWS.DynamoDB();
+var auth = 'Bearer ' + getAuth("Authorization");
+console.log(auth);
 
-var authToken;
+/*var authToken;
 Inlo.authToken.then(function setAuthToken(token) {
     if (token) {
         authToken = token;
@@ -12,7 +13,7 @@ Inlo.authToken.then(function setAuthToken(token) {
     alert(error);
     window.location.href = '/signin.html';
 });
-console.log(authToken);
+console.log(authToken);*/
 
 
 //=============================================================
@@ -46,16 +47,23 @@ SVG.on(document, 'DOMContentLoaded', function() {
         } else { // if floorplan has not been loaded
             $.ajax({
                 method: 'GET',
-                url: String(_config.api.coreFunctionsUrl) + '/floorplan/get',
-                headers: {Authorization: authToken},
-                contentType: 'application/json',
+                url: String(_config.api.inloApiUrl) + '/v1/floorplan',
+                headers: {
+                    "Authorization": "Bearer " + getAuth("Authorization")
+                },
                 success: completeRequest,
                 error: function ajaxError(jqXHR, textStatus, errorThrown) {
                     console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
-                    console.error('Response: ', jqXHR.responseText);
-                    alert('An error occured when requesting devices:\n' + jqXHR.responseText);
+                    console.error('Response: ', jqXHR);
                 }
             });
+            /*$.ajax({
+                 url: String(_config.api.inloApiUrl) + '/v1/floorplan',
+                 data: { signature: "Bearer " + getAuth("Authorization") },
+                 type: "GET",
+                 beforeSend: function(xhr){xhr.setRequestHeader('Access-Control-Allow-Origin', 'http://localhost:8080');},
+                 success: function() { alert('Success!' + authHeader); }
+            });*/
         }
 
         function completeRequest(result) {
@@ -74,23 +82,30 @@ SVG.on(document, 'DOMContentLoaded', function() {
             if (rawFloorPlan === "Empty") {
                 $("#map-view-text").append("Map view not yet available");
             } else {
+                console.log(result[0]);
+                console.log(result[0].rooms.length);
                 // Loop through all items in database and store in floorplan array/stack
-                for (var i = 0; i < result.Items.length; i++) {
+                for (var i = 0; i < result.length; i++) {
 
-                    var room_ID = drawing.rect(result.Items[i].width, result.Items[i].height)
-                        .attr({
-                            x: result.Items[i].x,
-                            y: result.Items[i].y,
-                            fill: 'white',
-                            stroke: '#E3E3E3',
-                            'stroke-width': 3
-                        }) 
-                    room_ID.node.id = result.Items[i].room_ID;
-                    floorPlanSvg.push(room_ID);    
-                    floorPlanData[result.Items[i].room_ID] = result.Items[i];
+                    if (result[i].rooms.length > 0) {
+                        // iterate over rooms
+                        for (var j = 0; j < result[i].rooms.length; j++) {
+                            var room_ID = drawing.rect(result[i].rooms[j].width, result[i].rooms[j].height)
+                                .attr({
+                                    x: result[i].rooms[j].x,
+                                    y: result[i].rooms[j].y,
+                                    fill: 'white',
+                                    stroke: '#E3E3E3',
+                                    'stroke-width': 3
+                                }) 
+                            var room_ID = result[i].rooms[j].roomID;
+                            floorPlanSvg.push(room_ID);    
+                            floorPlanData[result[i].room_ID] = result[i];
+                        }
+                    } else {continue;}
                 }
             }
-            render_devices_initial();
+            //render_devices_initial();
 
             // set loaded to true to prevent excess loading
             loaded = true;
@@ -233,16 +248,18 @@ SVG.on(document, 'DOMContentLoaded', function() {
     }
 
 
-    function read_devices_database(onReadComplete, relocate_device) {
+    /*function read_devices_database(onReadComplete, relocate_device) {
         $.ajax({
             method: 'GET',
-            url: String(_config.api.coreFunctionsUrl) + '/devices/get',
-            headers: {Authorization: authToken},
-            contentType: 'application/json',
+            url: _config.api.inloApiUrl + '/devices/get',
+            dataType: 'jsonp',
+            headers: {
+                'Authorization': 'Bearer ' + getAuth("Authorization"),
+            },
             success: completeRequest,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
-                console.error('Response: ', jqXHR.responseText);
+                console.error('Response: ', jqXHR);
                 alert('An error occured when requesting devices:\n' + jqXHR.responseText);
             }
         });
@@ -253,6 +270,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
             var rawDevices = result.Items;
 
             for (var i = 0; i < rawDevices.length; i++) {
+                console.log(rawDevices[i]);
                 deviceData[rawDevices[i].deviceID] = rawDevices[i];
             }
 
@@ -263,10 +281,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         }
 
-    }
+    }*/
 
     load_floorplan();
-    read_devices_database(render_devices_initial, relocate_device);
+    //read_devices_database(render_devices_initial, relocate_device);
 })
 
 $(document).ready(function(){
