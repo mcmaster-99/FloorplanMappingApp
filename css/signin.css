@@ -4,8 +4,27 @@
 ============================================*/
 /* ---------------- NAVBAR ---------------- */
 .navbar-div {
-  box-shadow: 0px 2px 5px 0px #9A9D9D;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
   width: 100%; }
+
+body {
+  background-color: #F9F9FB;
+}
+
+a {
+  color: #116CD2;
+  font-weight: bold;
+}
+
+.jumbotron p {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+button {
+  color: #fff;
+  text-transform: uppercase;
+}
 
 nav {
   width: 100%;
@@ -13,12 +32,11 @@ nav {
   padding: 10px;
   text-align: center;
   word-spacing: 15em;
+  background-color: #fff;
   /* give space between navbar icons */ }
 
 nav a img {
-  width: 2em;
-  height: 2em;
-  color: #00D0A7; }
+  height: 24px;}
 
 .page-title {
   text-align: center;
@@ -26,17 +44,33 @@ nav a img {
   font-family: Arial, sans-serif;
   margin: 100px 0px 0px 0px; }
 
+.page-title.incard{
+  font-weight: normal;
+  margin: 0;
+}
+
 /* ---------------- LOGIN JUMBOTRON ---------------- */
 form.jumbotron {
-  width: 30%;
-  height: 300px;
-  margin: 50px auto;
-  background-color: #fcfcfc;
-  box-shadow: 0px 0px 15px 5px #9A9D9D; }
+  min-width: 400px;
+  width: 42%;
+  max-width: 488px;
+  height: 100%;
+  margin: 60px auto;
+  background-color: #ffffff;
+  padding: 48px 40px;
+  border-radius: 12px;
+  border: 1px solid #EBEAEC;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+ }
+
+ p.card-intro {
+   text-align: center;
+   margin-top: 8px;
+ }
 
 .container {
   text-align: center;
-  padding: 10px 0px 0px 0px; }
+  padding: 16px 0px 0px 0px; }
 
 .login-icons {
   width: 50%;
@@ -46,18 +80,19 @@ label[for="email"], label[for="password"] {
   width: 30px; }
 
 input[type="email"], input[type="password"] {
-  width: 200px;
-  height: 30px;
-  border: none;
-  border-bottom: 1px solid #9A9D9D;
-  background-color: #fcfcfc;
-  padding: 5px;
+  width: 100%;
+  height: 40px;
+  background-color: #fff;
+  padding-left: 16px;
+  border: 1px solid #E0E0E0;
+  box-sizing: border-box;
+  border-radius: 8px;
   display: inline-block; }
 
 .forgot-pwd-div {
-  font-size: 12px;
-  text-align: center;
-  margin: 0px 70px 0px 0px;
+  font-size: 14px;
+  text-align: left;
+  margin: 8px 0px 0px 0px;
   /*margin-right*/ }
 
 /**
@@ -114,23 +149,23 @@ input[type="checkbox"] {
   width: 160px;
   margin-left: 20px;
   vertical-align: top;
-  font-size: 12px; }
+  font-size: 14px; }
 
 /**
 **************** CUSTOM CHECKBOX END ****************
 */
 
 .login-button {
-  background-color: #00D0A7;
-  border: 2px solid #00D0A7;
-  width: 180px;
+  width: 246px;
+  height: 48px;
+  background: linear-gradient(102.2deg, #00D0A7 6.24%, #116CD2 96.88%);
+  border-radius: 100px;
+  border-color: #fff;
   font-weight: bold;
-  margin: 25px;
-  box-shadow: 0px 0px 10px 1px #9A9D9D;
   transition: .5s; }
 
 .login-button:hover {
-  background-color: white;
+  background: linear-gradient(102.2deg, #116CD2 6.24%, #116CD2 96.88%);
   transition: .5s; }
 
 .new-user-button {
@@ -139,4 +174,6 @@ input[type="checkbox"] {
   font-size: 10px; }
 
 .create-acc-div {
-  text-align: center; }
+  text-align: center;
+  margin-top: 48px;
+  }
