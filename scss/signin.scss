@@ -8,19 +8,23 @@
   width: 100%; }
 
 body {
-  background-color: #F9F9FB; }
+  background-color: #F9F9FB;
+}
 
 a {
   color: #116CD2;
-  font-weight: bold; }
+  font-weight: bold;
+}
 
 .jumbotron p {
   font-size: 14px;
-  font-weight: 400; }
+  font-weight: 400;
+}
 
 button {
   color: #fff;
-  text-transform: uppercase; }
+  text-transform: uppercase;
+}
 
 nav {
   width: 100%;
@@ -32,7 +36,7 @@ nav {
   /* give space between navbar icons */ }
 
 nav a img {
-  height: 24px; }
+  height: 24px;}
 
 .page-title {
   text-align: center;
@@ -40,9 +44,10 @@ nav a img {
   font-family: Arial, sans-serif;
   margin: 100px 0px 0px 0px; }
 
-.page-title.incard {
+.page-title.incard{
   font-weight: normal;
-  margin: 0; }
+  margin: 0;
+}
 
 /* ---------------- LOGIN JUMBOTRON ---------------- */
 form.jumbotron {
@@ -55,11 +60,13 @@ form.jumbotron {
   padding: 48px 40px;
   border-radius: 12px;
   border: 1px solid #EBEAEC;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1); }
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+ }
 
-p.card-intro {
-  text-align: center;
-  margin-top: 8px; }
+ p.card-intro {
+   text-align: center;
+   margin-top: 8px;
+ }
 
 .container {
   text-align: center;
@@ -147,6 +154,7 @@ input[type="checkbox"] {
 /**
 **************** CUSTOM CHECKBOX END ****************
 */
+
 .login-button {
   width: 246px;
   height: 48px;
@@ -167,4 +175,5 @@ input[type="checkbox"] {
 
 .create-acc-div {
   text-align: center;
-  margin-top: 48px; }
+  margin-top: 48px;
+  }

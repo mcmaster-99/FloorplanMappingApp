@@ -1,7 +1,7 @@
 
 
 /*var authToken;
-Inlo.authToken.then(function setAuthToken(token) {
+WildRydes.authToken.then(function setAuthToken(token) {
     if (token) {
         authToken = token;
     } else {
@@ -11,15 +11,15 @@ Inlo.authToken.then(function setAuthToken(token) {
     alert(error);
     window.location.href = '/signin.html';
 });
-console.log(authToken);*/
+console.log(WildRydes);*/
 
 
 //=============================================================
 //                          SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
-    var drawing = new SVG('draw').size(500, 400)
-                                .panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
+    var drawing = new SVG('draw').size('100%', '100%')
+                                .panZoom({zoomMin: 0.5, zoomMax: 500, zoomFactor: 0.2})
 
 
     /* Temporary stack for storing all user's floor plan data.
@@ -55,13 +55,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     console.error('Response: ', jqXHR);
                 }
             });
-            /*$.ajax({
-                 url: String(_config.api.inloApiUrl) + '/v1/floorplan',
-                 data: { signature: "Bearer " + getAuth("Authorization") },
-                 type: "GET",
-                 beforeSend: function(xhr){xhr.setRequestHeader('Access-Control-Allow-Origin', 'http://localhost:8080');},
-                 success: function() { alert('Success!' + authHeader); }
-            });*/
         }
 
         function completeRequest(result) {
@@ -80,8 +73,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
             if (rawFloorPlan === "Empty") {
                 $("#map-view-text").append("Map view not yet available");
             } else {
-                console.log(result[0]);
-                console.log(result[0].rooms.length);
                 // Loop through all items in database and store in floorplan array/stack
                 for (var i = 0; i < result.length; i++) {
 
@@ -103,11 +94,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     } else {continue;}
                 }
             }
-            //render_devices_initial();
+            render_devices_initial();
 
             // set loaded to true to prevent excess loading
             loaded = true;
         }
+
     }
 
     function render_devices_initial() {
@@ -134,8 +126,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 width = document.getElementById(roomID).getBoundingClientRect().width;
 
             // grab raw node coordinates from floorPlanData array to determine actual node coords
-            node_x_frac = floorPlanData[roomID][nodes][nodeID].x,
-            node_y_frac = floorPlanData[roomID][nodes][nodeID].y,
+            node_x_frac = floorPlanData[roomID][nodeID].x,
+            node_y_frac = floorPlanData[roomID][nodeID].y,
 
             // use raw node coordinates to compute actual node coordinates
             node_x = node_x_frac*width + room_x,
@@ -201,8 +193,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
             width = document.getElementById(new_room_ID).getBoundingClientRect().width;
 
         // grab raw node coordinates from floorPlanData array to determine actual node coords
-        node_x_frac = floorPlanData[new_room_ID][nodes][new_node_ID].x,
-        node_y_frac = floorPlanData[new_room_ID][nodes][new_node_ID].y,
+        node_x_frac = floorPlanData[new_room_ID][new_node_ID].x,
+        node_y_frac = floorPlanData[new_room_ID][new_node_ID].y,
 
         // use raw node coordinates to compute actual node coordinates
         node_x = node_x_frac*width + room_x,
@@ -246,18 +238,16 @@ SVG.on(document, 'DOMContentLoaded', function() {
     }
 
 
-    /*function read_devices_database(onReadComplete, relocate_device) {
+    /*function read_devices_database(onReadComplete, relocate_device, populate_list) {
         $.ajax({
             method: 'GET',
-            url: _config.api.inloApiUrl + '/devices/get',
-            dataType: 'jsonp',
-            headers: {
-                'Authorization': 'Bearer ' + getAuth("Authorization"),
-            },
+            url: String(_config.api.coreFunctionsUrl) + '/devices/get',
+            headers: {Authorization: authToken},
+            contentType: 'application/json',
             success: completeRequest,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
-                console.error('Response: ', jqXHR);
+                console.error('Response: ', jqXHR.responseText);
                 alert('An error occured when requesting devices:\n' + jqXHR.responseText);
             }
         });
@@ -266,58 +256,151 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             console.log('Response received from API: ', result);
             var rawDevices = result.Items;
+            console.log(rawDevices);
 
+            // Store devices in deviceData array
             for (var i = 0; i < rawDevices.length; i++) {
-                console.log(rawDevices[i]);
                 deviceData[rawDevices[i].deviceID] = rawDevices[i];
             }
 
             onReadComplete();
             relocate_device("dd2", "rm3", "d3", "F");
-            relocate_device("dd2", "rm1", "d1", "N");
-            relocate_device("dd2", "rm1", "d1", "F");
-
+            populate_list();
+            //deviceData.dd2.location = "rm1";
+            update_list("dd2", "rm3", "d1", "F");
         }
 
     }*/
 
-    load_floorplan();
-    //read_devices_database(render_devices_initial, relocate_device);
-})
+    function sort_list() {
+        var sorted = $(".item-names").sort(function (a, b) {
+            console.log("in sorting")
+            return a.textContent > b.textContent;
+        });
+        re_assign();
+    }
 
-$(document).ready(function(){
+    function populate_list() {
+        // Loop through deviceData object and create new div (.item-rows) 
+        // and assign name+room text values to divs
+        for (var key in deviceData) {
+            //location = deviceData[key].location;
+            //room_label = floorPlanData[location].name;
+            console.log(key);
+            $("#items-listed")
+                .append("<div class='item-rows'>"+
+                        "<p class='item-names'>"+deviceData[key].name+"</p>"+
+                        "<p class='item-rooms'>"+ /*room_label*/ deviceData[key].location+"</p>"+
+                        "</div>");
+        }
+        /*// Sort listed items and store in variable
+        var sorted = $(".item-names").sort(function (a, b) {
+            console.log("in sorting")
+            return a.textContent > b.textContent;
+        });
+        // Loop through item names and re-assign correct names (alphabetically)
+        $(".item-names").each(function(i){
+            console.log("in re-assign")
+            this.textContent = sorted[i].innerText;
+        })*/
+        //sort_list();
+    }
+
+    function update_list(device_ID, new_room_ID, new_node_ID, new_region) {
+        console.log(deviceData);
+        device_name = deviceData[device_ID].name;
+        new_room_label = new_room_ID;
+        console.log(new_room_label);
+
+        for (var key in deviceData) {
+
+            // if nothing has changed, exit/break
+            if (deviceData[key].location === new_room_ID) {
+                continue;
+            // if room data has changed
+            } else {
+
+                // change deviceData keys to new room data
+                deviceData[device_ID].location = new_room_ID;
+                deviceData[device_ID].node_ID = new_node_ID;
+                deviceData[device_ID].region = new_region;
+
+                // iterate through rows to check which row has the name
+                $('.item-rows').each(function() {
+                    console.log($(this.children[0]).text());
+                    // device name equals new room label
+                    if ($(this.children[0]).text() === device_name) {
+                        console.log("here");
+                        // fade out 
+                        $(this.children[1]).fadeOut();
+                        this.children[1].innerText = new_room_label;
+                        $(this.children[1]).fadeIn();
+                    }
+                })
+            }
+        }
+    }
+
+    var sorted;
+    function sort_list() {
+        var sorted = $(".item-names").sort(function (a, b) {
+            return a.textContent > b.textContent;
+        });
+        for (var i = 0; i < sorted.length; i++) {
+            sorted[i].innerText
+        }
+    }
+
+    function re_assign() {
+        $(".item-names").each(function(i){
+            console.log(this.textContent);
+            //this.textContent = sorted[i].innerText;
+        })
+    }
+
+
+    /* function update_list(device_ID, new_room_ID, new_node_ID, new_region)
+    IF mqtt and change found
+        - loop through divs to find changed item
+        - IF item found
+            change room to correct room
+    ELSE IF mqtt and nothing changed
+        - continue
+    ELSE
+        - continue
+    */
+
+    load_floorplan();
+    //read_devices_database(render_devices_initial, relocate_device, populate_list);
+
+
 
     $("#items-listed-div").hide();
     $("#dropdown-sort-div").hide();
+    //$("#map-view-div").hide();
 
     // When user clicks list view button
-	$("#list-view-btn").click(function() {
-        $("#prompt").fadeOut();
-		$("#draw").fadeOut();
-        $("#map-view-text").fadeOut();
-        $("#edit-mode-btn").fadeOut();
-		$("#items-listed-div").delay(500).fadeIn("slow");
-        $("#dropdown-sort-div").delay(500).fadeIn("slow");
-	});
+    $("#list-view-btn").click(function() {
+        $("#prompt")            .fadeOut();
+        $("#draw")              .fadeOut();
+        $("#map-view-text")     .fadeOut();
+        $("#edit-mode-btn")     .fadeOut();
+        $("#items-listed-div")  .delay(500).fadeIn("slow");
+        $("#dropdown-sort-div") .delay(500).fadeIn("slow");
+    });
 
     // When user clicks map view button
-	$("#map-view-btn").click(function() {
+    $("#map-view-btn").click(function() {
         $("#dropdown-sort-div").fadeOut();
-		$("#prompt").fadeOut();
-		$("#items-listed-div").fadeOut();
-        $("#map-view-text").delay(500).fadeIn("slow");
-        $("#edit-mode-btn").delay(500).fadeIn("slow");
-        $("#draw").delay(500).fadeIn("slow");
-	});
+        $("#prompt")           .fadeOut();
+        $("#items-listed-div") .fadeOut();
+        $("#map-view-text")    .delay(500).fadeIn("slow");
+        $("#edit-mode-btn")    .delay(500).fadeIn("slow");
+        $("#draw")             .delay(500).fadeIn("slow");
+    });
 
     // When user clicks edit mode button
     $("#edit-mode-btn").click(function() {
         window.location.href = 'mapedit.html';
     });
-
-    // Sorting listed items
-	/*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
-	    return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
-	}))*/
-
 })

@@ -1,13 +1,26 @@
-
+console.log(getAuth("Authorization"));
 function connectSocket() {
 	// if user is running mozilla then use it's built-in WebSocket
 	window.WebSocket = window.WebSocket || window.MozWebSocket;
 
-	var connection = new WebSocket('ws://api.theinlo.com/api/events');
+	var connection = new WebSocket('ws://api.theinlo.com/api/events', {
+		headers: {
+	    	Authorization: 'Bearer ' + getAuth("Authorization"),
+		},
+	});
+
+	console.log(getAuth("Authorization"));
+	//var body = {type:"subscribe",payload:{userID:access.userID}};
 
 	connection.onopen = function () {
+
+		connection.send(getAuth("Authorization"));
 		// connection is opened and ready to use
 		console.log("open");
+
+		connection.on("message", function incoming(data){
+			console.log("received " + data);
+		})
 	};
 
 	connection.onerror = function (error) {
@@ -35,7 +48,7 @@ function connectSocket() {
 	};
 
 	function reOpen() {
-		connection = new WebSocket('ws://api.theinlo.com/api/events');
+		connection = new WebSocket('wss://api.theinlo.com/events');
 	}
   
 }
