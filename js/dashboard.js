@@ -18,15 +18,34 @@ console.log(WildRydes);*/
 //                          SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
-    var drawing = new SVG('draw').size('100%', '100%')
+    var floorPlan = new SVG('floorPlan').size('100%', '100%')
                                 .panZoom({zoomMin: 0.5, zoomMax: 500, zoomFactor: 0.2})
 
+    // Save Button
+    var editFloorPlanBackground = floorPlan.rect(125, 50)
+                                            .attr({
+                                                id: "edit-floorplan-btn",
+                                                x: "75%",
+                                                y: "75%",
+                                                rx: "20px",
+                                                ry: "20px",
+                                                fill: '#D5D5D5',
+                                            })
+    var editFloorPlanGroup = floorPlan.group().attr({id:"edit-floorplan-btn-group"})
+    editFloorPlanGroup.add(editFloorPlanBackground)
+    var editFloorPlanText = floorPlan.text("Edit Floorplan")
+                            .attr({
+                                x: "76%",
+                                y: "77%"
+                            })
+    editFloorPlanGroup.add(editFloorPlanText)
+    $("#edit-floorplan-btn-group").click(function(){
+        window.location.href = "mapedit.html";
+    })
 
     /* Temporary stack for storing all user's floor plan data.
     ** Each index consists of an SVG object.
     */
-
-
     var floorPlanSvg = [],      // stores SVG nodes
         floorPlanData = {},     // stores initial data from database (room_ID as keys)
         deviceLocations = {},   // stores device coordinates
@@ -53,6 +72,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 error: function ajaxError(jqXHR, textStatus, errorThrown) {
                     console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
                     console.error('Response: ', jqXHR);
+                    //window.location.href = 'signin.html';
                 }
             });
         }
@@ -79,7 +99,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     if (result[i].rooms.length > 0) {
                         // iterate over rooms
                         for (var j = 0; j < result[i].rooms.length; j++) {
-                            var room_ID = drawing.rect(result[i].rooms[j].width, result[i].rooms[j].height)
+                            var room_ID = floorPlan.rect(result[i].rooms[j].width, result[i].rooms[j].height)
                                 .attr({
                                     x: result[i].rooms[j].x,
                                     y: result[i].rooms[j].y,
@@ -115,8 +135,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             // Grab SVG coordinates so we can subtract from element coordinates 
             // to give us the actual coordinates on the SVG document.
-            var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-                svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+            var svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
+                svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
 
             // current coordinates of room
             var room_x = document.getElementById(roomID).getBoundingClientRect().x - svgX,
@@ -134,7 +154,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
             node_y = node_y_frac*height + room_y;
 
             // draw node at real location inside room
-            var inloNode = drawing.image("images/inlo-device.png", 15, 10);
+            var inloNode = floorPlan.image("images/inlo-device.png", 15, 10);
             inloNode.attr({x: node_x, y: node_y, fill: "white", stroke: "#E3E3E3"})
 
             // Determine device coordinates
@@ -171,7 +191,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             // draw and store device object initializer in deviceLocations object
             deviceLocations[key] = {};
-            deviceLocations[key]["Icon"] = drawing.image("images/inlo.png", 10, 10);
+            deviceLocations[key]["Icon"] = floorPlan.image("images/inlo.png", 10, 10);
             deviceLocations[key]["Icon"].attr({x: device_x, y: device_y, fill: "white", stroke: "#E3E3E3"})
 
         }
@@ -183,8 +203,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         // Grab SVG coordinates so we can subtract from element coordinates 
         // to give us the actual coordinates on the SVG document.
-        var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-            svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+        var svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
+            svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
         // current coordinates of room
         var room_x = document.getElementById(new_room_ID).getBoundingClientRect().x - svgX,
             room_y = document.getElementById(new_room_ID).getBoundingClientRect().y - svgY,
@@ -374,33 +394,40 @@ SVG.on(document, 'DOMContentLoaded', function() {
     //read_devices_database(render_devices_initial, relocate_device, populate_list);
 
 
+})
+
+
+$(document).ready(function(){
 
     $("#items-listed-div").hide();
     $("#dropdown-sort-div").hide();
     //$("#map-view-div").hide();
 
-    // When user clicks list view button
     $("#list-view-btn").click(function() {
-        $("#prompt")            .fadeOut();
-        $("#draw")              .fadeOut();
-        $("#map-view-text")     .fadeOut();
-        $("#edit-mode-btn")     .fadeOut();
-        $("#items-listed-div")  .delay(500).fadeIn("slow");
-        $("#dropdown-sort-div") .delay(500).fadeIn("slow");
+        $("#prompt").fadeOut();
+        $("#tools").fadeOut();
+        $("#draw").fadeOut();
+        $("#map-view-text").fadeOut();
+        $("#items-listed-div").delay(500).fadeIn("slow");
+        $("#dropdown-sort-div").delay(500).fadeIn("slow");
     });
 
-    // When user clicks map view button
+
     $("#map-view-btn").click(function() {
         $("#dropdown-sort-div").fadeOut();
-        $("#prompt")           .fadeOut();
-        $("#items-listed-div") .fadeOut();
-        $("#map-view-text")    .delay(500).fadeIn("slow");
-        $("#edit-mode-btn")    .delay(500).fadeIn("slow");
-        $("#draw")             .delay(500).fadeIn("slow");
+        $("#prompt").fadeOut();
+        $("#items-listed-div").fadeOut();
+        $("#map-view-text").delay(500).fadeIn("slow");
+        $("#draw").delay(500).fadeIn("slow");
     });
 
-    // When user clicks edit mode button
-    $("#edit-mode-btn").click(function() {
-        window.location.href = 'mapedit.html';
+    $("#dropdown-btn").click(function() {
+        $("#dropdown-menu").toggle(500);
     });
+
+    /*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
+        return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
+    }))*/
+
+
 })

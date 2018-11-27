@@ -1,5 +1,29 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+body {
+  background-color: #f9f8fb; }
+
 /* ---------------- NAVBAR ---------------- */
 #navbar-div {
+  background-color: white;
   box-shadow: 0px 2px 5px 0px #9A9D9D;
   width: 100%; }
 
@@ -18,16 +42,31 @@ nav {
   float: left; }
 
 .right-nav-icons {
-  width: 27px;
-  height: 24px;
+  width: 2.5vw;
+  height: 4vh;
   color: gray;
   float: right;
   padding: 2px;
-  margin-right: 50px;
+  margin-right: 3vw;
   filter: grayscale(100%); }
 
-#side-menu {
+#add-devices-dropdown {
   float: right; }
+
+#dropdown-menu {
+  display: none;
+  width: 15vw;
+  height: 15vh;
+  background-color: silver;
+  position: absolute;
+  white-space: normal;
+  right: 2vw;
+  word-spacing: .1vw; }
+
+#dropdown-menu > li {
+  margin-top: 2vh;
+  white-space: nowrap;
+  word-spacing: .1vw; }
 
 /* ---------------- NAVBAR END ---------------- */
 #prompt {
@@ -41,7 +80,9 @@ nav {
   margin-right: 225px; }
 
 #views-div {
-  text-align: center; }
+  text-align: center;
+  padding: 10px;
+  box-shadow: 0px 2px 5px 0px #9A9D9D; }
 
 #list-view-btn, #map-view-btn {
   text-align: center;
@@ -78,56 +119,56 @@ nav {
 #edit-mode-btn-div {
   text-align: center; }
 
+#inlo-home {
+  width: 20px;
+  height: 20px; }
+
+.btn-divs {
+  display: inline-block; }
+
 /* ---------------- ITEMS LISTED DIV ---------------- */
 #items-listed-div {
   text-align: center; }
 
 #items-listed {
-  width: 400px;
+  width: 50vw;
   display: inline-block;
-  text-align: center;
   padding-right: 10px; }
 
-#items-listed-content {
-  /*overflow-y: scroll;
-
-  &::-webkit-scrollbar {
-    width: 7px;
-    height: 5px;
-    border-radius: 50px;
-  }
-
-  &::-webkit-scrollbar-track {
-    width: 7px;
-    height: 5px;
-    background-color: #D8D8D8;
-    border-radius: 50px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-   background-color: #00D0A7;
-   border-radius: 10px;
-
-   &:hover {
-    background: #00D0A7;
-   }
-  }*/ }
-
 .item-names {
-  float: left; }
+  float: left;
+  display: inline-block; }
 
 .item-rooms {
-  float: right; }
+  float: right;
+  display: inline-block; }
 
 .item-rows {
   padding: 25px;
-  height: 75px;
-  border-radius: 10px;
+  height: 11vh;
+  margin-top: 5vh;
+  border-radius: 1em;
   box-shadow: 0px 2px 5px 1px #9A9D9D; }
 
+button#edit-devices-btn {
+  margin-top: 20vh;
+  float: left;
+  background: gray;
+  border: 0.1em solid gray;
+  border-radius: 10px; }
+
 /* ---------------- MAP VIEW DIV ---------------- */
-#map-view-div {
-  text-align: center; }
+@-moz-document url-prefix() {
+  /* moz specific CSS */
+  #map-view-div {
+    height: 75vh;
+    width: 193vh; } }
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  /* webkit specific CSS */
+  #map-view-div {
+    height: 75vh;
+    width: 197vh; } }
 
 #map-editing-div {
   text-align: center; }
@@ -135,16 +176,20 @@ nav {
 #map-view-text {
   display: none; }
 
-svg {
-  border: 3px solid black;
-  border-radius: 10px;
-  display: inline-block; }
+#floorPlan {
+  height: 100%; }
 
-button {
-  margin-top: 10px;
-  display: inline-block; }
+div.changes-div {
+  text-indent: 30%; }
 
-#rect {
+div#rect {
   border: 1px solid black;
   width: 20px;
   height: 20px; }
+
+button {
+  border: none;
+  background: none; }
+
+#edit-floorplan-btn-group {
+  cursor: pointer; }

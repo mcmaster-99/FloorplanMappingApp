@@ -11,6 +11,34 @@ SVG.on(document, 'DOMContentLoaded', function() {
     var drawing = new SVG('svgGrid').size("100%", "100%")
                                  //.panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
 
+    /* Temporary stack for storing all user's floor plan data.
+    ** Each index consists of an SVG object.
+    */
+    var floorPlanSvg = [],      // stores SVG nodes
+        floorPlanData = {},     // stores initial data from database (room_ID as keys)
+        nodeLocations = {},     // stores node SVG objects with node_ID as keys
+        currentFloorPlan = {},  // stores the current state of floorplan as user makes changes (room_ID as keys)
+        floorID = "",
+        floorPlanGroups = {},   // each grouped room is stored with room_ID as keys
+
+        loaded = false;
+        //rendered = false;
+
+
+
+
+    var frontDoorText = drawing.image('/images/frontDoorText.png')
+    .attr({
+        x: "15%",
+        y: "70%"
+    })
+
+    var frontDoorSymbol = drawing.image('/images/frontDoorSymbol.png')
+    .attr({
+        x: "18%",
+        y: "80%"
+    })
+
     drawing.on('panEnd', function(ev) {
         var vbX = drawing.viewbox().x;
         var vbY = drawing.viewbox().y;
@@ -20,22 +48,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
     })
 
 
-    /* Temporary stack for storing all user's floor plan data.
-    ** Each index consists of an SVG object.
-    */
-    var floorPlanSvg = [],      // stores SVG nodes
-        floorPlanData = {},     // stores initial data from database (room_ID as keys)
-        nodeLocations = {},     // stores node SVG objects with node_ID as keys
-        currentFloorPlan = {},  // stores the current state of floorplan as user makes changes (room_ID as keys)
-        floorPlanChanges = {"delete" : [], // stores changes that have been made during session
-                            "add" : {}, 
-                            "update" : {}}, 
-        floorPlanGroups = {},   // each grouped room is stored with room_ID as keys
-
-        loaded = false;
-        //rendered = false;
-
-
     var buttonSvg = new SVG('cancel-save-return-buttons-div').size("100%", "100%")
                                                             .attr({
                                                                 x: 250,
@@ -43,7 +55,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                                             })
 
     var cancel_changes = buttonSvg.text("Cancel")
-                        .attr({
+                                .attr({
                                     id: 'cancel-changes-btn',
                                     x: 0,
                                     y: 100,
@@ -110,6 +122,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
+                //window.location.href = 'signin.html';
             }
         });
 
@@ -134,6 +147,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                 // Loop through all items in database and store in floorplan array/stack
                 for (var i = 0; i < result.length; i++) {
+
+                    floorID = 0;
 
                     // add room to currentFloorPlan
                     currentFloorPlan = result;
@@ -210,6 +225,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             // set loaded to true to prevent excess loading
             loaded = true;
+
         }
     }
 
@@ -583,7 +599,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
             floorPlanGroups[key].node.children[0].instance.selectize(false).resize('stop')
 
             // make all room groups draggable
-            console.log(drawing);
+            console.log(floorPlanGroups[key]);
             floorPlanGroups[key].draggable({snapToGrid: 8})
 
             // unbind event listener
@@ -767,11 +783,14 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }
 
         // loop through elements in group
-        $('#draw g rect').each(function() {
+        $('#svgGrid g rect').each(function() {
 
             this.instance.selectize().resize({snapToGrid: 10})
 
             $("#"+this.instance.node.id).off('resizedone')
+
+            console.log(this.instance);
+
             // when resizing is done
             $("#"+this.instance.node.id).on('resizedone', function(e) {
 
@@ -906,9 +925,21 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             "height" : height,
                             "nodes" : [] }
 
-            currentFloorPlan[room_ID] = room_data;
+            //PSUEDO CODE
+            /*
+            (1) call POST /room API to get roomID
+            roomID = API result;
 
-            floorPlanChanges.add[room_ID] = room_data;
+            (2) room_data = {bla bla bla};
+
+            (3) add room data to local currentFloorPlan...
+            currentFloorPlan[floorID].rooms.push(room_data);
+            */
+
+
+            //currentFloorPlan[room_ID] = room_data;
+
+            //floorPlanChanges.add[room_ID] = room_data;
 
             floorPlanSvg.push(room);
             

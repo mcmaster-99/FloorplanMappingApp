@@ -66,6 +66,10 @@ nav {
   float: right;
 }
 
+#front-door-text, #front-door-symbol {
+  display: block;
+}
+
 /* ---------------- NAVBAR END ---------------- */
 
 #prompt {
@@ -170,7 +174,7 @@ nav {
 @-moz-document url-prefix() {
   /* moz specific CSS */
   #map-view-div {
-    width: 93vw;
+    width: 99vw;
     height: 71vh; 
   }
 }
