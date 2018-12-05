@@ -21,24 +21,35 @@ SVG.on(document, 'DOMContentLoaded', function() {
     var floorPlan = new SVG('floorPlan').size('100%', '100%')
                                 .panZoom({zoomMin: 0.5, zoomMax: 500, zoomFactor: 0.2})
 
-    // Save Button
-    var editFloorPlanBackground = floorPlan.rect(125, 50)
+    var editFloorPlanButton = new SVG('edit-floorplan-btn-div')
+                                .size("100%", "100%")
+                                .attr({
+                                    x: 100,
+                                    y: 100
+                                })                            
+
+    // Edit Floorplan Button
+    var editFloorPlanBackground = editFloorPlanButton.circle(50)
                                             .attr({
                                                 id: "edit-floorplan-btn",
                                                 x: "75%",
                                                 y: "75%",
-                                                rx: "20px",
-                                                ry: "20px",
-                                                fill: '#D5D5D5',
+                                                cx: "80%",
+                                                cy: "80%",
+                                                fill: 'black',
                                             })
-    var editFloorPlanGroup = floorPlan.group().attr({id:"edit-floorplan-btn-group"})
+    var editIcon = editFloorPlanButton.image('images/editPen.png')
+                                        .attr({
+                                            id: "edit-floorplan-icon",
+                                            x: "76.5%",
+                                            y: "73%",
+                                        })
+    var editFloorPlanGroup = editFloorPlanButton
+                            .group()
+                            .attr({id:"edit-floorplan-btn-group"})
     editFloorPlanGroup.add(editFloorPlanBackground)
-    var editFloorPlanText = floorPlan.text("Edit Floorplan")
-                            .attr({
-                                x: "76%",
-                                y: "77%"
-                            })
-    editFloorPlanGroup.add(editFloorPlanText)
+    editFloorPlanGroup.add(editIcon)
+
     $("#edit-floorplan-btn-group").click(function(){
         window.location.href = "mapedit.html";
     })
@@ -399,14 +410,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 $(document).ready(function(){
 
-    $("#items-listed-div").hide();
-    $("#dropdown-sort-div").hide();
-    //$("#map-view-div").hide();
+    //$("#items-listed-div").hide();
+    //$("#dropdown-sort-div").hide();
+    $("#map-view-div").hide();
 
     $("#list-view-btn").click(function() {
         $("#prompt").fadeOut();
-        $("#tools").fadeOut();
-        $("#draw").fadeOut();
+        $("#floorPlan").fadeOut();
         $("#map-view-text").fadeOut();
         $("#items-listed-div").delay(500).fadeIn("slow");
         $("#dropdown-sort-div").delay(500).fadeIn("slow");
@@ -418,7 +428,7 @@ $(document).ready(function(){
         $("#prompt").fadeOut();
         $("#items-listed-div").fadeOut();
         $("#map-view-text").delay(500).fadeIn("slow");
-        $("#draw").delay(500).fadeIn("slow");
+        $("#map-view-div").delay(500).fadeIn("slow");
     });
 
     $("#dropdown-btn").click(function() {
