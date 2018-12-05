@@ -162,14 +162,20 @@ nav {
   display: none; }
 
 #draw {
-  height: 100%;
-  z-index: -1; }
+  height: 100%; }
 
 #cancel-save-return-buttons-div {
-  width: 12vw;
+  width: 20vw;
   height: 25vh;
   bottom: 0px;
   right: 20vw;
+  position: fixed; }
+
+#front-door-symbol-div {
+  width: 20vw;
+  height: 25vh;
+  bottom: 0px;
+  right: 70vw;
   position: fixed; }
 
 div.changes-div {

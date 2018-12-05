@@ -58,6 +58,25 @@
 
                 <div class="btn-divs">
                     <div>
+                        <button id="create-floorplan">Create Floorplan</button>
+                    </div>
+                    <div>
+                        <img src="images/home.png" id="inlo-home">
+                    </div>
+                </div>
+
+                <div class="btn-divs">
+                    <div>
+                        <button id="delete-floorplan">Delete Floorplan</button>
+                    </div>
+                    <div>
+                        <img src="images/home.png" id="inlo-home">
+                    </div>
+                </div>
+
+
+                <div class="btn-divs">
+                    <div>
                         <button id="delete-rooms">Delete Rooms</button>
                     </div>
                     <div>
@@ -151,26 +170,12 @@
         <!--<p id="map-view-text">Map view not yet available</p>-->
 
         <div id="draw">
-            <svg id="svgGrid" width="2000px" height="2000px" xmlns="http://www.w3.org/2000/svg">
 
-
-                <!-- Grid -->
-              <defs>
-                <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="gray" stroke-width="0.5"/>
-                </pattern>
-
-                <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
-                  <rect width="100" height="100" fill="url(#smallGrid)"/>
-                  <path d="M 100 0 L 0 0 0 100" fill="none" stroke="gray" stroke-width="1"/>
-                </pattern>
-              </defs>
-              <!-- Grid [End] -->
-
-              <rect width="100%" height="100%" fill="url(#grid)" />
-            </svg>
             
             <div id="cancel-save-return-buttons-div">
+            </div>
+
+            <div id="front-door-symbol-div">
             </div>
 
         </div>
@@ -189,12 +194,8 @@
     <script src="node_modules/svg.draw.js/dist/svg.draw.js"></script>
     <script src="node_modules/svg.panzoom.js/dist/svg.panzoom.js"></script>
 
-    <script src="node_modules/aws-sdk/dist/aws-sdk.js"></script>
-
     <script src="js/vendor/jquery-3.1.0.js"></script>
     <script src="js/vendor/bootstrap.min.js"></script>
-    <script src="js/vendor/aws-cognito-sdk.min.js"></script>
-    <script src="js/vendor/amazon-cognito-identity.min.js"></script>
     <script src="https://js.arcgis.com/4.3/"></script>
     <script src="js/config.js"></script>
     <script src="js/cognito-auth.js"></script>

@@ -161,14 +161,14 @@ button#edit-devices-btn {
 @-moz-document url-prefix() {
   /* moz specific CSS */
   #map-view-div {
-    height: 75vh;
+    height: 79vh;
     width: 193vh; } }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   /* webkit specific CSS */
   #map-view-div {
-    height: 75vh;
-    width: 197vh; } }
+    height: 79vh;
+    width: 198vh; } }
 
 #map-editing-div {
   text-align: center; }
@@ -191,5 +191,12 @@ button {
   border: none;
   background: none; }
 
-#edit-floorplan-btn-group {
+#edit-floorplan-btn {
   cursor: pointer; }
+
+#edit-floorplan-btn-div {
+  width: 25vw;
+  height: 25vh;
+  top: 70vh;
+  right: 20vw;
+  position: fixed; }
