@@ -92,6 +92,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
             console.log('Response received from API: ', result);
             var rawFloorPlan = JSON.stringify(result.Items);
 
+            // Reformat floorplan data
+            // iterate over floorplans
+            // iterate over rooms
+            // for each room,   floorPlanData[room_ID] = room data
+
+
             /*var tmpDevicesArray = [];
 
             // push item names to temporary array for sorting
@@ -118,6 +124,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                     stroke: '#E3E3E3',
                                     'stroke-width': 3
                                 }) 
+                            room_ID.node.id = result[i].rooms[j].roomID;
                             var room_ID = result[i].rooms[j].roomID;
                             floorPlanSvg.push(room_ID);    
                             floorPlanData[result[i].room_ID] = result[i];
@@ -138,9 +145,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             if (deviceData[key].location === "unknown location") continue;
 
-            var roomID = deviceData[key].location,
-                nodeID = deviceData[key].node_ID,
+            var roomID = deviceData[key].roomID,
+                // nodeID = floorPlanData[roomID].nodes[0].nodeID,
                 region = deviceData[key].region,
+                roomName = deviceData[key].roomName,
                 device_x,
                 device_y;
 
@@ -157,12 +165,17 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 width = document.getElementById(roomID).getBoundingClientRect().width;
 
             // grab raw node coordinates from floorPlanData array to determine actual node coords
+            // iterate over floorplans
+            // iterate over rooms until we find room with roomID === roomID
+            // 
+            console.log(floorPlanData);
             node_x_frac = floorPlanData[roomID][nodeID].x,
             node_y_frac = floorPlanData[roomID][nodeID].y,
 
             // use raw node coordinates to compute actual node coordinates
             node_x = node_x_frac*width + room_x,
             node_y = node_y_frac*height + room_y;
+
 
             // draw node at real location inside room
             var inloNode = floorPlan.image("images/inlo-device.png", 15, 10);
@@ -269,11 +282,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
     }
 
 
-    /*function read_devices_database(onReadComplete, relocate_device, populate_list) {
+    function read_devices_database(onReadComplete, relocate_device, populate_list) {
         $.ajax({
             method: 'GET',
-            url: String(_config.api.coreFunctionsUrl) + '/devices/get',
-            headers: {Authorization: authToken},
+            url: String(_config.api.inloApiUrl) + '/v1/nodes',
+            headers: {
+                "Authorization": "Bearer " + getAuth("Authorization")
+            },
             contentType: 'application/json',
             success: completeRequest,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
@@ -286,12 +301,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
         function completeRequest(result) {
 
             console.log('Response received from API: ', result);
-            var rawDevices = result.Items;
-            console.log(rawDevices);
+            
 
             // Store devices in deviceData array
-            for (var i = 0; i < rawDevices.length; i++) {
-                deviceData[rawDevices[i].deviceID] = rawDevices[i];
+            for (var i = 0; i < result.length; i++) {
+                deviceData[result[i].nodeID] = result[i];
             }
 
             onReadComplete();
@@ -301,7 +315,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
             update_list("dd2", "rm3", "d1", "F");
         }
 
-    }*/
+    }
 
     function sort_list() {
         var sorted = $(".item-names").sort(function (a, b) {
@@ -402,7 +416,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     */
 
     load_floorplan();
-    //read_devices_database(render_devices_initial, relocate_device, populate_list);
+    read_devices_database(render_devices_initial, relocate_device, populate_list);
 
 
 })
