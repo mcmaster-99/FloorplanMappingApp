@@ -29,12 +29,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                   '<rect width="1000vw" height="1000vh" fill="url(#grid)" />'+
                 '</svg';
-        $("#draw").prepend(svgGridHTML);
+        $("#draw").append(svgGridHTML);
     }
     initializeGrid();
     initialize();
-
-    console.log(($("#draw").length));
 
 
     var drawing = new SVG('svgGrid')
@@ -42,15 +40,15 @@ SVG.on(document, 'DOMContentLoaded', function() {
                         .attr({x: 500,
                                y: 500
                               })
-                                 //.panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
+                            .panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
 
     /* Temporary stack for storing all user's floor plan data.
     ** Each index consists of an SVG object.
     */
-    var floorPlanSvg = [],      // stores SVG nodes
-        initialFloorPlanData = {},     // stores initial data from database (room_ID as keys)
-        nodeLocations = {},     // stores node SVG objects with node_ID as keys
-        currentFloorPlan = {},  // stores the current state of floorplan as user makes changes (room_ID as keys)
+    var floorPlanSvg = [],              // stores SVG nodes
+        initialFloorPlanData = [],      // stores initial data from database (room_ID as keys)
+        nodeLocations = {},             // stores node SVG objects with node_ID as keys
+        currentFloorPlan = [],          // stores the current state of floorplan as user makes changes (room_ID as keys)
         floorID = "",
         floorPlanGroups = {},   // each grouped room is stored with room_ID as keys
 
@@ -134,7 +132,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     function initialize() {
 
         // Empty floorPlan array of any previous/excess data
-        initialFloorPlanData = {};
+        initialFloorPlanData = [];
 
         // Checks if floorplan is loaded
         if (loaded === true) { drawing.clear(); floorPlanSvg = [] } 
@@ -155,28 +153,18 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         function completeRequest(result) {
             console.log('Response received from API: ', result);
-            var rawFloorPlan = JSON.stringify(result);
 
-            var tmpDevicesArray = [];
-
-            // push item names to temporary array for sorting
-           
-            tmpDevicesArray.sort(); // sort items
-
-            // if there are no devices
-            if (rawFloorPlan === "Empty") {
+            // if there are no floorplans
+            if (result.length === 0) {
+                console.log("here");
                 $("#map-view-text").append("Map view not yet available");
             } else {
 
+                currentFloorPlan = result;
+                initialFloorPlanData = JSON.stringify(result);
+
                 // Loop through all items in database and store in floorplan array/stack
                 for (var i = 0; i < result.length; i++) {
-
-                    tmpDevicesArray.push(result[i]);
-
-                    floorID = 0;
-
-                    // add room to currentFloorPlan
-                    currentFloorPlan = result;
 
                     if (result[i].rooms.length > 0) {
 
@@ -198,8 +186,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             var room_ID = room.node.id;
 
                             floorPlanSvg.push(room);   
-                            // store imported data in initialFloorPlanData object [starts at floor1]
-                            initialFloorPlanData["floor"+(j+1)] = result[i];
+
 
                             var groupID = room_ID + "group";
                             var roomGroup = drawing.group().addClass(groupID);
@@ -271,8 +258,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
             // iterate over rooms
             for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
 
-                // iterate over nodes
+                // if room has a nodes property
                 if (currentFloorPlan[i].rooms[j].hasOwnProperty("nodes")) {
+                    // iterate over nodes
                     for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
 
                         if (node_ID === currentFloorPlan[i].rooms[j].nodes[k].nodeID) {
@@ -295,7 +283,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         return [node_x, node_y];
 
-    } // END copmute_node_xy()
+    } // END compute_node_xy()
 
     function cancelChanges() {
 
@@ -305,7 +293,82 @@ SVG.on(document, 'DOMContentLoaded', function() {
         // if user clicks OK
         if (userResponse == true) {
 
-            // iterate over floorPlanSVG rooms
+            // update currentFloorPlan
+            currentFloorPlan = JSON.parse(initialFloorPlanData);
+
+            // clear rooms groups
+            for (var i = 0; i < floorPlanSvg.length; i++) {
+                var groupId = floorPlanSvg[i].node.parentElement.id;
+                $("#"+String(groupId)).remove();
+            }
+
+            // Clear floorPlanSvg
+            floorPlanSvg = [];
+
+            // redraw rooms groups and reload floorPlanSvg
+            for (var i = 0; i < currentFloorPlan.length; i++) {
+
+                    if (currentFloorPlan[i].rooms.length > 0) {
+
+                        // iterate over rooms
+                        for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
+
+                            var room = drawing.rect(currentFloorPlan[i].rooms[j].width, currentFloorPlan[i].rooms[j].height)
+                                .attr({
+                                    x: currentFloorPlan[i].rooms[j].x,
+                                    y: currentFloorPlan[i].rooms[j].y,
+                                    fill: 'white',
+                                    stroke: '#E3E3E3',
+                                    'stroke-width': 3
+                                }) 
+
+                            // change created room's id to roomID from database
+                            room.node.id = currentFloorPlan[i].rooms[j].roomID;
+                            // store roomID in var
+                            var room_ID = room.node.id;
+
+                            floorPlanSvg.push(room);   
+
+
+                            var groupID = room_ID + "group";
+                            var roomGroup = drawing.group().addClass(groupID);
+                            roomGroup.add(room.addClass(groupID));
+
+                            // iterate over nodes
+                            if (currentFloorPlan[i].rooms[j].hasOwnProperty("nodes")) {
+                                for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
+
+                                    var node_ID = currentFloorPlan[i].rooms[j].nodes[k].nodeID;
+
+                                    var node_xy =  compute_node_xy(room_ID, node_ID);
+                                    var node_x = node_xy[0];
+                                    var node_y = node_xy[1];
+
+                                    // draw and store device object initializer in deviceLocations object
+                                    nodeLocations[node_ID] = {};
+                                    nodeLocations[node_ID]["Icon"] = drawing.image("images/inlo-device.png", 15, 10);
+                                    nodeLocations[node_ID]["Icon"].attr({
+                                                                x: node_x,
+                                                                y: node_y,
+                                                                fill: "white",
+                                                                stroke: "#E3E3E3",
+                                                                id: node_ID})
+
+                                    // add room node to room group
+                                    roomGroup.add(nodeLocations[node_ID]["Icon"].addClass(groupID));
+
+                                }
+                            }
+                            floorPlanGroups[room_ID] = roomGroup; 
+                        }
+                    } else {continue;}
+         
+                }
+
+
+            //window.location.href = 'mapedit.html'
+
+            /*// iterate over floorPlanSVG rooms
             for (var i = 0; i < floorPlanSvg.length; i++) {
 
                 // if room has just been drawn
@@ -320,8 +383,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     // update floorPlanSvg
                     floorPlanSvg.splice(i, 1)
 
-                    // update currentFloorPlan (hard coded at the moment)
-                    currentFloorPlan[0].rooms.splice(i, 1);
 
                     // update floorPlanGroups
                     //floorPlanGroups.splice(1, )
@@ -331,7 +392,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     console.log("initialFloorPlanData", initialFloorPlanData);
                     console.log("floorPlanGroups", floorPlanGroups);
                 }
-            }
+            }*/
         }
         // if user clicks CANCEL, everything remains as is.
 
@@ -378,7 +439,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }
 
 
-        initialFloorPlanData = currentFloorPlan;
+        initialFloorPlanData = JSON.stringiy(currentFloorPlan);
 
     } // END save_floorplan()
 
@@ -408,7 +469,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }
 
 
-        initialFloorPlanData = currentFloorPlan;
+        initialFloorPlanData = JSON.stringify(currentFloorPlan);
 
     } // END create_floorplan()
 
@@ -446,7 +507,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }
 
 
-        initialFloorPlanData = currentFloorPlan;
+        initialFloorPlanData = JSON.stringify(currentFloorPlan);
 
     } // END delete_floorplan()
 
@@ -481,7 +542,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         console.log("currentFloorPlan", currentFloorPlan);
         console.log("initialFloorPlanData", initialFloorPlanData);
-        console.log("floorPlanChanges", floorPlanChanges);
         console.log("floorPlanSvg", floorPlanSvg);
         console.log("floorPlanGroups", floorPlanGroups);
 
@@ -571,7 +631,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 
     // *****************
-    //      DRAG
+    //    DRAG ROOM
     // *****************
     $("#drag").on('click', function(e) {
 
@@ -590,53 +650,67 @@ SVG.on(document, 'DOMContentLoaded', function() {
             // After the room has been dragged
             floorPlanGroups[key].on("dragend", function(e){
 
-                /*if (panned) {
-                    add vbX to room x
-                    add vbY to room y
-                }*/
-
                 e.preventDefault();
 
                 // Grab room_ID
-                var room_ID = e.target.children["0"].id;
+                var room_ID = e.target.children["0"].id,
+                    node_ID = e.target.children[1].id;
 
-                // Grab SVG coordinates so we can subtract from element coordinates 
-                // to give us the actual coordinates on the SVG document.
-                var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-                    svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
 
-                /*// subtract SVG coords from new coords to get new device coords
-                if (document.getElementById("SvgjsSvg1006").hasAttribute('viewBox')) {
-
+                // if page was zoomed/panned
+                // subtract SVG coords from new coords to get new device coords
+                if (document.getElementById("svgGrid").hasAttribute('viewBox')) {
+                    console.log("here")
                     var vbX = drawing.viewbox().x;
                     var vbY = drawing.viewbox().y;
+                    console.log(drawing.viewbox())
 
-                    var new_room_x = e.target.getBoundingClientRect().x - svgX + vbX,
-                        new_room_y = e.target.getBoundingClientRect().y - svgY + vbY;
+                    // Grab SVG coordinates so we can subtract from element coordinates 
+                    // to give us the actual coordinates on the SVG document.
+                    // svgX/svgY is defined again below because it will change if SVG was panned/zoomed
+                    var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x - vbX,
+                        svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y - vbY;
+                        console.log(svgX, svgY)
 
-                    
+                    var new_room_x = e.target.getBoundingClientRect().x - svgX,
+                        new_room_y = e.target.getBoundingClientRect().y - svgY;
+                        console.log(new_room_x, new_room_y);
+                    $("#"+e.target.id).removeAttr("transform");
+                    $("#"+e.target.children[0].id).attr("x", String(new_room_x));
+                    $("#"+e.target.children[0].id).attr("y", String(new_room_y));
+
+                    var new_node_locations = compute_node_xy(room_ID, node_ID);
+                    console.log(new_node_locations[0], new_node_locations[1])
+                    $("#"+e.target.childNodes[1].id).removeAttr("transform");
                     $("#"+e.target.children[1].id).attr("x", String(new_node_locations[0]) + vbX);
                     $("#"+e.target.children[1].id).attr("y", String(new_node_locations[1]) + vbY);
-                }*/
+                
+                // if page was NOT zoomed/panned
+                } else {
 
-                var node_ID = e.target.children[1].id;
-                        // grab node coordinates
-                var node_locations = compute_node_xy(room_ID, node_ID),
-                    node_x = node_locations[0],
-                    node_y = node_locations[1];
+                    // Grab SVG coordinates so we can subtract from element coordinates 
+                    // to give us the actual coordinates on the SVG document.
+                    var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
+                        svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
 
-                // Remove transform attribute and manually set X,Y coordinates of room
-                var new_room_x = e.target.getBoundingClientRect().x - svgX,
-                    new_room_y = e.target.getBoundingClientRect().y - svgY;
-                $("#"+e.target.id).removeAttr("transform");
-                $("#"+e.target.children[0].id).attr("x", String(new_room_x));
-                $("#"+e.target.children[0].id).attr("y", String(new_room_y));
+                    // grab node coordinates
+                    var node_locations = compute_node_xy(room_ID, node_ID),
+                        node_x = node_locations[0],
+                        node_y = node_locations[1];
 
-                // Remove transform attribute and manually set X,Y coordinates of node
-                $("#"+e.target.childNodes[1].id).removeAttr("transform");
-                new_node_locations = compute_node_xy(e.target.children[0].id, "string");
-                $("#"+e.target.childNodes[1].id).attr("x", String(new_node_locations[0]));
-                $("#"+e.target.childNodes[1].id).attr("y", String(new_node_locations[1]));
+                    // Remove transform attribute and manually set X,Y coordinates of room
+                    var new_room_x = e.target.getBoundingClientRect().x - svgX,
+                        new_room_y = e.target.getBoundingClientRect().y - svgY;
+                    $("#"+e.target.id).removeAttr("transform");
+                    $("#"+e.target.children[0].id).attr("x", String(new_room_x));
+                    $("#"+e.target.children[0].id).attr("y", String(new_room_y));
+
+                    // Remove transform attribute and manually set X,Y coordinates of node
+                    $("#"+e.target.childNodes[1].id).removeAttr("transform");
+                    new_node_locations = compute_node_xy(room_ID, node_ID);
+                    $("#"+e.target.childNodes[1].id).attr("x", String(new_node_locations[0]));
+                    $("#"+e.target.childNodes[1].id).attr("y", String(new_node_locations[1]));
+                }
 
                 // update currentFloorPlan
                 for (var i = 0; i < currentFloorPlan.length; i++) {
@@ -755,7 +829,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 
     // *****************
-    //      RESIZE
+    //    RESIZE ROOM
     // *****************
     $("#resize").on('click', function() {
 
