@@ -49,7 +49,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         initialFloorPlanData = [],      // stores initial data from database (room_ID as keys)
         nodeLocations = {},             // stores node SVG objects with node_ID as keys
         currentFloorPlan = [],          // stores the current state of floorplan as user makes changes (room_ID as keys)
-        floorID = "",
+        floorID = "0",
         floorPlanGroups = {},   // each grouped room is stored with room_ID as keys
 
         loaded = false;
@@ -439,7 +439,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }
 
 
-        initialFloorPlanData = JSON.stringiy(currentFloorPlan);
+        initialFloorPlanData = JSON.stringify(currentFloorPlan);
 
     } // END save_floorplan()
 
@@ -901,6 +901,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
     // *****************
     $("#draw-rect").on('click', function(){
 
+        drawing.panZoom(false);
+
         // make all rooms undraggable and unresizable
         for (var key in floorPlanGroups) {
             floorPlanGroups[key].node.children[0].instance.selectize(false).resize('stop')
@@ -973,7 +975,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                         }
                                     ]
                                 }
-
+                console.log(floorID);
                 currentFloorPlan[floorID].rooms.push(room_data.rooms[0]);
 
                 floorPlanSvg.push(room);
