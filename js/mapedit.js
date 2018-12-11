@@ -147,7 +147,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
-                //window.location.href = 'signin.html';
+                window.location.href = 'signin.html';
             }
         });
 
@@ -953,7 +953,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 error: function ajaxError(jqXHR, textStatus, errorThrown) {
                     console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
                     console.error('Response: ', jqXHR.responseText);
-                    //window.location.href = 'signin.html';
+                    window.location.href = 'signin.html';
                 }
             });
 
