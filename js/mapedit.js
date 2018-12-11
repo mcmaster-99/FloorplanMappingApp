@@ -871,15 +871,18 @@ SVG.on(document, 'DOMContentLoaded', function() {
                         if (currentFloorPlan[i].rooms[j].roomID === room_ID) {
 
                             // get node_ID
-                            for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
-                                var node_ID = currentFloorPlan[i].rooms[j].nodes[k].nodeID,
-                                    // grab node coordinates
-                                    node_locations = compute_node_xy(room_ID, node_ID),
-                                    node_x = node_locations[0],
-                                    node_y = node_locations[1];
+                            console.log(currentFloorPlan[i].rooms[j].hasOwnProperty("nodes"));
+                            if (currentFloorPlan[i].rooms[j].hasOwnProperty("nodes")) {
+                                for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
+                                    var node_ID = currentFloorPlan[i].rooms[j].nodes[k].nodeID,
+                                        // grab node coordinates
+                                        node_locations = compute_node_xy(room_ID, node_ID),
+                                        node_x = node_locations[0],
+                                        node_y = node_locations[1];
 
-                                // Move target node to new node location
-                                nodeLocations[node_ID].Icon.animate().move(node_x, node_y)
+                                    // Move target node to new node location
+                                    nodeLocations[node_ID].Icon.animate().move(node_x, node_y)
+                                }
                             }
 
                             currentFloorPlan[i].rooms[j].x = new_room_x;

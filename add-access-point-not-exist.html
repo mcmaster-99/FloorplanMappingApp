@@ -15,7 +15,7 @@
     <link rel="icon" href="/images/inlo.png" type="image/gif" sizes="16x16">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/add-access-point-not-exist.css">
     <link rel="stylesheet" href="node_modules/svg.select.js/dist/svg.select.css">
 
     
@@ -32,14 +32,14 @@
         <a href="#"><img src="images/theinlo.png" id="inlo-banner"></a>
 
         <div id="right-nav-icons-div">
-            <div id="add-devices-dropdown">
+            <div id="add-devices-dropdown-div">
 
                 <button id="dropdown-btn">
                     <img src="images/username.png" id="onboard-device" class="right-nav-icons">
                 </button>
                 <div id="dropdown-menu">
-                    <li><a id="add-node" href="add-node.html">Add Inlo Device</a></li>
-                    <li><a id="add-device" href="add-device.html">Add Third Party Device</a></li>
+                    <li><a id="addID" href="#addID">Add Inlo Device</a></li>
+                    <li><a id="addTPD" href="#addTPD">Add Third Party Device</a></li>
                 </div>
                 
             </div>
@@ -52,63 +52,30 @@
     </div>
 
 
-    <div id="views-div">
+    <div>
+        <img src="" id="how-to-img">
 
-        <h3 id="page-title">Home</h3>
+        <div id="how-to-text-div">
+            <h3 id="how-to-title">Add Inlo Hub</h3><br><br>
 
-        <button id="list-view-btn">
-            <img src="https://cdn0.iconfinder.com/data/icons/layout-and-location/24/Untitled-2-21-128.png" class="views-icons">
-            <p class="views-text">List</p>
-        </button>
+            <p id="how-to-text">
+                You haven’t added an Inlo hub! Add one using the Inlo mobile app by following these steps :<br><br>
+                1. Download the Inlo mobile app on the App Store or Goolge Play.<br>
+                2. Open the Inlo mobile app and log in.<br>
+                3. Click Add Inlo Hub.<br>
+                4. Follow the prompts.
 
-        <button id="map-view-btn">
-            <img src="https://image.flaticon.com/icons/png/128/34/34250.png" class="views-icons">
-            <p class="views-text">Map</p>
-        </button>
+            </p>
 
-        <div id="dropdown-sort-div">
-            <p id="sort-by-text">Sort By:</p>
-            <select id="sort-selection">
-                <option value="1">Rooms</option>
-                <option value="2">Devices</option>
-            </select>
-        </div>
-
-    </div>
-
-    <h1 id="prompt">Choose a view to start.</h1>
-
-
-    <div id="items-listed-div">
-
-
-        <div id="items-listed">
-
-            <div class='item-rows'>
-                <p class='item-names'>Test</p>
-                <p class='item-rooms'>Room</p>
+            <div id="how-to-links-div">
+                <button>Go Back Home</button>
             </div>
 
-            <button id="edit-devices-btn">Edit Devices</button>
-
         </div>
 
-
     </div>
 
-
-    <div id="map-view-div">
-        <!--<p id="map-view-text">Map view not yet available</p>-->
-
-
-        <div id="floorPlan">
-        </div>
-
-
-    </div>
-
-    <div id="edit-floorplan-btn-div">
-    </div>
+</body>
 
 
 
