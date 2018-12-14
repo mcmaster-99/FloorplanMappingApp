@@ -461,10 +461,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	read_devices_database(render_devices_initial, relocate_device, populate_list);
 
 
-})
 
+	//=========================================
+	// ========== BUTTON CLICKS ===============
+	//=========================================
 
-$(document).ready(function(){
+	// VIEW SWITCHERS
 
 	//$("#items-listed-div").hide();
 	//$("#dropdown-sort-div").hide();
@@ -490,6 +492,23 @@ $(document).ready(function(){
 
 	$("#dropdown-btn").click(function() {
 		$("#dropdown-menu").toggle(500);
+	});
+	// VIEW SWITCHERS END
+
+	// SIGN OUT API CALL
+	$("#sign-out").click(function() {
+		$.ajax({
+            method: 'DELETE',
+            url: String(_config.api.inloApiUrl) + '/v1/user/login',
+            headers: {
+                Authorization: 'Bearer ' + getAuth("Authorization")
+            },
+            success: alert("Successfully signed out"),
+            error: function ajaxError(jqXHR, textStatus, errorThrown) {
+                console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+                console.error('Response: ', jqXHR.responseText);
+            }
+        });
 	});
 
 	/*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
