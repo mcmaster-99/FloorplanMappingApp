@@ -9,7 +9,7 @@ var jsSource = ['js/*.js'],
 	sassSource = ['scss/*.scss'],
 	htmlSource = ['*.html'],
 	cssOutput = "css",
-	output = 'assets';
+	output = 'js';
 
 
 gulp.task('copy', function(){
@@ -33,8 +33,6 @@ gulp.task('js', function(){
 	gulp.src(jsSource)
 	.pipe(uglify())
 	.on('error', (err) => { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
-	.pipe(concat('script.js'))
-	.pipe(gulp.dest(output))
 	.pipe(connect.reload())
 });
 

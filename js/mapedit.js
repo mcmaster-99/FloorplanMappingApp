@@ -27,7 +27,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                   '</defs>'+
                   '<!-- Grid [End] -->'+
 
-                  '<rect width="1000vw" height="1000vh" fill="url(#grid)" />'+
+                  '<rect width="1000vw" height="1000vh" x="-1000" y="-1000" fill="url(#grid)" />'+
                 '</svg';
         $("#draw").append(svgGridHTML);
     }
@@ -37,10 +37,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
     var drawing = new SVG('svgGrid')
                         .size("100%", "100%")
-                        .attr({x: 500,
-                               y: 500
-                              })
-                            .panZoom({zoomMin: 0.5, zoomMax: 20, zoomFactor: 0.2})
+                            .panZoom({zoomMin: 0.5, zoomMax: 2, zoomFactor: 0.2})
 
     /* Temporary stack for storing all user's floor plan data.
     ** Each index consists of an SVG object.
@@ -589,40 +586,37 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 // update room_ID
                 room_ID = e.target.id;
 
-                // remove room instance from SVG
-                this.instance.remove()
+                // remove all event handlers from all rooms
+                for (var i = 0; i < floorPlanSvg.length; i++) {
+                    $("#"+floorPlanSvg[i].node.id).off("click");
+                }
 
-                // update currentFloorPlan
+                
                 //ITERATE over floors
                 // iterate over rooms until you find room with roomID == room_ID
-                // delete that room 
+                // then delete that room 
                 for (var i = 0; i < currentFloorPlan.length; i++) {
                     for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
                         if (currentFloorPlan[i].rooms[j].roomID === room_ID) {
+                            // if room has any nodes
                             if (currentFloorPlan[i].rooms[j].hasOwnProperty("nodes")) {
                                 alert("Cannot delete room. Node attached.")
                             } else {
-                                console.log(currentFloorPlan[i].rooms);
+                                // remove room instance from SVG
+                                this.instance.remove()
                                 currentFloorPlan[i].rooms.splice(j,1);
-                                console.log(currentFloorPlan);
+
+                                // update floorPlanSvg
+                                floorPlanSvg.splice(floorPlanSvg.indexOf(i), 1);
+
+                                // update floorPlanGroups
+                                delete floorPlanGroups[room_ID];
                             }
 
                         }
                         
                         
                     }
-                }
-                //delete currentFloorPlan[room_ID];
-
-                // update floorPlanSvg
-                floorPlanSvg.splice(floorPlanSvg.indexOf(i), 1);
-
-                // update floorPlanGroups
-                delete floorPlanGroups[room_ID];
-
-                // remove all event handlers from all rooms
-                for (var i = 0; i < floorPlanSvg.length; i++) {
-                    $("#"+floorPlanSvg[i].node.id).off("click");
                 }
                 
             });
