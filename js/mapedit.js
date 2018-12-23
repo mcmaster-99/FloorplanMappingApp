@@ -1,13 +1,19 @@
 
 // Prompt user if they're sure they want to leave on page exit
 $(window).bind('beforeunload', function(){
-  return 'Are you sure you want to leave?';
+    if (currentFloorPlan !== initialFloorPlanData) {
+        return 'Are you sure you want to leave?';
+    }
 });
 
 //=============================================================
 //                          SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
+
+    // Redirect user if logged out
+    if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+    console.log(getAuth("Authorization"));
 
     // Function that creates a grid in HTML.
     // Reason for this: certain functions re-initialize floorplan and
@@ -33,7 +39,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
     }
     initializeGrid();
     initialize();
-
 
     var drawing = new SVG('svgGrid')
                         .size("100%", "100%")
@@ -142,7 +147,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
-                window.location.href = 'signin.html';
             }
         });
 
@@ -438,8 +442,29 @@ SVG.on(document, 'DOMContentLoaded', function() {
         }
 
         function completeRequest(result) {
-            console.log("save complete");
-            console.log("result is:", result);
+            // Get the modal
+            var modal = document.getElementById('saveModal');
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("myBtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks on the button, open the modal
+            modal.style.display = "block";
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+              modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+              if (event.target == modal) {
+                modal.style.display = "none";
+              }
+            }
         }
 
 
@@ -960,7 +985,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 error: function ajaxError(jqXHR, textStatus, errorThrown) {
                     console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
                     console.error('Response: ', jqXHR.responseText);
-                    window.location.href = 'signin.html';
                 }
             });
 

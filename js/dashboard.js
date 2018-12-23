@@ -1,23 +1,15 @@
 
 
-/*var authToken;
-WildRydes.authToken.then(function setAuthToken(token) {
-	if (token) {
-		authToken = token;
-	} else {
-		window.location.href = '/signin.html';
-	}
-}).catch(function handleTokenError(error) {
-	alert(error);
-	window.location.href = '/signin.html';
-});
-console.log(WildRydes);*/
-
 
 //=============================================================
 //						  SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
+
+	// Redirect user if logged out
+	if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+	console.log(document.cookie);
+
 	var floorPlan = new SVG('floorPlan').size('100%', '100%')
 								.panZoom({zoomMin: 0.5, zoomMax: 500, zoomFactor: 0.2})
 
@@ -85,7 +77,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 				error: function ajaxError(jqXHR, textStatus, errorThrown) {
 					console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
 					console.error('Response: ', jqXHR);
-					window.location.href = 'signin.html';
+					//window.location.href = 'signin.html';
 				}
 			});
 		}
@@ -503,12 +495,22 @@ SVG.on(document, 'DOMContentLoaded', function() {
             headers: {
                 Authorization: 'Bearer ' + getAuth("Authorization")
             },
-            success: alert("Successfully signed out"),
+            success: completeRequest,
             error: function ajaxError(jqXHR, textStatus, errorThrown) {
                 console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
                 console.error('Response: ', jqXHR.responseText);
             }
         });
+        function completeRequest() {
+        	// delete cookie by setting past expiration date
+        	document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/';
+
+        	// alert user of successful sign out
+        	alert("Successfully signed out");
+        	
+        	// redirect user to sign in page
+        	window.location.href = "signin.html";
+        }
 	});
 
 	/*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
