@@ -577,29 +577,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
     });
 
     // *****************
-    // CREATE FLOORPLAN 
-    // *****************
-    $("#create-floorplan").on('click', function(){
-
-        //window.location.href = 'dashboard.html';
-
-        create_floorplan();
-
-    });
-
-
-    // *****************
-    // DELETE FLOORPLAN 
-    // *****************
-    $("#delete-floorplan").on('click', function(){
-
-        //window.location.href = 'dashboard.html';
-
-        delete_floorplan(currentFloorPlan[0]);
-
-    });
-
-    // *****************
     //   DELETE ROOMS
     // *****************
     $("#delete-rooms").on('click', function() {  
