@@ -1,14 +1,12 @@
 
-
+// Redirect user if logged out
+if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
 //=============================================================
 //						  SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
 
-	// Redirect user if logged out
-	if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
-	console.log(document.cookie);
 
 	var floorPlan = new SVG('floorPlan').size('100%', '100%')
 								.panZoom({zoomMin: 0.5, zoomMax: 500, zoomFactor: 0.2})
@@ -463,11 +461,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	//$("#items-listed-div").hide();
 	//$("#dropdown-sort-div").hide();
 	$("#map-view-div").hide();
+	$("#edit-floorplan-btn-group").hide();
 
 	$("#list-view-btn").click(function() {
 		$("#prompt").fadeOut();
 		$("#floorPlan").fadeOut();
 		$("#map-view-text").fadeOut();
+		$("#edit-floorplan-btn-group").fadeOut();
 		$("#items-listed-div").delay(500).fadeIn("slow");
 		$("#dropdown-sort-div").delay(500).fadeIn("slow");
 	});
@@ -477,6 +477,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		$("#dropdown-sort-div").fadeOut();
 		$("#prompt").fadeOut();
 		$("#items-listed-div").fadeOut();
+		$("#edit-floorplan-btn-group").fadeIn("slow");
 		$("#floorPlan").delay(500).fadeIn("slow");
 		$("#map-view-text").delay(500).fadeIn("slow");
 		$("#map-view-div").delay(500).fadeIn("slow");
@@ -507,7 +508,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         	// alert user of successful sign out
         	alert("Successfully signed out");
-        	
+
         	// redirect user to sign in page
         	window.location.href = "signin.html";
         }

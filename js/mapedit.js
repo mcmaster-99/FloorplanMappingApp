@@ -1,19 +1,13 @@
 
-// Prompt user if they're sure they want to leave on page exit
-$(window).bind('beforeunload', function(){
-    if (currentFloorPlan !== initialFloorPlanData) {
-        return 'Are you sure you want to leave?';
-    }
-});
+// Redirect user if logged out
+if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
 //=============================================================
 //                          SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
 
-    // Redirect user if logged out
-    if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
-    console.log(getAuth("Authorization"));
+    
 
     // Function that creates a grid in HTML.
     // Reason for this: certain functions re-initialize floorplan and
@@ -54,8 +48,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
         floorID = "0",
         floorPlanGroups = {},   // each grouped room is stored with room_ID as keys
 
-        loaded = false;
+        loaded = false,
+        changesMade = false;
 
+    $(window).bind('beforeunload', function(){
+        if (changesMade === true) return 'Are you sure you want to leave?';
+    });
 
 
     var frontDoorSymbolSVG = new SVG('front-door-symbol-div')
@@ -218,6 +216,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             }
                             floorPlanGroups[room_ID] = roomGroup; 
                         }
+                    // if no rooms
                     } else {continue;}
          
                 }
@@ -627,6 +626,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                         
                     }
                 }
+                changesMade = true;
                 
             });
         }
@@ -638,13 +638,17 @@ SVG.on(document, 'DOMContentLoaded', function() {
     // *****************
     $("#drag").on('click', function(e) {
 
+        if (changesMade === true) {
+            console.log("currentFloorPlan", currentFloorPlan);
+            console.log("initialFloorPlanData", initialFloorPlanData);
+        }
+
         for (var key in floorPlanGroups) {
 
             // stop resizing for all rooms
             floorPlanGroups[key].node.children[0].instance.selectize(false).resize('stop')
 
             // make all room groups draggable
-            console.log(floorPlanGroups[key]);
             floorPlanGroups[key].draggable({snapToGrid: 8})
 
             // unbind event listener
@@ -721,14 +725,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 // update currentFloorPlan
                 for (var i = 0; i < currentFloorPlan.length; i++) {
                     for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
-                        console.log("here");
                         if (currentFloorPlan[i].rooms[j].roomID === room_ID) {
                             currentFloorPlan[i].rooms[j].x = new_room_x;
                             currentFloorPlan[i].rooms[j].y = new_room_y;
                         }
                     }
                 }
-                console.log(currentFloorPlan);
+                changesMade = true;
 
             })
         }
@@ -828,6 +831,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                 })
             }
+            changesMade = true;
             
         }
 
@@ -900,6 +904,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 }
 
             }) 
+            changesMade = true;
         })
 
     });    
@@ -998,6 +1003,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 floorPlanGroups[room_ID] = roomGroup;
                 
             }
+            changesMade = true;
     
         });  
 
@@ -1141,6 +1147,14 @@ $(document).ready(function(){
         $("#map-view-text").delay(500).fadeIn("slow");
         $("#svgGrid").delay(500).fadeIn("slow");
     });
+
+
+    // Prompt user if they're sure they want to leave on page exit
+    /*$(window).bind('beforeunload', function(){
+        if (currentFloorPlan === initialFloorPlanData) {
+            return 'Are you sure you want to leave?';
+        }
+    });*/
 
     /*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
         return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
