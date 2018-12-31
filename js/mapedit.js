@@ -1,13 +1,11 @@
 
 // Redirect user if logged out
-if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+//if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
 //=============================================================
 //                          SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
-
-    
 
     // Function that creates a grid in HTML.
     // Reason for this: certain functions re-initialize floorplan and
@@ -91,7 +89,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 .attr({
                                     id: 'cancel-changes-btn',
                                     x: 0,
-                                    y: 100,
+                                    y: 100
                                 }) 
 
     // Return to dashboard Button
@@ -115,6 +113,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     var saveGroup = buttonSvg.group().addClass("saveGroup").add(save_changes)
     var saveText = buttonSvg.text("Save")
                             .attr({
+                                id: 'save-text',
                                 x: Number(save_changes.node.attributes[2].value)-17,
                                 y: Number(save_changes.node.attributes[3].value)-15,
                                 fill: 'white'
@@ -567,7 +566,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     //   PRINT DATA 
     // *****************
     $("#print-data").on('click', function(){
-
+        console.log("here");
         console.log("currentFloorPlan", currentFloorPlan);
         console.log("initialFloorPlanData", initialFloorPlanData);
         console.log("floorPlanSvg", floorPlanSvg);

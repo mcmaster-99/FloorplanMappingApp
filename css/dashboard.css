@@ -1,3 +1,4 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -24,7 +25,7 @@ body {
 /* ---------------- NAVBAR ---------------- */
 #navbar-div {
   background-color: white;
-  box-shadow: 0px 2px 5px 0px #9A9D9D;
+  border-bottom: 1px solid #E0E0E0;
   width: 100%; }
 
 nav {
@@ -72,21 +73,26 @@ nav {
 #prompt {
   text-align: center;
   margin-top: 200px;
-  display: none; }
+  display: none;
+  font-family: "Roboto", sans-serif; }
 
 /* ---------------- VIEW SWITCHER BUTTONS ---------------- */
 #page-title {
   display: inline-block;
-  margin-right: 225px; }
+  margin-right: 18vw;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: "Roboto", sans-serif; }
 
 #views-div {
   text-align: center;
   padding: 10px;
-  box-shadow: 0px 2px 5px 0px #9A9D9D; }
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15); }
 
 #list-view-btn, #map-view-btn {
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
+  font-family: "Roboto", sans-serif;
   width: 50px;
   height: 25px;
   border: none;
@@ -108,13 +114,17 @@ nav {
   margin-left: 0px; }
 
 #sort-by-text {
-  display: inline-block; }
+  display: inline-block;
+  font-family: "Roboto", sans-serif;
+  margin-top: 5vh;
+  margin-left: 32vw; }
 
 #sort-selection {
   background-color: white;
   border: none;
   font-weight: bold;
-  margin-right: 275px; }
+  margin-right: 275px;
+  font-family: "Roboto", sans-serif; }
 
 #edit-mode-btn-div {
   text-align: center; }
@@ -137,11 +147,13 @@ nav {
 
 .item-names {
   float: left;
-  display: inline-block; }
+  display: inline-block;
+  font-family: "Roboto", sans-serif; }
 
 .item-rooms {
   float: right;
-  display: inline-block; }
+  display: inline-block;
+  font-family: "Roboto", sans-serif; }
 
 .item-rows {
   padding: 25px;
@@ -155,7 +167,8 @@ button#edit-devices-btn {
   float: left;
   background: gray;
   border: 0.1em solid gray;
-  border-radius: 10px; }
+  border-radius: 10px;
+  font-family: "Roboto", sans-serif; }
 
 /* ---------------- MAP VIEW DIV ---------------- */
 @-moz-document url-prefix() {
@@ -191,8 +204,11 @@ button {
   border: none;
   background: none; }
 
-#edit-floorplan-btn {
+#edit-floorplan-btn-group {
   cursor: pointer; }
+
+#edit-floorplan-btn {
+  box-shadow: 10px 10px black; }
 
 #edit-floorplan-btn-div {
   width: 25vw;
