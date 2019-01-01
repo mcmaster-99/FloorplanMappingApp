@@ -90,7 +90,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                     id: 'cancel-changes-btn',
                                     x: 0,
                                     y: 100
-                                }) 
+                                }).font({family:'Roboto'})
 
     // Return to dashboard Button
     var return_dashboard = buttonSvg.text("Return to dashboard")
@@ -98,7 +98,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                     id: 'return-dashboard-btn',
                                     x: 0,
                                     y: 50
-                                }) 
+                                }).font({family:'Roboto'})
 
     // Save Button
     var save_changes = buttonSvg.circle(50)
@@ -117,7 +117,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 x: Number(save_changes.node.attributes[2].value)-17,
                                 y: Number(save_changes.node.attributes[3].value)-15,
                                 fill: 'white'
-                            })
+                            }).font({family: 'Roboto'})
     saveGroup.add(saveText)
 
 
@@ -205,7 +205,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                                                 x: node_x,
                                                                 y: node_y,
                                                                 fill: "white",
-                                                                stroke: "#E3E3E3",
+                                                                stroke: "#00D9AE",
                                                                 id: node_ID})
 
                                     // add room node to room group

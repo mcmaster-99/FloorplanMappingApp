@@ -45,11 +45,12 @@ nav {
 .right-nav-icons {
   width: 2.5vw;
   height: 4vh;
-  color: gray;
   float: right;
   padding: 2px;
-  margin-right: 3vw;
-  filter: grayscale(100%); }
+  margin-right: 3vw; }
+
+#home-icon {
+  height: 4.5vh; }
 
 #add-devices-dropdown {
   float: right; }
@@ -100,7 +101,14 @@ nav {
   margin-top: 30px; }
 
 #list-view-btn:focus, #map-view-btn:focus {
-  border-bottom: 1px solid black;
+  background: #E3E3E5;
+  border-radius: 10px;
+  outline: none;
+  font-weight: bold; }
+
+#list-view-btn.selected, #map-view-btn.selected {
+  background: #E3E3E5;
+  border-radius: 10px;
   outline: none;
   font-weight: bold; }
 
@@ -207,12 +215,14 @@ button {
 #edit-floorplan-btn-group {
   cursor: pointer; }
 
-#edit-floorplan-btn {
-  box-shadow: 10px 10px black; }
-
 #edit-floorplan-btn-div {
-  width: 25vw;
-  height: 25vh;
+  width: 10vw;
+  height: 10vh;
   top: 70vh;
   right: 20vw;
   position: fixed; }
+
+circle#edit-floorplan-btn {
+  margin-top: -15px;
+  margin-left: -15px;
+  box-shadow: 100px 100px white; }

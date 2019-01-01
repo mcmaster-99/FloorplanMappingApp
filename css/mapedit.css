@@ -158,9 +158,6 @@ button {
   background: none;
   font-family: "Roboto", sans-serif; }
 
-#cancel-changes-btn, .saveGroup, #return-dashboard-btn {
-  font-family: "Roboto", sans-serif; }
-
 #cancel-changes-btn:hover, .saveGroup:hover, #return-dashboard-btn:hover {
   cursor: pointer; }
 

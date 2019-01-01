@@ -70,14 +70,16 @@ form.jumbotron {
 
 .container {
   text-align: center;
-  padding: 16px 0px 0px 0px; }
+  padding: 16px 0px 0px 0px;
+}
 
 .login-icons {
   width: 50%;
   height: 50%; }
 
 label[for="email"], label[for="password"] {
-  width: 30px; }
+  width: 15vw;
+}
 
 input[type="email"], input[type="password"] {
   width: 100%;
@@ -87,13 +89,15 @@ input[type="email"], input[type="password"] {
   border: 1px solid #E0E0E0;
   box-sizing: border-box;
   border-radius: 8px;
-  display: inline-block; }
+  display: inline-block; 
+}
 
 .forgot-pwd-div {
   font-size: 14px;
   text-align: left;
   margin: 8px 0px 0px 0px;
-  /*margin-right*/ }
+  /*margin-right*/ 
+}
 
 /**
 **************** CUSTOM CHECKBOX ****************

@@ -70,7 +70,7 @@ p.card-intro {
   height: 50%; }
 
 label[for="email"], label[for="password"] {
-  width: 30px; }
+  width: 15vw; }
 
 input[type="email"], input[type="password"] {
   width: 100%;

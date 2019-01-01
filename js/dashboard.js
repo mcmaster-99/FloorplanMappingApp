@@ -14,25 +14,23 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	var editFloorPlanButton = new SVG('edit-floorplan-btn-div')
 								.size("100%", "100%")
 								.attr({
-									x: 100,
-									y: 100
+									x: 80,
+									y: 80
 								})							
 
 	// Edit Floorplan Button
 	var editFloorPlanBackground = editFloorPlanButton.circle(50)
 											.attr({
 												id: "edit-floorplan-btn",
-												x: "75%",
-												y: "75%",
-												cx: "80%",
-												cy: "80%",
-												fill: 'black',
+												cx: "50%",
+												cy: "50%",
+												fill: 'black'
 											})
 	var editIcon = editFloorPlanButton.image('images/editPen.png')
 										.attr({
 											id: "edit-floorplan-icon",
-											x: "76.5%",
-											y: "73%",
+											x: "40%",
+											y: "33%",
 										})
 	var editFloorPlanGroup = editFloorPlanButton
 							.group()
@@ -243,7 +241,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			// draw and store device object initializer in deviceLocations object
 			deviceLocations[key] = {};
 			deviceLocations[key]["Icon"] = floorPlan.image("images/inlo.png", 10, 10);
-			deviceLocations[key]["Icon"].attr({x: device_x, y: device_y, fill: "white", stroke: "#E3E3E3"})
+			deviceLocations[key]["Icon"].attr({x: device_x, y: device_y, fill: "white", stroke: "#00D9AE"})
 
 		}
 	}
@@ -464,6 +462,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	$("#edit-floorplan-btn-group").hide();
 
 	$("#list-view-btn").click(function() {
+		$("#map-view-btn").removeClass('selected'); // remove selected class from previous element
+		$(this).addClass('selected'); // add selected class to (this)
 		$("#prompt").fadeOut();
 		$("#floorPlan").fadeOut();
 		$("#map-view-text").fadeOut();
@@ -474,6 +474,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 
 	$("#map-view-btn").click(function() {
+		$("#list-view-btn").removeClass('selected'); // remove selected class from previous element
+		$(this).addClass('selected'); // add selected class to (this)
 		$("#dropdown-sort-div").fadeOut();
 		$("#prompt").fadeOut();
 		$("#items-listed-div").fadeOut();
