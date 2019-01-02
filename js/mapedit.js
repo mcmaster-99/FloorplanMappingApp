@@ -54,6 +54,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     });
 
 
+    /* // Front door compass
     var frontDoorSymbolSVG = new SVG('front-door-symbol-div')
                         .size("100%", "100%")
                         .attr({
@@ -70,6 +71,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
         x: "30%",
         y: "50%"
     })
+    */
 
     drawing.on('panEnd', function(ev) {
         var vbX = drawing.viewbox().x;
