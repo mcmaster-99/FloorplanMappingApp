@@ -79,27 +79,34 @@ nav {
   padding: 10px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15); }
 
-#list-view-btn, #map-view-btn {
+/*#list-view-btn, #map-view-btn {
   text-align: center;
   font-size: 14px;
-  font-family: "Roboto", sans-serif;
+  font-family: $main-font;
   width: 50px;
   height: 25px;
   border: none;
   background-color: transparent;
-  margin-top: 30px; }
-
+  margin-top: 30px;
+}
 #list-view-btn:focus, #map-view-btn:focus {
-  border-bottom: 1px solid black;
+  background: #E3E3E5;
+  border-radius: 10px;
   outline: none;
-  font-weight: bold; }
-
+  font-weight: bold;
+}
+#list-view-btn.selected, #map-view-btn.selected {
+  background: #E3E3E5;
+  border-radius: 10px;
+  outline: none;
+  font-weight: bold;
+}
 .views-icons {
   width: 10px;
   height: 8px;
   float: left;
-  margin-top: 4px; }
-
+  margin-top: 4px;
+}*/
 #views-div {
   margin-left: 0px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15); }
@@ -118,14 +125,14 @@ nav {
 @-moz-document url-prefix() {
   /* moz specific CSS */
   #map-view-div {
-    width: 99vw;
-    height: 71vh; } }
+    width: 100vw;
+    height: 71.5vh; } }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   /* webkit specific CSS */
   #map-view-div {
-    width: 99vw;
-    height: 71vh; } }
+    width: 100vw;
+    height: 71.5vh; } }
 
 #map-editing-div {
   text-align: center; }
@@ -157,6 +164,9 @@ button {
   border: none;
   background: none;
   font-family: "Roboto", sans-serif; }
+
+#return-dashboard-btn {
+  filter: drop-shadow(10 10 2.75rem crimson); }
 
 #cancel-changes-btn:hover, .saveGroup:hover, #return-dashboard-btn:hover {
   cursor: pointer; }

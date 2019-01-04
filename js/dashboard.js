@@ -19,18 +19,15 @@ SVG.on(document, 'DOMContentLoaded', function() {
 								})							
 
 	// Edit Floorplan Button
-	var editFloorPlanBackground = editFloorPlanButton.circle(50)
+	var editFloorPlanBackground = editFloorPlanButton.image('images/Ellipse.svg')
 											.attr({
-												id: "edit-floorplan-btn",
-												cx: "50%",
-												cy: "50%",
-												fill: 'black'
+												id: "edit-floorplan-btn"
 											})
-	var editIcon = editFloorPlanButton.image('images/editPen.png')
+	var editIcon = editFloorPlanButton.image('images/edit.svg')
 										.attr({
 											id: "edit-floorplan-icon",
-											x: "40%",
-											y: "33%",
+											x: "17.5%",
+											y: "30%",
 										})
 	var editFloorPlanGroup = editFloorPlanButton
 							.group()
@@ -456,10 +453,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	// VIEW SWITCHERS
 
-	//$("#items-listed-div").hide();
-	//$("#dropdown-sort-div").hide();
-	$("#map-view-div").hide();
-	$("#edit-floorplan-btn-group").hide();
+	$("#items-listed-div").hide();
+	$("#dropdown-sort-div").hide();
+	//$("#map-view-div").hide();
+	//$("#edit-floorplan-btn-group").hide();
 
 	$("#list-view-btn").click(function() {
 		$("#map-view-btn").removeClass('selected'); // remove selected class from previous element

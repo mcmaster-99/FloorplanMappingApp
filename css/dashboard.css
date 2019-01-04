@@ -146,7 +146,8 @@ nav {
 
 /* ---------------- ITEMS LISTED DIV ---------------- */
 #items-listed-div {
-  text-align: center; }
+  text-align: center;
+  display: none; }
 
 #items-listed {
   width: 50vw;
@@ -222,7 +223,7 @@ button {
   right: 20vw;
   position: fixed; }
 
-circle#edit-floorplan-btn {
+#edit-floorplan-btn {
   margin-top: -15px;
   margin-left: -15px;
-  box-shadow: 100px 100px white; }
+  filter: drop-shadow(10 10 10 black); }

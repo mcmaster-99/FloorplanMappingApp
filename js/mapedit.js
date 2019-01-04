@@ -10,26 +10,26 @@ SVG.on(document, 'DOMContentLoaded', function() {
     // Function that creates a grid in HTML.
     // Reason for this: certain functions re-initialize floorplan and
     // change HTML content resulting in SVG Grid being erased.
-    function initializeGrid() {
+    /*function initializeGrid() {
         var svgGridHTML = '<svg id="svgGrid" xmlns="http://www.w3.org/2000/svg">'+
-                    '<!-- Grid -->'+
-                  '<defs>'+
-                    '<pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">'+
-                      '<path d="M 10 0 L 0 0 0 10" fill="none" stroke="gray" stroke-width="0.5"/>'+
-                    '</pattern>'+
+                            '<!-- Grid -->'+
+                          '<defs>'+
+                            '<pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">'+
+                              '<path d="M 10 0 L 0 0 0 10" fill="none" stroke="gray" stroke-width="0.5"/>'+
+                            '</pattern>'+
 
-                    '<pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">'+
-                      '<rect width="100" height="100" fill="url(#smallGrid)"/>'+
-                      '<path d="M 100 0 L 0 0 0 100" fill="none" stroke="gray" stroke-width="1"/>'+
-                    '</pattern>'+
-                  '</defs>'+
-                  '<!-- Grid [End] -->'+
+                            '<pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">'+
+                              '<rect width="100" height="100" fill="url(#smallGrid)"/>'+
+                              '<path d="M 100 0 L 0 0 0 100" fill="none" stroke="gray" stroke-width="1"/>'+
+                            '</pattern>'+
+                          '</defs>'+
+                          '<!-- Grid [End] -->'+
 
-                  '<rect width="1000vw" height="1000vh" x="-1000" y="-1000" fill="url(#grid)" />'+
-                '</svg';
+                          '<rect width="1000px" height="1000px" x="-1000" y="-1000" fill="url(#grid)" />'+
+                        '</svg';
         $("#draw").append(svgGridHTML);
     }
-    initializeGrid();
+    initializeGrid();*/
     initialize();
 
     var drawing = new SVG('svgGrid')
@@ -103,24 +103,21 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 }).font({family:'Roboto'})
 
     // Save Button
-    var save_changes = buttonSvg.circle(50)
+    var save_changes = buttonSvg.image('images/Ellipse.svg')
                             .attr({
                                 id: "save-changes-btn",
-                                cx: 110,
-                                cy: 110,
-                                fill: '#363636',
-                                stroke: '#E3E3E3',
-                                'stroke-width': 3
+                                x: 75,
+                                y: 90
                             })
-    var saveGroup = buttonSvg.group().addClass("saveGroup").add(save_changes)
     var saveText = buttonSvg.text("Save")
                             .attr({
                                 id: 'save-text',
-                                x: Number(save_changes.node.attributes[2].value)-17,
-                                y: Number(save_changes.node.attributes[3].value)-15,
+                                x: Number(save_changes.node.attributes[4].value)+15,
+                                y: Number(save_changes.node.attributes[5].value)+12.5,
                                 fill: 'white'
                             }).font({family: 'Roboto'})
-    saveGroup.add(saveText)
+    //var saveGroup = buttonSvg.group().addClass("saveGroup").add(save_changes).add(saveText)
+    
 
 
 
@@ -1132,6 +1129,8 @@ $(document).ready(function(){
     $("#dropdown-sort-div").hide();
 
     $("#list-view-btn").click(function() {
+        $("#map-view-btn").removeClass('selected'); // remove selected class from previous element
+        $(this).addClass('selected'); // add selected class to (this)
         $("#prompt").fadeOut();
         $("#tools").fadeOut();
         $("#svgGrid").fadeOut();
@@ -1142,6 +1141,8 @@ $(document).ready(function(){
 
 
     $("#map-view-btn").click(function() {
+        $("#list-view-btn").removeClass('selected'); // remove selected class from previous element
+        $(this).addClass('selected'); // add selected class to (this)
         $("#dropdown-sort-div").fadeOut();
         $("#prompt").fadeOut();
         $("#items-listed-div").fadeOut();

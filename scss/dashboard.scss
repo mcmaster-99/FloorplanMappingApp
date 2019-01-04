@@ -170,7 +170,7 @@ nav {
 
 #items-listed-div {
   text-align: center;
-  //display: none; // hide on page load
+  display: none; // hide on page load
 }
 
 #items-listed {
@@ -263,8 +263,8 @@ button {
   right: 20vw;
   position: fixed;
 }
-circle#edit-floorplan-btn {
+#edit-floorplan-btn {
   margin-top: -15px;
   margin-left: -15px;
-  box-shadow: 100px 100px white;
+  filter: drop-shadow(10 10 10 black);
 }
