@@ -79,38 +79,6 @@ nav {
   padding: 10px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15); }
 
-/*#list-view-btn, #map-view-btn {
-  text-align: center;
-  font-size: 14px;
-  font-family: $main-font;
-  width: 50px;
-  height: 25px;
-  border: none;
-  background-color: transparent;
-  margin-top: 30px;
-}
-#list-view-btn:focus, #map-view-btn:focus {
-  background: #E3E3E5;
-  border-radius: 10px;
-  outline: none;
-  font-weight: bold;
-}
-#list-view-btn.selected, #map-view-btn.selected {
-  background: #E3E3E5;
-  border-radius: 10px;
-  outline: none;
-  font-weight: bold;
-}
-.views-icons {
-  width: 10px;
-  height: 8px;
-  float: left;
-  margin-top: 4px;
-}*/
-#views-div {
-  margin-left: 0px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15); }
-
 #edit-mode-btn-div {
   text-align: center; }
 

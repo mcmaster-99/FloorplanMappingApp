@@ -45,7 +45,13 @@
                 
             </div>
 
-            <a href="#"><img src="images/home.svg" id="home-icon" class="right-nav-icons"></a>
+            <a class="selected" href="#">
+                <svg id="home-icon-svg" class="right-nav-icons" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path class="home-icon" fill-rule="evenodd" clip-rule="evenodd" d="M20 19C20 19.2432 19.9231 20.0511 19.5 20.5C19.0769 20.9489 18.2292 21 18 21H14V16H10V21H6C5.77083 21 4.92308 20.9489 4.5 20.5C4.07692 20.0511 4 19.2432 4 19V13H20V19Z" fill="#00D9A7"/>
+                    <path class="home-icon" fill-rule="evenodd" clip-rule="evenodd" d="M1 13C1 13 11.6122 3 12 3C12.3878 3 23 13 23 13H1Z" fill="#00D9A7"/>
+                </svg>
+            </a>
+
         </div>
 
       </nav>
@@ -69,7 +75,7 @@
     </div>
 
     <div id="dropdown-sort-div">
-        <p id="sort-by-text">Sort By:</p>
+        <p id="sort-by-text">Sort By</p>
         <select id="sort-selection">
             <option value="1">Rooms</option>
             <option value="2">Devices</option>
@@ -119,8 +125,6 @@
     <script src="node_modules/svg.draggable.js/dist/svg.draggable.js"></script>
     <script src="node_modules/svg.draw.js/dist/svg.draw.js"></script>
     <script src="node_modules/svg.panzoom.js/dist/svg.panzoom.js"></script>
-
-    <script src="node_modules/aws-sdk/dist/aws-sdk.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>

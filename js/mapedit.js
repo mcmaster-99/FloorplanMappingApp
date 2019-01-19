@@ -1,7 +1,7 @@
 
 // Redirect user if logged out
 //if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
-
+'use strict';
 //=============================================================
 //                          SVG.JS
 //=============================================================
@@ -1127,28 +1127,6 @@ $(document).ready(function(){
 
     $("#items-listed-div").hide();
     $("#dropdown-sort-div").hide();
-
-    $("#list-view-btn").click(function() {
-        $("#map-view-btn").removeClass('selected'); // remove selected class from previous element
-        $(this).addClass('selected'); // add selected class to (this)
-        $("#prompt").fadeOut();
-        $("#tools").fadeOut();
-        $("#svgGrid").fadeOut();
-        $("#map-view-text").fadeOut();
-        $("#items-listed-div").delay(500).fadeIn("slow");
-        $("#dropdown-sort-div").delay(500).fadeIn("slow");
-    });
-
-
-    $("#map-view-btn").click(function() {
-        $("#list-view-btn").removeClass('selected'); // remove selected class from previous element
-        $(this).addClass('selected'); // add selected class to (this)
-        $("#dropdown-sort-div").fadeOut();
-        $("#prompt").fadeOut();
-        $("#items-listed-div").fadeOut();
-        $("#map-view-text").delay(500).fadeIn("slow");
-        $("#svgGrid").delay(500).fadeIn("slow");
-    });
 
 
     // Prompt user if they're sure they want to leave on page exit

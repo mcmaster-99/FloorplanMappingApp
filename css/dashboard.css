@@ -44,13 +44,15 @@ nav {
 
 .right-nav-icons {
   width: 2.5vw;
-  height: 4vh;
+  height: 5vh;
   float: right;
   padding: 2px;
   margin-right: 3vw; }
 
-#home-icon {
-  height: 4.5vh; }
+#home-icon-svg {
+  height: auto;
+  padding-bottom: .6em;
+  border-bottom: 6px solid #00D9A7; }
 
 #add-devices-dropdown {
   float: right; }
@@ -86,9 +88,7 @@ nav {
   font-family: "Roboto", sans-serif; }
 
 #views-div {
-  text-align: center;
-  padding: 10px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15); }
+  text-align: center; }
 
 #list-view-btn, #map-view-btn {
   text-align: center;
@@ -121,18 +121,27 @@ nav {
 #views-div {
   margin-left: 0px; }
 
+#dropdown-sort-div {
+  text-align: center; }
+
 #sort-by-text {
   display: inline-block;
   font-family: "Roboto", sans-serif;
-  margin-top: 5vh;
-  margin-left: 32vw; }
+  font-size: .75em;
+  margin-top: 7vh; }
 
 #sort-selection {
   background-color: white;
-  border: none;
+  border: 1px solid silver;
+  border-radius: 10px;
   font-weight: bold;
-  margin-right: 275px;
-  font-family: "Roboto", sans-serif; }
+  margin-right: 22.5vw;
+  font-family: "Roboto", sans-serif;
+  font-size: .8em;
+  padding: .1em; }
+
+#sort-selection:focus {
+  outline: none; }
 
 #edit-mode-btn-div {
   text-align: center; }
@@ -146,11 +155,10 @@ nav {
 
 /* ---------------- ITEMS LISTED DIV ---------------- */
 #items-listed-div {
-  text-align: center;
-  display: none; }
+  text-align: center; }
 
 #items-listed {
-  width: 50vw;
+  width: 32vw;
   display: inline-block;
   padding-right: 10px; }
 
@@ -167,7 +175,7 @@ nav {
 .item-rows {
   padding: 25px;
   height: 11vh;
-  margin-top: 5vh;
+  margin-top: 2vh;
   border-radius: 1em;
   box-shadow: 0px 2px 5px 1px #9A9D9D; }
 
@@ -184,16 +192,19 @@ button#edit-devices-btn {
   /* moz specific CSS */
   #map-view-div {
     height: 79vh;
-    width: 193vh; } }
+    width: 193vh;
+    display: none; } }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   /* webkit specific CSS */
   #map-view-div {
     height: 79vh;
-    width: 198vh; } }
+    width: 198vh;
+    display: none; } }
 
 #map-editing-div {
-  text-align: center; }
+  text-align: center;
+  display: none; }
 
 #map-view-text {
   display: none; }
@@ -214,7 +225,8 @@ button {
   background: none; }
 
 #edit-floorplan-btn-group {
-  cursor: pointer; }
+  cursor: pointer;
+  display: none; }
 
 #edit-floorplan-btn-div {
   width: 10vw;

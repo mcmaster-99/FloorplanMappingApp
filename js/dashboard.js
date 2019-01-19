@@ -1,7 +1,7 @@
 
 // Redirect user if logged out
 //if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
-
+'use strict';
 //=============================================================
 //						  SVG.JS
 //=============================================================
@@ -47,7 +47,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		deviceLocations = {},   // stores device coordinates
 		deviceData = {},		// stores all device data
 		nodeData = {},
-		loaded = false;		 // Loaded boolean is set to false as default
+		loaded = false,	 // Loaded boolean is set to false as default
 		list_loaded = false;
 
 	function load_floorplan() {
@@ -453,17 +453,15 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	// VIEW SWITCHERS
 
-	$("#items-listed-div").hide();
-	$("#dropdown-sort-div").hide();
-	//$("#map-view-div").hide();
-	//$("#edit-floorplan-btn-group").hide();
+	//$("#items-listed-div").hide();
+	//$("#dropdown-sort-div").hide();
 
 	$("#list-view-btn").click(function() {
 		$("#map-view-btn").removeClass('selected'); // remove selected class from previous element
 		$(this).addClass('selected'); // add selected class to (this)
 		$("#prompt").fadeOut();
 		$("#floorPlan").fadeOut();
-		$("#map-view-text").fadeOut();
+		$("#map-view-div").fadeOut();
 		$("#edit-floorplan-btn-group").fadeOut();
 		$("#items-listed-div").delay(500).fadeIn("slow");
 		$("#dropdown-sort-div").delay(500).fadeIn("slow");
@@ -481,6 +479,16 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		$("#map-view-text").delay(500).fadeIn("slow");
 		$("#map-view-div").delay(500).fadeIn("slow");
 	});
+
+	$(".home-icon").click(function(){
+		var homeIconClass = document.getElementsByClassName("home-icon");
+		var homeIconId = document.getElementById("home-icon-svg");
+		for (var i = 0; i < $(".home-icon").length; i++) {
+			homeIconClass[i].attributes[4].nodeValue = "#00D9A7";
+		}
+		homeIconId.style.borderBottom = "6px solid #00D9A7";
+		homeIconId.style.paddingBottom = ".6em";
+    })
 
 	$("#dropdown-btn").click(function() {
 		$("#dropdown-menu").toggle(500);
