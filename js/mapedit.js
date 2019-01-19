@@ -911,8 +911,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
     // *****************
     //     ADD ROOM
     // *****************
-    $("#draw-rect").on('click', function(){
-
+    $("#draw-room").on('click', function(){
+        
+        // turn panning off
         drawing.panZoom(false);
 
         // make all rooms undraggable and unresizable
@@ -950,11 +951,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
             var x = room.node.attributes[3].nodeValue,
                 y = room.node.attributes[4].nodeValue,
-                floor = 1
+                floor = 1,
                 width = room.node.attributes[1].nodeValue,
                 height = room.node.attributes[2].nodeValue;
 
-
+            // calling room API to generate room ID and timestamp
             $.ajax({
                 method: 'POST',
                 url: String(_config.api.inloApiUrl) + '/v1/room',
@@ -969,10 +970,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
             });
 
             function completeRequest(result) {
-                console.log(result);
+                // creates room ID and time room was drawn
                 room_ID = result.roomID;
                 timestamp = result.timestamp;
 
+                var groupID = room_ID + "group";
+                var roomGroup = drawing.group().addClass(groupID);
                 var room_data = {
                                     "rooms": [
                                         {
@@ -986,15 +989,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                         }
                                     ]
                                 }
-                console.log(floorID);
+
                 currentFloorPlan[floorID].rooms.push(room_data.rooms[0]);
 
                 floorPlanSvg.push(room);
-
-                console.log(currentFloorPlan);
-                
-                var groupID = room_ID + "group";
-                var roomGroup = drawing.group().addClass(groupID);
 
                 roomGroup.add(floorPlanSvg[floorPlanSvg.length-1].addClass(groupID));
 
@@ -1002,6 +1000,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 
             }
             changesMade = true;
+
+            // turn panning back on
+            drawing.panZoom(true);
     
         });  
 

@@ -1,7 +1,7 @@
-
+'use strict';
 // Redirect user if logged out
 //if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
-'use strict';
+
 //=============================================================
 //						  SVG.JS
 //=============================================================
@@ -19,29 +19,16 @@ SVG.on(document, 'DOMContentLoaded', function() {
 								})							
 
 	// Edit Floorplan Button
-	var editFloorPlanBackground = editFloorPlanButton.image('images/Ellipse.svg')
+	var editFloorPlanIcon = editFloorPlanButton.image('images/mapeditIcon.svg')
 											.attr({
 												id: "edit-floorplan-btn"
 											})
-	var editIcon = editFloorPlanButton.image('images/edit.svg')
-										.attr({
-											id: "edit-floorplan-icon",
-											x: "17.5%",
-											y: "30%",
-										})
-	var editFloorPlanGroup = editFloorPlanButton
-							.group()
-							.attr({id:"edit-floorplan-btn-group"})
-	editFloorPlanGroup.add(editFloorPlanBackground)
-	editFloorPlanGroup.add(editIcon)
 
-	$("#edit-floorplan-btn-group").click(function(){
+	$("#edit-floorplan-btn").click(function(){
 		window.location.href = "mapedit.html";
 	})
 
-	/* Temporary stack for storing all user's floor plan data.
-	** Each index consists of an SVG object.
-	*/
+
 	var floorPlanSvg = [],	  // stores SVG nodes
 		floorPlanData = {},	 // stores initial data from database (room_ID as keys)
 		deviceLocations = {},   // stores device coordinates
@@ -455,6 +442,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	//$("#items-listed-div").hide();
 	//$("#dropdown-sort-div").hide();
+	$("#edit-floorplan-btn").hide();
 
 	$("#list-view-btn").click(function() {
 		$("#map-view-btn").removeClass('selected'); // remove selected class from previous element
@@ -462,7 +450,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		$("#prompt").fadeOut();
 		$("#floorPlan").fadeOut();
 		$("#map-view-div").fadeOut();
-		$("#edit-floorplan-btn-group").fadeOut();
+		$("#edit-floorplan-btn").fadeOut();
 		$("#items-listed-div").delay(500).fadeIn("slow");
 		$("#dropdown-sort-div").delay(500).fadeIn("slow");
 	});
@@ -474,7 +462,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		$("#dropdown-sort-div").fadeOut();
 		$("#prompt").fadeOut();
 		$("#items-listed-div").fadeOut();
-		$("#edit-floorplan-btn-group").fadeIn("slow");
+		$("#edit-floorplan-btn").fadeIn("slow");
 		$("#floorPlan").delay(500).fadeIn("slow");
 		$("#map-view-text").delay(500).fadeIn("slow");
 		$("#map-view-div").delay(500).fadeIn("slow");
