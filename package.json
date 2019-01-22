@@ -9,7 +9,6 @@
   "author": "Yash",
   "license": "ISC",
   "dependencies": {
-    "gulp": "latest",
     "gulp-coffee": "latest",
     "gulp-concat": "latest",
     "gulp-connect": "latest",
@@ -21,5 +20,8 @@
     "svg.panzoom.js": "^1.2.0",
     "svg.resize.js": "^1.4.2",
     "svg.select.js": "^3.0.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
   }
 }
