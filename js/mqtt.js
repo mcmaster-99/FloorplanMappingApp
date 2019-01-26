@@ -3,11 +3,7 @@ function connectSocket() {
 	// if user is running mozilla then use it's built-in WebSocket
 	window.WebSocket = window.WebSocket || window.MozWebSocket;
 
-	var connection = new WebSocket('ws://api.theinlo.com/api/events', {
-		headers: {
-	    	Authorization: 'Bearer ' + getAuth("Authorization"),
-		},
-	});
+	var connection = new WebSocket('ws://api.theinlo.com/events?access_token=lkajdlkjalkdjflkajdslkf');
 
 	console.log(getAuth("Authorization"));
 	//var body = {type:"subscribe",payload:{userID:access.userID}};

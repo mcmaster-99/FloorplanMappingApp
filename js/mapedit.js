@@ -7,6 +7,11 @@
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
 
+    // if user has made any changes, ask before exiting current page
+    $(window).bind('beforeunload', function(){
+        if (changesMade === true) return 'Are you sure you want to leave?';
+    });
+
     // Function that creates a grid in HTML.
     // Reason for this: certain functions re-initialize floorplan and
     // change HTML content resulting in SVG Grid being erased.
@@ -30,7 +35,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
         $("#draw").append(svgGridHTML);
     }
     initializeGrid();*/
-    initialize();
 
     var drawing = new SVG('svgGrid')
                         .size("100%", "100%")
@@ -45,13 +49,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
         currentFloorPlan = [],          // stores the current state of floorplan as user makes changes (room_ID as keys)
         floorID = "0",
         floorPlanGroups = {},   // each grouped room is stored with room_ID as keys
-
         loaded = false,
         changesMade = false;
-
-    $(window).bind('beforeunload', function(){
-        if (changesMade === true) return 'Are you sure you want to leave?';
-    });
 
 
     /* // Front door compass
@@ -74,20 +73,19 @@ SVG.on(document, 'DOMContentLoaded', function() {
     */
 
     drawing.on('panEnd', function(ev) {
-        var vbX = drawing.viewbox().x;
-        var vbY = drawing.viewbox().y;
-        console.log(drawing.viewbox());
+        let vbX = drawing.viewbox().x;
+        let vbY = drawing.viewbox().y;
     })
 
 
     // New SVG for buttons
-    var buttonSvg = new SVG('cancel-save-return-buttons-div').size("100%", "100%")
+    const buttonSvg = new SVG('cancel-save-return-buttons-div').size("100%", "100%")
                                                             .attr({
                                                                 x: 250,
                                                                 y: 250
                                                             })
     // Cancel changes Button
-    var cancel_changes = buttonSvg.text("Cancel")
+    const cancel_changes = buttonSvg.text("Cancel")
                                 .attr({
                                     id: 'cancel-changes-btn',
                                     x: 0,
@@ -95,7 +93,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 }).font({family:'Roboto'})
 
     // Return to dashboard Button
-    var return_dashboard = buttonSvg.text("Return to dashboard")
+    const return_dashboard = buttonSvg.text("Return to dashboard")
                                 .attr({
                                     id: 'return-dashboard-btn',
                                     x: 0,
@@ -103,13 +101,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 }).font({family:'Roboto'})
 
     // Save Button
-    var save_changes = buttonSvg.image('images/Ellipse.svg')
+    const save_changes = buttonSvg.image('images/Ellipse.svg')
                             .attr({
                                 id: "save-changes-btn",
                                 x: 75,
                                 y: 90
                             })
-    var saveText = buttonSvg.text("Save")
+    const saveText = buttonSvg.text("Save")
                             .attr({
                                 id: 'save-text',
                                 x: Number(save_changes.node.attributes[4].value)+15,
@@ -125,7 +123,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     //initialize();
 
     // Function to import floorplan
-    function initialize() {
+    const initialize = () => {
 
         // Empty floorPlan array of any previous/excess data
         initialFloorPlanData = [];
@@ -159,14 +157,14 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 initialFloorPlanData = JSON.stringify(result);
 
                 // Loop through all items in database and store in floorplan array/stack
-                for (var i = 0; i < result.length; i++) {
+                for (let i = 0; i < result.length; i++) {
 
                     if (result[i].rooms.length > 0) {
 
                         // iterate over rooms
-                        for (var j = 0; j < result[i].rooms.length; j++) {
+                        for (let j = 0; j < result[i].rooms.length; j++) {
 
-                            var room = drawing.rect(result[i].rooms[j].width, result[i].rooms[j].height)
+                            let room = drawing.rect(result[i].rooms[j].width, result[i].rooms[j].height)
                                 .attr({
                                     x: result[i].rooms[j].x,
                                     y: result[i].rooms[j].y,
@@ -178,24 +176,24 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             // change created room's id to roomID from database
                             room.node.id = result[i].rooms[j].roomID;
                             // store roomID in var
-                            var room_ID = room.node.id;
+                            let room_ID = room.node.id;
 
                             floorPlanSvg.push(room);   
 
 
-                            var groupID = room_ID + "group";
-                            var roomGroup = drawing.group().addClass(groupID);
+                            let groupID = room_ID + "group";
+                            let roomGroup = drawing.group().addClass(groupID);
                             roomGroup.add(room.addClass(groupID));
 
                             // iterate over nodes
                             if (result[i].rooms[j].hasOwnProperty("nodes")) {
-                                for (var k = 0; k < result[i].rooms[j].nodes.length; k++) {
+                                for (let k = 0; k < result[i].rooms[j].nodes.length; k++) {
 
-                                    var node_ID = result[i].rooms[j].nodes[k].nodeID;
+                                    let node_ID = result[i].rooms[j].nodes[k].nodeID;
 
-                                    var node_xy =  compute_node_xy(room_ID, node_ID);
-                                    var node_x = node_xy[0];
-                                    var node_y = node_xy[1];
+                                    let node_xy =  compute_node_xy(room_ID, node_ID);
+                                    let node_x = node_xy[0];
+                                    let node_y = node_xy[1];
 
                                     // draw and store device object initializer in deviceLocations object
                                     nodeLocations[node_ID] = {};
@@ -225,15 +223,17 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         }
     } // END initialize()
+    initialize()
 
 
-    function compute_node_xy(room_ID, node_ID) {
-        console.log(room_ID, node_ID);
-        var node_x,
+
+    const compute_node_xy = (room_ID, node_ID) => {
+
+        let node_x,
             node_y,
             node_x_frac,
-            node_y_frac;
-            vbX = drawing.viewbox().x;
+            node_y_frac,
+            vbX = drawing.viewbox().x,
             vbY = drawing.viewbox().y;
 
         // Grab SVG coordinates so we can subtract from element coordinates 
@@ -248,7 +248,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
         }
         // current coordinates of room
-        var room_x = document.getElementById(room_ID).getBoundingClientRect().x - svgX,
+        let room_x = document.getElementById(room_ID).getBoundingClientRect().x - svgX,
             room_y = document.getElementById(room_ID).getBoundingClientRect().y - svgY,
         // current dimensions of room
             height = document.getElementById(room_ID).getBoundingClientRect().height,
@@ -258,15 +258,15 @@ SVG.on(document, 'DOMContentLoaded', function() {
         // Determine which node has the requested node_ID
 
         // iterate over floor plans
-        for (var i = 0; i < currentFloorPlan.length; i++) {
+        for (let i = 0; i < currentFloorPlan.length; i++) {
 
             // iterate over rooms
-            for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
+            for (let j = 0; j < currentFloorPlan[i].rooms.length; j++) {
 
                 // if room has a nodes property
                 if (currentFloorPlan[i].rooms[j].hasOwnProperty("nodes")) {
                     // iterate over nodes
-                    for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
+                    for (let k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
 
                         if (node_ID === currentFloorPlan[i].rooms[j].nodes[k].nodeID) {
 
@@ -290,10 +290,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
     } // END compute_node_xy()
 
-    function cancelChanges() {
+
+    const cancelChanges = () => {
 
         // prompt user
-        var userResponse = confirm("Are you sure you want to cancel changes?");
+        const userResponse = confirm("Are you sure you want to cancel changes?");
 
         // if user clicks OK
         if (userResponse == true) {
@@ -302,8 +303,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
             currentFloorPlan = JSON.parse(initialFloorPlanData);
 
             // clear rooms groups
-            for (var i = 0; i < floorPlanSvg.length; i++) {
-                var groupId = floorPlanSvg[i].node.parentElement.id;
+            for (let i = 0; i < floorPlanSvg.length; i++) {
+                let groupId = floorPlanSvg[i].node.parentElement.id;
                 $("#"+String(groupId)).remove();
             }
 
@@ -311,14 +312,14 @@ SVG.on(document, 'DOMContentLoaded', function() {
             floorPlanSvg = [];
 
             // redraw rooms groups and reload floorPlanSvg
-            for (var i = 0; i < currentFloorPlan.length; i++) {
+            for (let i = 0; i < currentFloorPlan.length; i++) {
 
                     if (currentFloorPlan[i].rooms.length > 0) {
 
                         // iterate over rooms
-                        for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
+                        for (let j = 0; j < currentFloorPlan[i].rooms.length; j++) {
 
-                            var room = drawing.rect(currentFloorPlan[i].rooms[j].width, currentFloorPlan[i].rooms[j].height)
+                            let room = drawing.rect(currentFloorPlan[i].rooms[j].width, currentFloorPlan[i].rooms[j].height)
                                 .attr({
                                     x: currentFloorPlan[i].rooms[j].x,
                                     y: currentFloorPlan[i].rooms[j].y,
@@ -330,24 +331,24 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             // change created room's id to roomID from database
                             room.node.id = currentFloorPlan[i].rooms[j].roomID;
                             // store roomID in var
-                            var room_ID = room.node.id;
+                            let room_ID = room.node.id;
 
                             floorPlanSvg.push(room);   
 
 
-                            var groupID = room_ID + "group";
-                            var roomGroup = drawing.group().addClass(groupID);
+                            let groupID = room_ID + "group";
+                            let roomGroup = drawing.group().addClass(groupID);
                             roomGroup.add(room.addClass(groupID));
 
                             // iterate over nodes
                             if (currentFloorPlan[i].rooms[j].hasOwnProperty("nodes")) {
-                                for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
+                                for (let k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
 
-                                    var node_ID = currentFloorPlan[i].rooms[j].nodes[k].nodeID;
+                                    let node_ID = currentFloorPlan[i].rooms[j].nodes[k].nodeID;
 
-                                    var node_xy =  compute_node_xy(room_ID, node_ID);
-                                    var node_x = node_xy[0];
-                                    var node_y = node_xy[1];
+                                    let node_xy =  compute_node_xy(room_ID, node_ID);
+                                    let node_x = node_xy[0];
+                                    let node_y = node_xy[1];
 
                                     // draw and store device object initializer in deviceLocations object
                                     nodeLocations[node_ID] = {};
@@ -405,19 +406,15 @@ SVG.on(document, 'DOMContentLoaded', function() {
     } // END cancelChanges()
 
 
-    function save_floorplan(update_key) {
+    const save_floorplan = (update_key) => {
 
-        for (var i = 0; i < currentFloorPlan.length; i++) {
+        for (let i = 0; i < currentFloorPlan.length; i++) {
 
-            console.log(currentFloorPlan[i].floorID);
+            let floor_ID = currentFloorPlan[i].floorID,
 
-            var floor_ID = currentFloorPlan[i].floorID;
+                input_rooms = currentFloorPlan[i].rooms,
 
-            var input_rooms = currentFloorPlan[i].rooms;
-
-            var input_body = {"rooms": input_rooms};
-
-            console.log(input_body);
+                input_body = {"rooms": input_rooms};
 
             $.ajax({
 
@@ -440,13 +437,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
         function completeRequest(result) {
             // Get the modal
-            var modal = document.getElementById('saveModal');
+            let modal = document.getElementById('saveModal');
 
             // Get the button that opens the modal
-            var btn = document.getElementById("myBtn");
+            let btn = document.getElementById("myBtn");
 
             // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
+            let span = document.getElementsByClassName("close")[0];
 
             // When the user clicks on the button, open the modal
             modal.style.display = "block";
@@ -470,7 +467,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     } // END save_floorplan()
 
 
-    function create_floorplan() {
+    const create_floorplan = () => {
 
         $.ajax({
 
@@ -500,7 +497,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     } // END create_floorplan()
 
 
-    function delete_floorplan(currentFloorplan) {
+    const delete_floorplan = (currentFloorplan) => {
 
         //for (var i = 0; i < currentFloorPlan.length; i++) {
 
@@ -658,11 +655,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 e.preventDefault();
 
                 // Grab room_ID
+                console.log(e.target)
                 var room_ID = e.target.children["0"].id,
                     node_ID = e.target.children[1].id;
 
 
-                // if page was zoomed/panned
+                // if page was panned
                 // subtract SVG coords from new coords to get new device coords
                 if (document.getElementById("svgGrid").hasAttribute('viewBox')) {
                     console.log("here")
@@ -715,7 +713,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                     // Remove transform attribute and manually set X,Y coordinates of node
                     $("#"+e.target.childNodes[1].id).removeAttr("transform");
-                    new_node_locations = compute_node_xy(room_ID, node_ID);
+                    var new_node_locations = compute_node_xy(room_ID, node_ID);
                     $("#"+e.target.childNodes[1].id).attr("x", String(new_node_locations[0]));
                     $("#"+e.target.childNodes[1].id).attr("y", String(new_node_locations[1]));
                 }
@@ -747,9 +745,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
             floorPlanGroups[key].node.children[0].instance.selectize(false).resize('stop')
 
             // make all room groups draggable
-            console.log(floorPlanGroups[key]);
             for (var i = 1; i < floorPlanGroups[key].node.children.length; i++) {
-                console.log(floorPlanGroups[key].node.childNodes[i].instance);
                 floorPlanGroups[key].node.childNodes[i].instance.draggable({snapToGrid: 10})
 
                 // unbind event listener
@@ -773,10 +769,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                     
                     var node_ID = e.target.instance.node.id;
-                    console.log(room_ID, node_ID);
 
                     // compute new node coordinates
-                    console.log(e.target);
                     var roomX,
                         roomY,
                         roomWidth,
@@ -784,7 +778,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     // update currentFloorPlan
                     for (var i = 0; i < currentFloorPlan.length; i++) {
                         for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
-                            console.log("here");
                             if (currentFloorPlan[i].rooms[j].roomID === room_ID) {
                                 roomX = currentFloorPlan[i].rooms[j].x;
                                 roomY = currentFloorPlan[i].rooms[j].y;
@@ -793,21 +786,16 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             }
                         }
                     }
-                    console.log(roomX, roomY);
+
                     var new_node_x = document.getElementById(node_ID).getBoundingClientRect().x - svgX - roomX,
                         new_node_y = document.getElementById(node_ID).getBoundingClientRect().y - svgY - roomY;
-
-                        console.log(new_node_x, new_node_y);
 
                     var new_node_frac_x = new_node_x/roomWidth,
                         new_node_frac_y = new_node_y/roomHeight;
 
-                        console.log(new_node_frac_x, new_node_frac_y);
-
                     var node_locations = compute_node_xy(room_ID, node_ID),
                         node_x = node_locations[0],
                         node_y = node_locations[1];
-                    console.log(node_locations);
 
                     // Remove transform attribute and manually set X,Y coordinates of room
                     var new_room_x = e.target.getBoundingClientRect().x - svgX,
@@ -825,7 +813,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             }
                         }
                     }
-                    console.log(currentFloorPlan);
 
                 })
             }

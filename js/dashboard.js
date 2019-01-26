@@ -23,6 +23,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 											.attr({
 												id: "edit-floorplan-btn"
 											})
+											.style('cursor', 'pointer')
 
 	$("#edit-floorplan-btn").click(function(){
 		window.location.href = "mapedit.html";
@@ -37,11 +38,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		loaded = false,	 // Loaded boolean is set to false as default
 		list_loaded = false;
 
-	function load_floorplan() {
+	const load_floorplan = () => {
 
 		// Empty floorPlan array of any previous/excess data
-		var i = floorPlanSvg.length;
-		while (i !== 0) {floorPlanSvg.pop(); i--}
+		let length = floorPlanSvg.length;
+		while (length !== 0) {floorPlanSvg.pop(); length--}
 
 		// Checks if floorplan is loaded
 		if (loaded === true) {
@@ -64,7 +65,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 		function completeRequest(result) {
 			console.log('Response received from API: ', result);
-			var rawFloorPlan = JSON.stringify(result.Items);
+			let rawFloorPlan = JSON.stringify(result.Items);
 
 			/*var tmpDevicesArray = [];
 
@@ -80,12 +81,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
 				$("#map-view-text").append("Map view not yet available");
 			} else {
 				// Loop through all items in database and store in floorplan array/stack
-				for (var i = 0; i < result.length; i++) {
+				for (let i = 0; i < result.length; i++) {
 
 					if (result[i].rooms.length > 0) {
 						// iterate over rooms
-						for (var j = 0; j < result[i].rooms.length; j++) {
-							var room = floorPlan.rect(result[i].rooms[j].width, result[i].rooms[j].height)
+						for (let j = 0; j < result[i].rooms.length; j++) {
+							let room = floorPlan.rect(result[i].rooms[j].width, result[i].rooms[j].height)
 								.attr({
 									x: result[i].rooms[j].x,
 									y: result[i].rooms[j].y,
@@ -94,17 +95,17 @@ SVG.on(document, 'DOMContentLoaded', function() {
 									'stroke-width': 3
 								}) 
 							room.node.id = result[i].rooms[j].roomID;
-							var room_ID = result[i].rooms[j].roomID;
+							const room_ID = result[i].rooms[j].roomID;
 							floorPlanSvg.push(room);	
 							floorPlanData[room_ID] = result[i].rooms[j];
 
 							// iterate over nodes
 							if (result[i].rooms[j].hasOwnProperty("nodes")) {
-								for (var k = 0; k < result[i].rooms[j].nodes.length; k++) {
+								for (let k = 0; k < result[i].rooms[j].nodes.length; k++) {
 
-									var node_ID = result[i].rooms[j].nodes[k].nodeID;
+									const node_ID = result[i].rooms[j].nodes[k].nodeID;
 
-									var svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
+									const svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
 										svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y,
 										// current coordinates of room
 										room_x = result[i].rooms[j].x - svgX,
@@ -114,17 +115,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 										width = result[i].rooms[j].width;
 
 
-									var node_x_frac = result[i].rooms[j].nodes[k].x;
-									var node_y_frac = result[i].rooms[j].nodes[k].y;
+									const node_x_frac = result[i].rooms[j].nodes[k].x,
+										  node_y_frac = result[i].rooms[j].nodes[k].y,
 
-									var node_x = node_x_frac*width + room_x;
-									var node_y = node_y_frac*height + room_y;
+										  node_x = node_x_frac*width + room_x,
+										  node_y = node_y_frac*height + room_y;
 
-									console.log(j);
-									console.log(room_x, room_y);
-
-
-									var drawNode = floorPlan.image("images/inlo-device.png", 15, 10);
+									const drawNode = floorPlan.image("images/inlo-device.png", 15, 10);
 									drawNode.attr({
 																x: node_x,
 																y: node_y,
@@ -146,44 +143,44 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	}
 
-	function render_devices_initial() {
-		for (var key in deviceData) {
+	const render_devices_initial = () => {
+		for (let key in deviceData) {
 
-			var roomID = deviceData[key].roomID,
-				nearestNodeID = deviceData[key].nearestNodeID,
-				region = deviceData[key].region,
-				roomName = deviceData[key].roomName,
-				device_x,
-				device_y;
+			const 	roomID = deviceData[key].roomID,
+					nearestNodeID = deviceData[key].nearestNodeID,
+					region = deviceData[key].region,
+					roomName = deviceData[key].roomName;
+
+			let 	device_x,
+					device_y;
 
 			// Grab SVG coordinates so we can subtract from element coordinates 
 			// to give us the actual coordinates on the SVG document.
-			var svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
-				svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
+			const 	svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
+					svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
 
 			// current coordinates of room
-			var room_x = floorPlanData[roomID].x - svgX,
-				room_y = floorPlanData[roomID].y - svgY,
+			const	room_x = floorPlanData[roomID].x - svgX,
+					room_y = floorPlanData[roomID].y - svgY,
 			// current dimensions of room
-				height = floorPlanData[roomID].height,
-				width = floorPlanData[roomID].width;
+					height = floorPlanData[roomID].height,
+					width = floorPlanData[roomID].width;
 
 		
-			var nearestNodeData = {};
+			let nearestNodeData = {};
 
-			for (var n = 0; n < floorPlanData[roomID].nodes.length; n++) {
+			for (let n = 0; n < floorPlanData[roomID].nodes.length; n++) {
 				if (floorPlanData[roomID].nodes[n].nodeID === nearestNodeID){
 					nearestNodeData = floorPlanData[roomID].nodes[n];
-					console.log(nearestNodeData);
 				}
 			}
 
-			node_x_frac = nearestNodeData.x,
-			node_y_frac = nearestNodeData.y,
+			let node_x_frac = nearestNodeData.x,
+				node_y_frac = nearestNodeData.y,
 
 			// use raw node coordinates to compute actual node coordinates
-			node_x = node_x_frac*width + room_x,
-			node_y = node_y_frac*height + room_y;
+				node_x = node_x_frac*width + room_x,
+				node_y = node_y_frac*height + room_y;
 
 
 			// draw node at real location inside room
@@ -230,28 +227,28 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		}
 	}
 
-	function relocate_device(device_ID, new_room_ID, new_node_ID, new_region) {
+	const relocate_device = (device_ID, new_room_ID, new_node_ID, new_region) => {
 
-		var device_x, device_y;
+		let device_x, device_y;
 
 		// Grab SVG coordinates so we can subtract from element coordinates 
 		// to give us the actual coordinates on the SVG document.
-		var svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
-			svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
+		const 	svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
+			  	svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y,
 		// current coordinates of room
-		var room_x = document.getElementById(new_room_ID).getBoundingClientRect().x - svgX,
-			room_y = document.getElementById(new_room_ID).getBoundingClientRect().y - svgY,
+				room_x = document.getElementById(new_room_ID).getBoundingClientRect().x - svgX,
+				room_y = document.getElementById(new_room_ID).getBoundingClientRect().y - svgY,
 		// current dimensions of room
-			height = document.getElementById(new_room_ID).getBoundingClientRect().height,
-			width = document.getElementById(new_room_ID).getBoundingClientRect().width;
+				height = document.getElementById(new_room_ID).getBoundingClientRect().height,
+				width = document.getElementById(new_room_ID).getBoundingClientRect().width;
 
 		// grab raw node coordinates from floorPlanData array to determine actual node coords
-		node_x_frac = floorPlanData[new_room_ID][new_node_ID].x,
-		node_y_frac = floorPlanData[new_room_ID][new_node_ID].y,
+				node_x_frac = floorPlanData[new_room_ID][new_node_ID].x,
+				node_y_frac = floorPlanData[new_room_ID][new_node_ID].y,
 
 		// use raw node coordinates to compute actual node coordinates
-		node_x = node_x_frac*width + room_x,
-		node_y = node_y_frac*height + room_y;
+				node_x = node_x_frac*width + room_x,
+				node_y = node_y_frac*height + room_y;
 
 		// Determine device coordinates
 		switch(new_region){
@@ -291,7 +288,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	}
 
 
-	function read_devices_database(onReadComplete, relocate_device, populate_list) {
+	const read_devices_database = (onReadComplete, relocate_device, populate_list) => {
 		$.ajax({
 			method: 'GET',
 			url: String(_config.api.inloApiUrl) + '/v1/nodes',
@@ -310,7 +307,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		function completeRequest(result) {
 
 			console.log('Response received from API: ', result);
-			
 
 			// Store devices in deviceData array
 			for (var i = 0; i < result.length; i++) {
@@ -329,15 +325,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	}
 
-	function sort_list() {
-		var sorted = $(".item-names").sort(function (a, b) {
-			console.log("in sorting")
-			return a.textContent > b.textContent;
-		});
-		re_assign();
-	}
-
-	function populate_list() {
+	const populate_list = () => {
 		// Loop through deviceData object and create new div (.item-rows) 
 		// and assign name+room text values to divs
 		for (var key in deviceData) {
@@ -365,13 +353,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		//sort_list();
 	}
 
-	function update_list(device_ID, new_room_ID, new_node_ID, new_region) {
-		console.log(deviceData);
-		device_name = deviceData[device_ID].macAddress;
-		new_room_label = new_room_ID;
-		console.log(new_room_label);
+	const update_list = (device_ID, new_room_ID, new_node_ID, new_region) => {
 
-		for (var key in deviceData) {
+		const 	device_name = deviceData[device_ID].macAddress,
+				new_room_label = new_room_ID;
+
+		for (let key in deviceData) {
 
 			// if nothing has changed, exit/break
 			if (deviceData[key].location === new_room_ID) {
@@ -386,10 +373,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 				// iterate through rows to check which row has the name
 				$('.item-rows').each(function() {
-					console.log($(this.children[0]).text());
 					// device name equals new room label
 					if ($(this.children[0]).text() === device_name) {
-						console.log("here");
 						// fade out 
 						$(this.children[1]).fadeOut();
 						this.children[1].innerText = new_room_label;
@@ -400,9 +385,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		}
 	}
 
-	var sorted;
-	function sort_list() {
-		var sorted = $(".item-names").sort(function (a, b) {
+	const sort_list = () => {
+		let sorted = $(".item-names").sort(function (a, b) {
 			return a.textContent > b.textContent;
 		});
 		for (var i = 0; i < sorted.length; i++) {
@@ -410,7 +394,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		}
 	}
 
-	function re_assign() {
+	const re_assign = () => {
 		$(".item-names").each(function(i){
 			console.log(this.textContent);
 			//this.textContent = sorted[i].innerText;

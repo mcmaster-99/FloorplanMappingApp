@@ -1,7 +1,8 @@
 var gulp = require('gulp');
+	babel = require('gulp-babel'),
 	gutil = require('gulp-util'),
 	sass = require('gulp-sass'),
-	uglify = require('gulp-uglify'),
+	uglify = require('gulp-terser'),
 	concat = require('gulp-concat'),
 	connect = require('gulp-connect');
 
@@ -11,6 +12,15 @@ var jsSource = ['js/*.js'],
 	cssOutput = "css",
 	output = 'js';
 
+gulp.task('scripts', function() {     
+	return gulp.src(       
+		[       
+		'node_modules/babel-polyfill/dist/polyfill.js',       
+		'js/es6.js'       
+		])       
+	.pipe(babel({presets: ['es2015']}))       
+	.pipe(gulp.dest('compiled')) 
+});
 
 gulp.task('copy', function(){
 	gulp.src('index.html')
