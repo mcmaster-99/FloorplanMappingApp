@@ -8,9 +8,9 @@
 SVG.on(document, 'DOMContentLoaded', function() {
 
     // if user has made any changes, ask before exiting current page
-    $(window).bind('beforeunload', function(){
+    /*$(window).bind('beforeunload', function(){
         if (changesMade === true) return 'Are you sure you want to leave?';
-    });
+    });*/
 
     // Function that creates a grid in HTML.
     // Reason for this: certain functions re-initialize floorplan and
@@ -38,7 +38,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
     var drawing = new SVG('svgGrid')
                         .size("100%", "100%")
-                            .panZoom({zoomMin: 0.5, zoomMax: 2, zoomFactor: 0.2})
+                            .panZoom({zoomMin: 0.5, zoomMax: 2, zoomFactor: 0.1})
 
     /* Temporary stack for storing all user's floor plan data.
     ** Each index consists of an SVG object.
@@ -75,6 +75,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     drawing.on('panEnd', function(ev) {
         let vbX = drawing.viewbox().x;
         let vbY = drawing.viewbox().y;
+        console.log(drawing.viewbox())
     })
 
 
@@ -234,15 +235,16 @@ SVG.on(document, 'DOMContentLoaded', function() {
             node_x_frac,
             node_y_frac,
             vbX = drawing.viewbox().x,
-            vbY = drawing.viewbox().y;
+            vbY = drawing.viewbox().y,
+            vbZoom = drawing.viewbox().zoom;
 
         // Grab SVG coordinates so we can subtract from element coordinates 
         // to give us the actual coordinates on the SVG document.
 
         // if map is panned
         if (document.getElementById("svgGrid").hasAttribute('viewBox')) {
-            var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x - vbX,
-                svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y - vbY;
+            var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x - vbX * vbZoom,
+                svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y - vbY * vbZoom;
         } else {
             var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
                 svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
@@ -654,8 +656,20 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                 e.preventDefault();
 
+                var vbX = drawing.viewbox().x;
+                var vbY = drawing.viewbox().y;
+                var initialW = window.innerWidth;
+                var initialH = window.innerHeight;
+                var vbZoom = drawing.viewbox().zoom;
+                //var vb = drawing.node.attributes[7].nodeValue;
+                console.log("vbZoom ", vbZoom)
+                console.log("vbX ", vbX, "vbY ", vbY)
+                console.log("vb ", vb)
+                console.log(window)
+                console.log(e)
+
                 // Grab room_ID
-                console.log(e.target)
+                console.log(drawing);
                 var room_ID = e.target.children["0"].id,
                     node_ID = e.target.children[1].id;
 
@@ -666,30 +680,49 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     console.log("here")
                     var vbX = drawing.viewbox().x;
                     var vbY = drawing.viewbox().y;
-                    console.log(drawing.viewbox())
+                    var initialW = 840;
+                    var initialH = 489;
+                    var currentW = drawing.viewbox().width;
+                    var currentH = drawing.viewbox().height;
+                    var diffH = currentH - initialH;
+                    var diffW = currentW - initialW;
+                    var vbZoom = drawing.viewbox().zoom;
+                    var vb = drawing.node.attributes[7].nodeValue;
+                    console.log("vbZoom ", vbZoom)
+                    console.log("vbX ", vbX, "vbY ", vbY)
+                    console.log("vb ", vb)
+                    console.log(window)
+                    console.log("drawing viewbox ", drawing.viewbox())
 
                     // Grab SVG coordinates so we can subtract from element coordinates 
                     // to give us the actual coordinates on the SVG document.
                     // svgX/svgY is defined again below because it will change if SVG was panned/zoomed
-                    var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x - vbX,
-                        svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y - vbY;
-                        console.log(svgX, svgY)
+                    var svgX = vbZoom*(document.getElementById(drawing.node.id).getBoundingClientRect().x) - vbX,
+                        svgY = vbZoom*(document.getElementById(drawing.node.id).getBoundingClientRect().y) - vbY;
+                        console.log("diffW ", diffW)
+                        console.log("diffH ", diffH)
+                        console.log(document.getElementById(drawing.node.id).getBoundingClientRect().x)
+                        console.log(document.getElementById(drawing.node.id).getBoundingClientRect().y)
+                        console.log("svgX ", svgX, "svgY ", svgY)
+                        console.log("======================================")
 
-                    var new_room_x = e.target.getBoundingClientRect().x - svgX,
-                        new_room_y = e.target.getBoundingClientRect().y - svgY;
+                    // Manually adjust room's new x/y coordinates
+                    var new_room_x = (e.target.getBoundingClientRect().x - svgX),
+                        new_room_y = (e.target.getBoundingClientRect().y - svgY);
                     $("#"+e.target.id).removeAttr("transform");
                     $("#"+e.target.children[0].id).attr("x", String(new_room_x));
                     $("#"+e.target.children[0].id).attr("y", String(new_room_y));
 
                     // grab node coordinates
-                    /*var node_locations = compute_node_xy(room_ID, node_ID),
+                    var node_locations = compute_node_xy(room_ID, node_ID),
                         node_x = node_locations[0],
-                        node_y = node_locations[1];*/
+                        node_y = node_locations[1];
 
+                    // Manually adjust node's new x/y coordinates
                     $("#"+e.target.childNodes[1].id).removeAttr("transform");
                     new_node_locations = compute_node_xy(room_ID, node_ID);
-                    $("#"+e.target.children[1].id).attr("x", String(new_node_locations[0]));
-                    $("#"+e.target.children[1].id).attr("y", String(new_node_locations[1]));
+                    $("#"+e.target.children[1].id).attr("x", String(node_x));
+                    $("#"+e.target.children[1].id).attr("y", String(node_y));
                 
                 // if page was NOT zoomed/panned
                 } else {

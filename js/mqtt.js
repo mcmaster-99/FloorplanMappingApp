@@ -3,14 +3,15 @@ function connectSocket() {
 	// if user is running mozilla then use it's built-in WebSocket
 	window.WebSocket = window.WebSocket || window.MozWebSocket;
 
-	var connection = new WebSocket('ws://api.theinlo.com/events?access_token=lkajdlkjalkdjflkajdslkf');
+	var connection = new WebSocket('ws://api.theinlo.com/events');
 
 	console.log(getAuth("Authorization"));
-	//var body = {type:"subscribe",payload:{userID:access.userID}};
+
+	var body = {type:"subscribe",payload:{userID:"487fb8be4234493ba37a59599d77f30b"}};
 
 	connection.onopen = function () {
 
-		connection.send(getAuth("Authorization"));
+		connection.send(JSON.stringify(body));
 		// connection is opened and ready to use
 		console.log("open");
 
@@ -38,6 +39,7 @@ function connectSocket() {
 	};
 
 	connection.onclose = function (error) {
+		console.log(error);
 		// socket server closed
 		console.log("closed");
 		setTimeout(connectSocket, 5000);
