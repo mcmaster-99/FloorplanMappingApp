@@ -241,20 +241,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
         // Grab SVG coordinates so we can subtract from element coordinates 
         // to give us the actual coordinates on the SVG document.
 
-        // if map is panned
-        if (document.getElementById("svgGrid").hasAttribute('viewBox')) {
-            var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x - vbX * vbZoom,
-                svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y - vbY * vbZoom;
-        } else {
-            var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-                svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
-        }
         // current coordinates of room
-        let room_x = document.getElementById(room_ID).getBoundingClientRect().x - svgX,
-            room_y = document.getElementById(room_ID).getBoundingClientRect().y - svgY,
+        var room_x = (document.getElementById(room_ID).instance.x() - document.getElementById(room_ID).instance.transform().x),
+            room_y = (document.getElementById(room_ID).instance.y() - document.getElementById(room_ID).instance.transform().y),
         // current dimensions of room
-            height = document.getElementById(room_ID).getBoundingClientRect().height,
-            width = document.getElementById(room_ID).getBoundingClientRect().width;
+            height = document.getElementById(room_ID).instance.height(),
+            width = document.getElementById(room_ID).instance.width();
+
 
         // grab raw node coordinates from initialFloorPlanData array to determine actual node coords
         // Determine which node has the requested node_ID
@@ -275,10 +268,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             node_x_frac = currentFloorPlan[i].rooms[j].nodes[k].x,
                             node_y_frac = currentFloorPlan[i].rooms[j].nodes[k].y;
 
-                        } else {
-                            continue;
-                        }
-
+                        } else {continue;}
                     }
                 } else {continue;}
             }
@@ -635,11 +625,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
     // *****************
     $("#drag").on('click', function(e) {
 
-        if (changesMade === true) {
-            console.log("currentFloorPlan", currentFloorPlan);
-            console.log("initialFloorPlanData", initialFloorPlanData);
-        }
-
         for (var key in floorPlanGroups) {
 
             // stop resizing for all rooms
@@ -656,100 +641,27 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                 e.preventDefault();
 
-                var vbX = drawing.viewbox().x;
-                var vbY = drawing.viewbox().y;
-                var initialW = window.innerWidth;
-                var initialH = window.innerHeight;
-                var vbZoom = drawing.viewbox().zoom;
-                //var vb = drawing.node.attributes[7].nodeValue;
-                console.log("vbZoom ", vbZoom)
-                console.log("vbX ", vbX, "vbY ", vbY)
-                console.log("vb ", vb)
-                console.log(window)
-                console.log(e)
-
                 // Grab room_ID
-                console.log(drawing);
-                var room_ID = e.target.children["0"].id,
+                let room_ID = e.target.children["0"].id,
                     node_ID = e.target.children[1].id;
 
+                // Manually adjust room's new x/y coordinates
+                let new_room_x = e.target.firstChild.instance.x() + e.target.instance.transform().x,
+                    new_room_y = e.target.firstChild.instance.y() + e.target.instance.transform().y;
+                $("#"+e.target.id).removeAttr("transform");
+                $("#"+e.target.children[0].id).attr("x", new_room_x);
+                $("#"+e.target.children[0].id).attr("y", new_room_y);
 
-                // if page was panned
-                // subtract SVG coords from new coords to get new device coords
-                if (document.getElementById("svgGrid").hasAttribute('viewBox')) {
-                    console.log("here")
-                    var vbX = drawing.viewbox().x;
-                    var vbY = drawing.viewbox().y;
-                    var initialW = 840;
-                    var initialH = 489;
-                    var currentW = drawing.viewbox().width;
-                    var currentH = drawing.viewbox().height;
-                    var diffH = currentH - initialH;
-                    var diffW = currentW - initialW;
-                    var vbZoom = drawing.viewbox().zoom;
-                    var vb = drawing.node.attributes[7].nodeValue;
-                    console.log("vbZoom ", vbZoom)
-                    console.log("vbX ", vbX, "vbY ", vbY)
-                    console.log("vb ", vb)
-                    console.log(window)
-                    console.log("drawing viewbox ", drawing.viewbox())
+                // use node compute function to grab node coordinates
+                let node_locations = compute_node_xy(room_ID, node_ID),
+                    node_x = node_locations[0],
+                    node_y = node_locations[1];
 
-                    // Grab SVG coordinates so we can subtract from element coordinates 
-                    // to give us the actual coordinates on the SVG document.
-                    // svgX/svgY is defined again below because it will change if SVG was panned/zoomed
-                    var svgX = vbZoom*(document.getElementById(drawing.node.id).getBoundingClientRect().x) - vbX,
-                        svgY = vbZoom*(document.getElementById(drawing.node.id).getBoundingClientRect().y) - vbY;
-                        console.log("diffW ", diffW)
-                        console.log("diffH ", diffH)
-                        console.log(document.getElementById(drawing.node.id).getBoundingClientRect().x)
-                        console.log(document.getElementById(drawing.node.id).getBoundingClientRect().y)
-                        console.log("svgX ", svgX, "svgY ", svgY)
-                        console.log("======================================")
-
-                    // Manually adjust room's new x/y coordinates
-                    var new_room_x = (e.target.getBoundingClientRect().x - svgX),
-                        new_room_y = (e.target.getBoundingClientRect().y - svgY);
-                    $("#"+e.target.id).removeAttr("transform");
-                    $("#"+e.target.children[0].id).attr("x", String(new_room_x));
-                    $("#"+e.target.children[0].id).attr("y", String(new_room_y));
-
-                    // grab node coordinates
-                    var node_locations = compute_node_xy(room_ID, node_ID),
-                        node_x = node_locations[0],
-                        node_y = node_locations[1];
-
-                    // Manually adjust node's new x/y coordinates
-                    $("#"+e.target.childNodes[1].id).removeAttr("transform");
-                    new_node_locations = compute_node_xy(room_ID, node_ID);
-                    $("#"+e.target.children[1].id).attr("x", String(node_x));
-                    $("#"+e.target.children[1].id).attr("y", String(node_y));
+                // Manually adjust node's new x/y coordinates
+                $("#"+e.target.childNodes[1].id).removeAttr("transform");
+                $("#"+e.target.children[1].id).attr("x", String(node_x));
+                $("#"+e.target.children[1].id).attr("y", String(node_y));
                 
-                // if page was NOT zoomed/panned
-                } else {
-
-                    // Grab SVG coordinates so we can subtract from element coordinates 
-                    // to give us the actual coordinates on the SVG document.
-                    var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-                        svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
-
-                    // grab node coordinates
-                    /*var node_locations = compute_node_xy(room_ID, node_ID),
-                        node_x = node_locations[0],
-                        node_y = node_locations[1];*/
-
-                    // Remove transform attribute and manually set X,Y coordinates of room
-                    var new_room_x = e.target.getBoundingClientRect().x - svgX,
-                        new_room_y = e.target.getBoundingClientRect().y - svgY;
-                    $("#"+e.target.id).removeAttr("transform");
-                    $("#"+e.target.children[0].id).attr("x", String(new_room_x));
-                    $("#"+e.target.children[0].id).attr("y", String(new_room_y));
-
-                    // Remove transform attribute and manually set X,Y coordinates of node
-                    $("#"+e.target.childNodes[1].id).removeAttr("transform");
-                    var new_node_locations = compute_node_xy(room_ID, node_ID);
-                    $("#"+e.target.childNodes[1].id).attr("x", String(new_node_locations[0]));
-                    $("#"+e.target.childNodes[1].id).attr("y", String(new_node_locations[1]));
-                }
 
                 // update currentFloorPlan
                 for (var i = 0; i < currentFloorPlan.length; i++) {
@@ -759,11 +671,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
                             currentFloorPlan[i].rooms[j].y = new_room_y;
                         }
                     }
-                }
+                } // END update currentFloorPlan
+
                 changesMade = true;
 
-            })
-        }
+            }) // END dragend
+        } // END for loop
 
     });
 

@@ -12,12 +12,14 @@ function connectSocket() {
 	connection.onopen = function () {
 
 		connection.send(JSON.stringify(body));
+
+		//connection.send(getAuth("Authorization"));
 		// connection is opened and ready to use
 		console.log("open");
-
-		connection.on("message", function incoming(data){
-			console.log("received " + data);
-		})
+		connection.send('{"type":"subscribe","payload":{"userID":"487fb8be4234493ba37a59599d77f30b"}}');
+		//connection.on("message", function incoming(data){
+		//	console.log("received " + data);
+		//})
 	};
 
 	connection.onerror = function (error) {
@@ -30,6 +32,7 @@ function connectSocket() {
 		// from server is json)
 		try {
 		  var json = JSON.parse(message.data);
+		console.log(json);
 		} catch (e) {
 		  console.log('This doesn\'t look like a valid JSON: ',
 		      message.data);
