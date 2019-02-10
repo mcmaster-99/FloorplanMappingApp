@@ -105,10 +105,13 @@ function getAuth(cname) {
         signin(email, password,
             function signinSuccess(result) {
                 console.log('Successfully Logged In');
-                console.log("result", result);
+                // console.log("result", result);
 
                 setAuth("Authorization", result.token, 1);
-                console.log(getAuth("Authorization"));
+                // console.log(getAuth("Authorization"));
+
+                // Set userID as global variable
+		window.userID = result.userID;
 
                 window.location.href = 'dashboard.html';
             },
