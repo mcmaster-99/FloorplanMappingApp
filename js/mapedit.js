@@ -37,7 +37,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     initializeGrid();*/
 
     var drawing = new SVG('svgGrid')
-                        .size("90%", "100%")
+                        .size("100%", "100%")
                             .panZoom({zoomMin: 0.5, zoomMax: 2, zoomFactor: 0.1})
 
     /* Temporary stack for storing all user's floor plan data.
