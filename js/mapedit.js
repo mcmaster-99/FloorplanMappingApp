@@ -37,7 +37,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
     initializeGrid();*/
 
     var drawing = new SVG('svgGrid')
-                        .size("100%", "100%")
+                        .size("90%", "100%")
                             .panZoom({zoomMin: 0.5, zoomMax: 2, zoomFactor: 0.1})
 
     /* Temporary stack for storing all user's floor plan data.
@@ -85,16 +85,45 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                                                 x: 250,
                                                                 y: 250
                                                             })
+    const backDrop = buttonSvg.image("images/mapEditButtonsBackdrop.svg")
+                                .attr({
+                                    id: "mapEditButtonsBackdrop",
+                                    x: 0,
+                                    y: 0
+                                })
     // Cancel changes Button
     const cancel_changes = buttonSvg.text("Cancel")
                                 .attr({
                                     id: 'cancel-changes-btn',
-                                    x: 0,
-                                    y: 100
+                                    x: '10%',
+                                    y: '27.5%'
                                 }).font({family:'Roboto'})
 
+    // Save Button
+    const saveText = buttonSvg.text("Save")
+                            .attr({
+                                id: 'save-text',
+                                x: '30%',
+                                y: '27.5%'
+                            }).font({family: 'Roboto'})  
+
+    const doneRectangle = buttonSvg.image('images/doneRectangle.svg')
+                                .attr({
+                                    id: "save-changes-btn",
+                                    x: '45%',
+                                    y: '35%'
+                                })    
+
+    const doneText = buttonSvg.text("Done")
+                                .attr({
+                                    id: 'return-dashboard-btn',
+                                    x: '48%',
+                                    y: '30%',
+                                    fill: 'white'
+                                }).font({family:'Roboto'})                 
+
     // Return to dashboard Button
-    const return_dashboard = buttonSvg.text("Return to dashboard")
+    /*const return_dashboard = buttonSvg.text("Return to dashboard")
                                 .attr({
                                     id: 'return-dashboard-btn',
                                     x: 0,
@@ -114,8 +143,15 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 x: Number(save_changes.node.attributes[4].value)+15,
                                 y: Number(save_changes.node.attributes[5].value)+12.5,
                                 fill: 'white'
-                            }).font({family: 'Roboto'})
-    //var saveGroup = buttonSvg.group().addClass("saveGroup").add(save_changes).add(saveText)
+                            }).font({family: 'Robotosave'})*/
+
+    var saveGroup = buttonSvg.group()
+                    .addClass("saveGroup")
+                    .add(backDrop)
+                    .add(cancel_changes)
+                    .add(saveText)
+                    .add(doneRectangle)
+                    .add(doneText)
     
 
 

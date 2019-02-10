@@ -31,6 +31,7 @@ $main-font: 'Roboto', sans-serif;
 
 body {
   background-color: #f9f8fb;
+  overflow: hidden; // disable scrollbars
 }
 /* ---------------- NAVBAR ---------------- */
 #navbar-div {
@@ -139,17 +140,10 @@ nav {
   height: 100%;
 }
 #cancel-save-return-buttons-div {
-  width: 20vw;
-  height: 25vh;
+  width: 30vw;
+  height: 10vh;
   bottom: 0px;
-  right: 20vw;
-  position: fixed;
-}
-#front-door-symbol-div {
-  width: 20vw;
-  height: 25vh;
-  bottom: 0px;
-  right: 70vw;
+  right: 30%;
   position: fixed;
 }
 
