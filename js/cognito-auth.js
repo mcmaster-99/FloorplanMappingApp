@@ -110,8 +110,8 @@ function getAuth(cname) {
                 setAuth("Authorization", result.token, 1);
                 // console.log(getAuth("Authorization"));
 
-                // Set userID as global variable
-		window.userID = result.userID;
+		setAuth("userID", result.userID, 1);
+		// console.log(getAuth("userID"));
 
                 window.location.href = 'dashboard.html';
             },

@@ -1,4 +1,5 @@
 console.log(getAuth("Authorization"));
+console.log("userID", getAuth("userID"));
 function connectSocket() {
 	// if user is running mozilla then use it's built-in WebSocket
 	window.WebSocket = window.WebSocket || window.MozWebSocket;
@@ -6,15 +7,15 @@ function connectSocket() {
 	var connection = new WebSocket('wss://api.theinlo.com/events');
 
 	console.log(getAuth("Authorization"));
-	//var body = {type:"subscribe",payload:{userID:access.userID}};
+	var body = '{"type":"subscribe","payload":{"userID":"' + getAuth("userID") + '"}}';
+	console.log(body);
 
 	connection.onopen = function () {
 
 		//connection.send(getAuth("Authorization"));
 		// connection is opened and ready to use
 		console.log("open");
-		console.log("userID", window.userID);
-		connection.send('{"type":"subscribe","payload":{"userID": ${window.userID}}}');
+		connection.send(body);
 		//connection.on("message", function incoming(data){
 		//	console.log("received " + data);
 		//})

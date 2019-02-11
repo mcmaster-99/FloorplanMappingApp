@@ -1,8 +1,7 @@
 'use strict';
 // Redirect user if logged out
-//if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
-console.log(window.userID);
 
 //=============================================================
 //						  SVG.JS
