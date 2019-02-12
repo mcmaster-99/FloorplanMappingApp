@@ -54,7 +54,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			  console.log(deviceData);
 
 			  update_list(json.nodeID, json.roomName, json.nearestNodeID, json.region);
+			  relocate_device(json.nodeID, json.roomName, json.nearestNodeID, json.region);
 			} catch (e) {
+			  console.error(error);
 			  console.log('This doesn\'t look like a valid JSON: ',
 			      message.data);
 			  return;
@@ -388,7 +390,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			}
 
 			render_devices_initial();
-			//relocate_device("dd2", "rm3", "d3", "F");
+			relocate_device("dd2", "rm3", "d3", "F");
 			populate_list();
 			setup_websocket(deviceData);
 			//deviceData.dd2.location = "rm1";
@@ -490,9 +492,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	load_floorplan();
 	read_devices_database(render_devices_initial, connectSocket, populate_list);
 
-	//console.log(deviceData);
-
-	//connectSocket();
 
 
 
