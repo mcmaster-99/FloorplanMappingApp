@@ -10,58 +10,6 @@ if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
 console.log(getAuth("Authorization"));
 console.log("userID", getAuth("userID"));
-function connectSocket() {
-	// if user is running mozilla then use it's built-in WebSocket
-	window.WebSocket = window.WebSocket || window.MozWebSocket;
-
-	var connection = new WebSocket('wss://api.theinlo.com/events');
-
-	console.log(getAuth("Authorization"));
-	var body = '{"type":"subscribe","payload":{"userID":"' + getAuth("userID") + '"}}';
-	console.log(body);
-
-	connection.onopen = function () {
-
-		//connection.send(getAuth("Authorization"));
-		// connection is opened and ready to use
-		console.log("open");
-		connection.send(body);
-		//connection.on("message", function incoming(data){
-		//	console.log("received " + data);
-		//})
-	};
-
-	connection.onerror = function (error) {
-		// an error occurred when sending/receiving data
-		console.log(error);
-	};
-
-	connection.onmessage = function (message) {
-		// try to decode json (I assume that each message
-		// from server is json)
-		try {
-		  var json = JSON.parse(message.data);
-		  console.log(json);
-		  //update_list(json.nodeID, json.roomName, json.nearestNodeID, json.region);
-		} catch (e) {
-		  console.log('This doesn\'t look like a valid JSON: ',
-		      message.data);
-		  return;
-		}
-		// handle incoming message
-	};
-
-	connection.onclose = function (error) {
-		// socket server closed
-		console.log("closed");
-		setTimeout(connectSocket, 5000);
-	};
-
-	function reOpen() {
-		connection = new WebSocket('wss://api.theinlo.com/events');
-	}
-  
-}
 
 
 
@@ -69,6 +17,65 @@ function connectSocket() {
 //						  SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
+
+	//==============================================================================================
+	function connectSocket(deviceData) {
+		// if user is running mozilla then use it's built-in WebSocket
+		window.WebSocket = window.WebSocket || window.MozWebSocket;
+	
+		var connection = new WebSocket('wss://api.theinlo.com/events');
+	
+		console.log(getAuth("Authorization"));
+		var body = '{"type":"subscribe","payload":{"userID":"' + getAuth("userID") + '"}}';
+		console.log(body);
+	
+		connection.onopen = function () {
+	
+			//connection.send(getAuth("Authorization"));
+			// connection is opened and ready to use
+			console.log("open");
+			connection.send(body);
+			//connection.on("message", function incoming(data){
+			//	console.log("received " + data);
+			//})
+		};
+	
+		connection.onerror = function (error) {
+			// an error occurred when sending/receiving data
+			console.log(error);
+		};
+	
+		connection.onmessage = function (message) {
+			// try to decode json (I assume that each message
+			// from server is json)
+			try {
+			  var json = JSON.parse(message.data);
+			  console.log(json);
+			  console.log(deviceData);
+			  //update_list(json.nodeID, json.roomName, json.nearestNodeID, json.region);
+			} catch (e) {
+			  console.log('This doesn\'t look like a valid JSON: ',
+			      message.data);
+			  return;
+			}
+			// handle incoming message
+		};
+	
+		connection.onclose = function (error) {
+			// socket server closed
+			console.log("closed");
+			setTimeout(connectSocket, 5000);
+		};
+	
+		function reOpen() {
+			connection = new WebSocket('wss://api.theinlo.com/events');
+		}
+  
+	}
+
+	//===========================================================================================
+
+
 
 
 	var floorPlan = new SVG('floorPlan').size('100%', '100%')
@@ -351,7 +358,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	}
 
 
-	const read_devices_database = (onReadComplete, relocate_device, populate_list) => {
+	const read_devices_database = (onReadComplete, setup_websocket, populate_list) => {
 		$.ajax({
 			method: 'GET',
 			url: String(_config.api.inloApiUrl) + '/v1/nodes',
@@ -382,6 +389,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			onReadComplete();
 			//relocate_device("dd2", "rm3", "d3", "F");
 			populate_list();
+			setup_websocket(deviceData);
 			//deviceData.dd2.location = "rm1";
 			//update_list("dd2", "rm3", "d1", "F");
 		}
@@ -391,6 +399,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	const populate_list = () => {
 		// Loop through deviceData object and create new div (.item-rows) 
 		// and assign name+room text values to divs
+		console.log(deviceData);
 		for (var key in deviceData) {
 			var location = deviceData[key].roomName;
 			var device_name = deviceData[key].macAddress;
@@ -478,18 +487,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	*/
 
 	load_floorplan();
-	read_devices_database(render_devices_initial, relocate_device, populate_list);
-	for (let key in deviceData) {
-		console.log(key);
-		if (key === "d-50b960c0-60bb-46e2-8c92-ba53b044f7f0") {
-			const device_name = deviceData[key].macAddress;
-			console.log(device_name);
-		}
-	}
-        console.log(deviceData);
-        console.log(deviceData["d-50b960c0-60bb-46e2-8c92-ba53b044f7f0"]);
-	update_list("d-50b960c0-60bb-46e2-8c92-ba53b044f7f0", "Dining", "c-472e9d8d-38c2-4159-a910-46a22fbb3f33", "N");
-	connectSocket();
+	read_devices_database(render_devices_initial, connectSocket, populate_list);
+	//console.log(deviceData);
+
+	//connectSocket();
 
 
 
