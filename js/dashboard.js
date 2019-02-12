@@ -4,6 +4,68 @@ if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
 
 //=============================================================
+//						Websocket
+//=============================================================
+
+
+console.log(getAuth("Authorization"));
+console.log("userID", getAuth("userID"));
+function connectSocket() {
+	// if user is running mozilla then use it's built-in WebSocket
+	window.WebSocket = window.WebSocket || window.MozWebSocket;
+
+	var connection = new WebSocket('wss://api.theinlo.com/events');
+
+	console.log(getAuth("Authorization"));
+	var body = '{"type":"subscribe","payload":{"userID":"' + getAuth("userID") + '"}}';
+	console.log(body);
+
+	connection.onopen = function () {
+
+		//connection.send(getAuth("Authorization"));
+		// connection is opened and ready to use
+		console.log("open");
+		connection.send(body);
+		//connection.on("message", function incoming(data){
+		//	console.log("received " + data);
+		//})
+	};
+
+	connection.onerror = function (error) {
+		// an error occurred when sending/receiving data
+		console.log(error);
+	};
+
+	connection.onmessage = function (message) {
+		// try to decode json (I assume that each message
+		// from server is json)
+		try {
+		  var json = JSON.parse(message.data);
+		  console.log(json);
+		  //update_list(json.nodeID, json.roomName, json.nearestNodeID, json.region);
+		} catch (e) {
+		  console.log('This doesn\'t look like a valid JSON: ',
+		      message.data);
+		  return;
+		}
+		// handle incoming message
+	};
+
+	connection.onclose = function (error) {
+		// socket server closed
+		console.log("closed");
+		setTimeout(connectSocket, 5000);
+	};
+
+	function reOpen() {
+		connection = new WebSocket('wss://api.theinlo.com/events');
+	}
+  
+}
+
+
+
+//=============================================================
 //						  SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
@@ -356,32 +418,33 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	const update_list = (device_ID, new_room_ID, new_node_ID, new_region) => {
 
-		const 	device_name = deviceData[device_ID].macAddress,
-				new_room_label = new_room_ID;
 
 		for (let key in deviceData) {
+			if (key === device_ID) {
+				const 	device_name = deviceData[key].macAddress,
+						new_room_label = new_room_ID;
+				// if nothing has changed, exit/break
+				if (deviceData[key].location === new_room_ID) {
+					continue;
+				// if room data has changed
+				} else {
+	
+					// change deviceData keys to new room data
+					deviceData[device_ID].location = new_room_ID;
+					deviceData[device_ID].node_ID = new_node_ID;
+					deviceData[device_ID].region = new_region;
 
-			// if nothing has changed, exit/break
-			if (deviceData[key].location === new_room_ID) {
-				continue;
-			// if room data has changed
-			} else {
-
-				// change deviceData keys to new room data
-				deviceData[device_ID].location = new_room_ID;
-				deviceData[device_ID].node_ID = new_node_ID;
-				deviceData[device_ID].region = new_region;
-
-				// iterate through rows to check which row has the name
-				$('.item-rows').each(function() {
-					// device name equals new room label
-					if ($(this.children[0]).text() === device_name) {
-						// fade out 
-						$(this.children[1]).fadeOut();
-						this.children[1].innerText = new_room_label;
-						$(this.children[1]).fadeIn();
-					}
-				})
+					// iterate through rows to check which row has the name
+					$('.item-rows').each(function() {
+						// device name equals new room label
+						if ($(this.children[0]).text() === device_name) {
+							// fade out 
+							$(this.children[1]).fadeOut();
+							this.children[1].innerText = new_room_label;
+							$(this.children[1]).fadeIn();
+						}
+					})
+				}
 			}
 		}
 	}
@@ -416,6 +479,17 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	load_floorplan();
 	read_devices_database(render_devices_initial, relocate_device, populate_list);
+	for (let key in deviceData) {
+		console.log(key);
+		if (key === "d-50b960c0-60bb-46e2-8c92-ba53b044f7f0") {
+			const device_name = deviceData[key].macAddress;
+			console.log(device_name);
+		}
+	}
+        console.log(deviceData);
+        console.log(deviceData["d-50b960c0-60bb-46e2-8c92-ba53b044f7f0"]);
+	update_list("d-50b960c0-60bb-46e2-8c92-ba53b044f7f0", "Dining", "c-472e9d8d-38c2-4159-a910-46a22fbb3f33", "N");
+	connectSocket();
 
 
 
