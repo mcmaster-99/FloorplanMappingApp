@@ -52,7 +52,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			  var json = JSON.parse(message.data);
 			  console.log(json);
 			  console.log(deviceData);
-			  //update_list(json.nodeID, json.roomName, json.nearestNodeID, json.region);
+
+			  update_list(json.nodeID, json.roomName, json.nearestNodeID, json.region);
 			} catch (e) {
 			  console.log('This doesn\'t look like a valid JSON: ',
 			      message.data);
@@ -358,7 +359,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	}
 
 
-	const read_devices_database = (onReadComplete, setup_websocket, populate_list) => {
+	const read_devices_database = (render_devices_initial, setup_websocket, populate_list) => {
 		$.ajax({
 			method: 'GET',
 			url: String(_config.api.inloApiUrl) + '/v1/nodes',
@@ -386,7 +387,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 				}
 			}
 
-			onReadComplete();
+			render_devices_initial();
 			//relocate_device("dd2", "rm3", "d3", "F");
 			populate_list();
 			setup_websocket(deviceData);
@@ -488,6 +489,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	load_floorplan();
 	read_devices_database(render_devices_initial, connectSocket, populate_list);
+
 	//console.log(deviceData);
 
 	//connectSocket();
