@@ -376,6 +376,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 		function completeRequest(result) {
 
+			console.log(deviceData)
 			// Store devices in deviceData array
 			for (var i = 0; i < result.length; i++) {
 				// Separate into Nodes and Devices
@@ -383,6 +384,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 					deviceData[result[i].nodeID] = result[i];
 				}
 			}
+			console.log(deviceData)
+
 			render_devices_initial();
 			setup_websocket(deviceData);
 			populate_list();
@@ -432,7 +435,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	
 					// change deviceData keys to new room data
 					deviceData[device_ID].location = new_room_ID;
-					deviceData[device_ID].node_ID = new_node_ID;
+					deviceData[device_ID].nearestNodeID = new_node_ID;
 					deviceData[device_ID].region = new_region;
 
 					// iterate through rows to check which row has the name
