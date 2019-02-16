@@ -80,7 +80,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 
     // New SVG for buttons
-    const buttonSvg = new SVG('cancel-save-return-buttons-div').size("100%", "100%")
+    /*const buttonSvg = new SVG('cancel-save-return-buttons-div').size("100%", "100%")
                                                             .attr({
                                                                 x: 250,
                                                                 y: 250
@@ -143,7 +143,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 x: Number(save_changes.node.attributes[4].value)+15,
                                 y: Number(save_changes.node.attributes[5].value)+12.5,
                                 fill: 'white'
-                            }).font({family: 'Robotosave'})*/
+                            }).font({family: 'Robotosave'})
 
     var saveGroup = buttonSvg.group()
                     .addClass("saveGroup")
@@ -151,7 +151,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                     .add(cancel_changes)
                     .add(saveText)
                     .add(doneRectangle)
-                    .add(doneText)
+                    .add(doneText)*/
     
 
 
@@ -568,13 +568,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
     // =================================================================
 
     // Redirect user back to dashboard on click
-    $("#return-dashboard-btn").click(function(){window.location.href = 'dashboard.html'})
+    $("#done-btn").click(function(){window.location.href = 'dashboard.html'})
 
     // Cancel user changes
-    $("#cancel-changes-btn").click(function(){cancelChanges();})
+    $("#cancel-btn").click(function(){cancelChanges();})
 
     // Save user changes
-    $(".saveGroup").click(function(){save_floorplan(currentFloorPlan);})
+    $("#save-btn").click(function(){save_floorplan(currentFloorPlan);})
 
     // =================================================================
     //                  buttonSVG buttons functionailty END

@@ -139,13 +139,107 @@ nav {
 #draw {
   height: 100%;
 }
-#cancel-save-return-buttons-div {
-  width: 30vw;
+
+#cancel-save-done-buttons-wrapper {
+  width: 20vw;
   height: 10vh;
-  bottom: 0px;
-  right: 30%;
-  position: fixed;
+  margin-top: -5%;
+  margin-left: 40%;
 }
+
+p#cancel-btn {
+  margin-top: -18.5%;
+  margin-left: 5%;
+  cursor: pointer;
+}
+p#save-btn {
+  margin-top: -18.5%;
+  margin-left: 35%;
+  cursor: pointer;
+}
+
+p#done-btn {
+  vertical-align: middle;
+  background-color: black;
+  color: white;
+  left: 4vw;
+  border-radius: 4vh;
+  width: 5.5vw;
+  height: 4vh;
+  font-weight: bold;
+  line-height: 4vh;
+  margin-top: -20%;
+  margin-left: 45%;
+  cursor: pointer;
+}
+@-moz-document url-prefix() {
+  p#done-text {
+    vertical-align: middle;
+    background-color: black;
+    color: white;
+    left: 4vw;
+    border-radius: 4vh;
+    width: 6vw;
+    height: 4vh;
+    font-weight: bold;
+    line-height: 4vh;
+    margin-top: -20%;
+    margin-left: 40%;
+    cursor: pointer;
+  }
+}
+/*#cancel-save-done-buttons-wrapper {
+  border: 1px solid black;
+  width: 20vw;
+  height: 10vh;
+  line-height: 10vh;
+  bottom: 10vh;
+  left: 40%;
+  position: relative;
+  display: inline-block;
+}
+
+#mapEditButtonsBackdrop {
+  border: 1px solid black;
+  position: absolute;
+}
+
+p#cancel-btn {
+  left: 1vw;
+  vertical-align: middle;
+  cursor: pointer;
+  width: 5vw;
+  height: 4vh;
+  line-height: 4vh;
+  margin-top: 8%;
+  cursor: pointer;
+
+}
+p#save-text {
+  left: 4vh;
+  vertical-align: middle;
+  cursor: pointer;
+  width: 4vw;
+  height: 4vh;
+  line-height: 4vh;
+  margin-top: 8%;
+  cursor: pointer;
+}
+
+p#done-text {
+  vertical-align: middle;
+  background-color: black;
+  color: white;
+  left: 4vw;
+  border-radius: 4vh;
+  width: 5.5vw;
+  height: 4vh;
+  font-weight: bold;
+  line-height: 4vh;
+  margin-top: 8%;
+  cursor: pointer;
+}*/
+
 
 
 div.changes-div {
@@ -158,12 +252,6 @@ button {
   font-family: $main-font;
 }
 
-#return-dashboard-btn {
-  filter: drop-shadow(10 10 2.75rem crimson);
-}
-#cancel-changes-btn:hover, .saveGroup:hover, #return-dashboard-btn:hover {
-  cursor: pointer;
-}
 
 
 

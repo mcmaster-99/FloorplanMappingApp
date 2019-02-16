@@ -12,6 +12,7 @@
     <link rel="icon" href="/images/inlo-icon.svg" type="image/gif" sizes="16x16">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/mapedit.css">
     <link rel="stylesheet" href="node_modules/svg.select.js/dist/svg.select.css">
 
@@ -118,8 +119,6 @@
         <!--<p id="map-view-text">Map view not yet available</p>-->
 
         <div id="draw">
-            <div id="cancel-save-return-buttons-div">
-            </div>
 
             <svg id="svgGrid" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -136,13 +135,24 @@
                 <rect width="10000px" height="10000px" x="-1000" y="-1000" fill="url(#grid)" />
             </svg>
 
-            
-            
-
         </div>
  
+    </div>
+
+    <div id="cancel-save-done-buttons-wrapper">
+        <img id="mapEditButtonsBackdrop" src="images/mapEditButtonsBackdrop.png">
+
+        <p id="cancel-btn" class="col-md-4 col-xs-1" font-family="Roboto" family="Roboto">Cancel</p>
+    
+        <p id="save-btn" class="col-md-4 col-xs-1" font-family="Roboto" family="Roboto">Save</p>
+
+        <p id="done-btn" class="col-md-4 col-xs-1" font-family="Roboto" fill="white" family="Roboto">Done</p>
+
+        <!--<img id="done-btn" src="images/doneRectangle.png">-->
 
     </div>
+
+
 
     <!-- The Modal -->
     <div id="saveModal" class="modal">
