@@ -1,6 +1,5 @@
 
-// Redirect user if logged out
-//if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+
 'use strict';
 //=============================================================
 //                          SVG.JS
@@ -80,11 +79,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 
     // New SVG for buttons
-    /*const buttonSvg = new SVG('cancel-save-return-buttons-div').size("100%", "100%")
-                                                            .attr({
-                                                                x: 250,
-                                                                y: 250
-                                                            })
+    const buttonSvg = new SVG('cancel-save-done-buttons-wrapper')
+                                .size("100%", "100%")
+                                .attr({
+                                    x: 250,
+                                    y: 250
+                                })                                                     
     const backDrop = buttonSvg.image("images/mapEditButtonsBackdrop.svg")
                                 .attr({
                                     id: "mapEditButtonsBackdrop",
@@ -94,64 +94,36 @@ SVG.on(document, 'DOMContentLoaded', function() {
     // Cancel changes Button
     const cancel_changes = buttonSvg.text("Cancel")
                                 .attr({
-                                    id: 'cancel-changes-btn',
-                                    x: '10%',
-                                    y: '27.5%'
+                                    id: 'cancel-btn',
+                                    x: 25,
+                                    y: 18.5,
+                                    cursor: 'pointer'
                                 }).font({family:'Roboto'})
 
     // Save Button
     const saveText = buttonSvg.text("Save")
-                            .attr({
-                                id: 'save-text',
-                                x: '30%',
-                                y: '27.5%'
-                            }).font({family: 'Roboto'})  
+                                .attr({
+                                    id: 'save-btn',
+                                    x: 110,
+                                    y: 18.5,
+                                    cursor: 'pointer'
+                                }).font({family: 'Roboto'})  
 
     const doneRectangle = buttonSvg.image('images/doneRectangle.svg')
                                 .attr({
-                                    id: "save-changes-btn",
-                                    x: '45%',
-                                    y: '35%'
+                                    id: "done-btn",
+                                    x: 175,
+                                    y: 21,
+                                    cursor: 'pointer'
                                 })    
 
     const doneText = buttonSvg.text("Done")
                                 .attr({
-                                    id: 'return-dashboard-btn',
-                                    x: '48%',
-                                    y: '30%',
+                                    id: 'done-btn',
+                                    x: 185,
+                                    y: 18.5,
                                     fill: 'white'
-                                }).font({family:'Roboto'})                 
-
-    // Return to dashboard Button
-    /*const return_dashboard = buttonSvg.text("Return to dashboard")
-                                .attr({
-                                    id: 'return-dashboard-btn',
-                                    x: 0,
-                                    y: 50
-                                }).font({family:'Roboto'})
-
-    // Save Button
-    const save_changes = buttonSvg.image('images/Ellipse.svg')
-                            .attr({
-                                id: "save-changes-btn",
-                                x: 75,
-                                y: 90
-                            })
-    const saveText = buttonSvg.text("Save")
-                            .attr({
-                                id: 'save-text',
-                                x: Number(save_changes.node.attributes[4].value)+15,
-                                y: Number(save_changes.node.attributes[5].value)+12.5,
-                                fill: 'white'
-                            }).font({family: 'Robotosave'})
-
-    var saveGroup = buttonSvg.group()
-                    .addClass("saveGroup")
-                    .add(backDrop)
-                    .add(cancel_changes)
-                    .add(saveText)
-                    .add(doneRectangle)
-                    .add(doneText)*/
+                                }).font({family:'Roboto'})            
     
 
 
@@ -161,6 +133,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
     // Function to import floorplan
     const initialize = () => {
+
+
 
         // Empty floorPlan array of any previous/excess data
         initialFloorPlanData = [];
@@ -1094,6 +1068,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 
 $(document).ready(function(){
+
+    // Redirect user if logged out
+    if (getAuth("Authorization").length === 0) {
+        window.location.href = "signin.html";
+    } else {
+        document.getElementsByTagName("html")[0].style.visibility = "visible";
+    }
 
     $("#items-listed-div").hide();
     $("#dropdown-sort-div").hide();
