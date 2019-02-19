@@ -1079,6 +1079,20 @@ $(document).ready(function(){
     $("#items-listed-div").hide();
     $("#dropdown-sort-div").hide();
 
+    $(".home-icon").click(function(){
+        var homeIconClass = document.getElementsByClassName("home-icon");
+        var homeIconId = document.getElementById("home-icon-svg");
+        for (var i = 0; i < $(".home-icon").length; i++) {
+            homeIconClass[i].attributes[4].nodeValue = "#00D9A7";
+        }
+        homeIconId.style.borderBottom = "6px solid #00D9A7";
+        homeIconId.style.paddingBottom = ".6em";
+    })
+
+    $("#dropdown-btn").click(function() {
+        $("#dropdown-menu").toggle(500);
+    });
+
 
     // Prompt user if they're sure they want to leave on page exit
     /*$(window).bind('beforeunload', function(){

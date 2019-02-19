@@ -28,9 +28,27 @@
       <nav>
         <a href="#"><img src="images/logo-icon-name.svg" id="inlo-banner"></a>
 
-        <div>
-            <a href="#"><img src="images/account.svg" class="right-nav-icons"></a>
-            <a href="#"><img src="images/home.svg" class="right-nav-icons"></a>
+        <div id="right-nav-icons-div">
+            <div id="add-devices-dropdown">
+
+                <button id="dropdown-btn">
+                    <img src="images/account.svg" id="userIcon" class="right-nav-icons">
+                </button>
+                <div id="dropdown-menu">
+                    <li><a id="add-node" href="add-node.html">Add Inlo Device</a></li>
+                    <li><a id="add-device" href="add-device.html">Add Third Party Device</a></li>
+                    <li><a id="sign-out">Sign Out</a></li>
+                </div>
+                
+            </div>
+
+            <a class="selected" href="#">
+                <svg id="home-icon-svg" class="right-nav-icons" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path class="home-icon" fill-rule="evenodd" clip-rule="evenodd" d="M20 19C20 19.2432 19.9231 20.0511 19.5 20.5C19.0769 20.9489 18.2292 21 18 21H14V16H10V21H6C5.77083 21 4.92308 20.9489 4.5 20.5C4.07692 20.0511 4 19.2432 4 19V13H20V19Z" fill="#00D9A7"/>
+                    <path class="home-icon" fill-rule="evenodd" clip-rule="evenodd" d="M1 13C1 13 11.6122 3 12 3C12.3878 3 23 13 23 13H1Z" fill="#00D9A7"/>
+                </svg>
+            </a>
+
         </div>
 
       </nav>

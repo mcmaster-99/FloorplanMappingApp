@@ -60,22 +60,43 @@ nav {
 }
 
 .right-nav-icons {
-  width: 27px;
-  height: 24px;
-  color: gray;
+  width: 35px;
+  height: 30px;
   float: right;
   padding: 2px;
-  margin-right: 50px;
-  filter: grayscale(100%);
+  margin-right: 3vw;
+}
+#userIcon {
+  margin-top: -6px;
+  width: 40px;
+  height: 50px;
 }
 
-#side-menu {
+#home-icon-svg {
+  height: auto; // center
+  padding-bottom: 7px;
+  border-bottom: 6px solid #00D9A7;
+}
+
+#add-devices-dropdown {
   float: right;
+  #dropdown-menu {
+    display: none;
+    width: 15vw;
+    height: 15vh;
+    background-color: silver;
+    position: absolute;
+    white-space: normal;
+    right: 2vw;
+    word-spacing: .1vw;
+  }
+  #dropdown-menu>li {
+    margin-top: 2vh;
+    white-space: nowrap;
+    word-spacing: .1vw;
+  }
 }
 
-#front-door-text, #front-door-symbol {
-  display: block;
-}
 
 /* ---------------- NAVBAR END ---------------- */
 

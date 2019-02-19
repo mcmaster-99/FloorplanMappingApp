@@ -61,21 +61,19 @@ nav {
 
 #add-devices-dropdown {
   float: right; }
-
-#dropdown-menu {
-  display: none;
-  width: 15vw;
-  height: 15vh;
-  background-color: silver;
-  position: absolute;
-  white-space: normal;
-  right: 2vw;
-  word-spacing: .1vw; }
-
-#dropdown-menu > li {
-  margin-top: 2vh;
-  white-space: nowrap;
-  word-spacing: .1vw; }
+  #add-devices-dropdown #dropdown-menu {
+    display: none;
+    width: 15vw;
+    height: 15vh;
+    background-color: silver;
+    position: absolute;
+    white-space: normal;
+    right: 2vw;
+    word-spacing: .1vw; }
+  #add-devices-dropdown #dropdown-menu > li {
+    margin-top: 2vh;
+    white-space: nowrap;
+    word-spacing: .1vw; }
 
 /* ---------------- NAVBAR END ---------------- */
 #prompt {
