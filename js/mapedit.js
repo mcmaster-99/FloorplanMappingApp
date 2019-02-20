@@ -11,30 +11,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
         if (changesMade === true) return 'Are you sure you want to leave?';
     });*/
 
-    // Function that creates a grid in HTML.
-    // Reason for this: certain functions re-initialize floorplan and
-    // change HTML content resulting in SVG Grid being erased.
-    /*function initializeGrid() {
-        var svgGridHTML = '<svg id="svgGrid" xmlns="http://www.w3.org/2000/svg">'+
-                            '<!-- Grid -->'+
-                          '<defs>'+
-                            '<pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">'+
-                              '<path d="M 10 0 L 0 0 0 10" fill="none" stroke="gray" stroke-width="0.5"/>'+
-                            '</pattern>'+
-
-                            '<pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">'+
-                              '<rect width="100" height="100" fill="url(#smallGrid)"/>'+
-                              '<path d="M 100 0 L 0 0 0 100" fill="none" stroke="gray" stroke-width="1"/>'+
-                            '</pattern>'+
-                          '</defs>'+
-                          '<!-- Grid [End] -->'+
-
-                          '<rect width="1000px" height="1000px" x="-1000" y="-1000" fill="url(#grid)" />'+
-                        '</svg';
-        $("#draw").append(svgGridHTML);
-    }
-    initializeGrid();*/
-
     var drawing = new SVG('svgGrid')
                         .size("100%", "100%")
                             .panZoom({zoomMin: 0.5, zoomMax: 2, zoomFactor: 0.1})
@@ -51,81 +27,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
         loaded = false,
         changesMade = false;
 
-
-    /* // Front door compass
-    var frontDoorSymbolSVG = new SVG('front-door-symbol-div')
-                        .size("100%", "100%")
-                        .attr({
-                            x: 100,
-                            y: 100
-                        })
-    var frontDoorText = frontDoorSymbolSVG.image('/images/frontDoorText.png')
-    .attr({
-        x: "15%",
-        y: "25%"
-    })
-    var frontDoorSymbol = frontDoorSymbolSVG.image('/images/frontDoorSymbol.png')
-    .attr({
-        x: "30%",
-        y: "50%"
-    })
-    */
-
     drawing.on('panEnd', function(ev) {
         let vbX = drawing.viewbox().x;
         let vbY = drawing.viewbox().y;
         console.log(drawing.viewbox())
     })
-
-
-    // New SVG for buttons
-    const buttonSvg = new SVG('cancel-save-done-buttons-wrapper')
-                                .size("100%", "100%")
-                                .attr({
-                                    x: 250,
-                                    y: 250
-                                })                                                     
-    const backDrop = buttonSvg.image("images/mapEditButtonsBackdrop.svg")
-                                .attr({
-                                    id: "mapEditButtonsBackdrop",
-                                    x: 0,
-                                    y: 0
-                                })
-    // Cancel changes Button
-    const cancel_changes = buttonSvg.text("Cancel")
-                                .attr({
-                                    id: 'cancel-btn',
-                                    x: 25,
-                                    y: 18.5,
-                                    cursor: 'pointer'
-                                }).font({family:'Roboto'})
-
-    // Save Button
-    const saveText = buttonSvg.text("Save")
-                                .attr({
-                                    id: 'save-btn',
-                                    x: 110,
-                                    y: 18.5,
-                                    cursor: 'pointer'
-                                }).font({family: 'Roboto'})  
-
-    const doneRectangle = buttonSvg.image('images/doneRectangle.svg')
-                                .attr({
-                                    id: "done-btn",
-                                    x: 175,
-                                    y: 21,
-                                    cursor: 'pointer'
-                                })    
-
-    const doneText = buttonSvg.text("Done")
-                                .attr({
-                                    id: 'done-btn',
-                                    x: 185,
-                                    y: 18.5,
-                                    fill: 'white'
-                                }).font({family:'Roboto'})            
-    
-
 
 
     // Import floorplan

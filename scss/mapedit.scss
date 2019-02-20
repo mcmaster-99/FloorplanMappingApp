@@ -165,11 +165,38 @@ nav {
 }
 
 #cancel-save-done-buttons-wrapper {
-  width: 260px;
-  height: 75px;
-  bottom: 0px;
-  left: 40%;
-  position: fixed; 
+  width: 100%;
+  height: 70px;
+  bottom: 250px;
+  position: relative;
+  text-align: center;
+}
+
+p#cancel-btn {
+  position: absolute;
+  bottom: 27.5px;
+  left: 43.5vw;
+  cursor: pointer;
+}
+p#save-btn {
+  position: absolute;
+  bottom: 27.5px;
+  left: 48.5vw;
+  cursor: pointer;
+}
+
+div#done-btn {
+  width: 60px;
+  height: 25px;
+  position: absolute;
+  text-align: center;
+  line-height: 25px;
+  bottom: 25px;
+  left: 52.5vw;
+  background-color: black;
+  color: white;
+  border-radius: 4vh;
+  cursor: pointer;
 }
 
 
