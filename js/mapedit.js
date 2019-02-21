@@ -558,8 +558,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 e.preventDefault();
 
                 // Grab room_ID
-                let room_ID = e.target.children["0"].id,
-                    node_ID = e.target.children[1].id;
+                let room_ID = e.target.children["0"].id;
 
                 // Manually adjust room's new x/y coordinates
                 let new_room_x = e.target.firstChild.instance.x() + e.target.instance.transform().x,
@@ -568,15 +567,19 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 $("#"+e.target.children[0].id).attr("x", new_room_x);
                 $("#"+e.target.children[0].id).attr("y", new_room_y);
 
-                // use node compute function to grab node coordinates
-                let node_locations = compute_node_xy(room_ID, node_ID),
-                    node_x = node_locations[0],
-                    node_y = node_locations[1];
+                // Grab node_ID if there is one
+                if (e.target.children.length > 1) {
+                    let node_ID = e.target.children[1].id,
+                    // use node compute function to grab node coordinates
+                        node_locations = compute_node_xy(room_ID, node_ID),
+                        node_x = node_locations[0],
+                        node_y = node_locations[1];
 
-                // Manually adjust node's new x/y coordinates
-                $("#"+e.target.childNodes[1].id).removeAttr("transform");
-                $("#"+e.target.children[1].id).attr("x", String(node_x));
-                $("#"+e.target.children[1].id).attr("y", String(node_y));
+                    // Manually adjust node's new x/y coordinates
+                    $("#"+e.target.childNodes[1].id).removeAttr("transform");
+                    $("#"+e.target.children[1].id).attr("x", String(node_x));
+                    $("#"+e.target.children[1].id).attr("y", String(node_y));
+                }
                 
 
                 // update currentFloorPlan
@@ -796,9 +799,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
             // unbind drawing button from mouse events
             drawing.off(); 
 
-            var room_ID;
+            let room_ID,
+                timestamp;
 
-            var x = room.node.attributes[3].nodeValue,
+            let x = room.node.attributes[3].nodeValue,
                 y = room.node.attributes[4].nodeValue,
                 floor = 1,
                 width = room.node.attributes[1].nodeValue,
@@ -823,9 +827,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 room_ID = result.roomID;
                 timestamp = result.timestamp;
 
-                var groupID = room_ID + "group";
-                var roomGroup = drawing.group().addClass(groupID);
-                var room_data = {
+                let groupID = room_ID + "group",
+                    roomGroup = drawing.group().addClass(groupID),
+                    room_data = {
                                     "rooms": [
                                         {
                                             "roomID" : room_ID,
@@ -837,21 +841,24 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                             "height" : height
                                         }
                                     ]
-                                }
+                                };
 
                 currentFloorPlan[floorID].rooms.push(room_data.rooms[0]);
 
                 floorPlanSvg.push(room);
 
                 roomGroup.add(floorPlanSvg[floorPlanSvg.length-1].addClass(groupID));
-
+                console.log(floorPlanGroups)
                 floorPlanGroups[room_ID] = roomGroup;
+
+                console.log(floorPlanGroups)
                 
             }
             changesMade = true;
 
             // turn panning back on
-            drawing.panZoom(true);
+            drawing.panZoom({zoomMin: 0.5, zoomMax: 2, zoomFactor: 0.1})
+
     
         });  
 
