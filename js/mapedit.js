@@ -652,32 +652,37 @@ SVG.on(document, 'DOMContentLoaded', function() {
                         }
                     }
 
-                    var new_node_x = document.getElementById(node_ID).getBoundingClientRect().x - svgX - roomX,
-                        new_node_y = document.getElementById(node_ID).getBoundingClientRect().y - svgY - roomY;
+                    let new_node_x = document.getElementById(node_ID).getBoundingClientRect().x - svgX - roomX,
+                        new_node_y = document.getElementById(node_ID).getBoundingClientRect().y - svgY - roomY,
 
-                    var new_node_frac_x = new_node_x/roomWidth,
-                        new_node_frac_y = new_node_y/roomHeight;
+                        new_node_frac_x = new_node_x/roomWidth,
+                        new_node_frac_y = new_node_y/roomHeight,
 
-                    var node_locations = compute_node_xy(room_ID, node_ID),
+                        node_locations = compute_node_xy(room_ID, node_ID),
                         node_x = node_locations[0],
-                        node_y = node_locations[1];
+                        node_y = node_locations[1],
 
-                    // Remove transform attribute and manually set X,Y coordinates of room
-                    var new_room_x = e.target.getBoundingClientRect().x - svgX,
+                    // Manually set X,Y coordinates of room
+                        new_room_x = e.target.getBoundingClientRect().x - svgX,
                         new_room_y = e.target.getBoundingClientRect().y - svgY;
 
                     // update currentFloorPlan nodes
                     for (var i = 0; i < currentFloorPlan.length; i++) {
+                        // iterate over rooms
                         for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
-                            for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
-                                if (currentFloorPlan[i].rooms[j].nodes[k].nodeID === node_ID) {
-                                    console.log("here");
-                                    currentFloorPlan[i].rooms[j].nodes[k].x = new_node_frac_x;
-                                    currentFloorPlan[i].rooms[j].nodes[k].y = new_node_frac_y;
+                            // if room has a node
+                            if (currentFloorPlan[i].rooms[j].hasOwnProperty("nodes")) {
+                                // iterate over nodes
+                                for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
+                                    if (currentFloorPlan[i].rooms[j].nodes[k].nodeID === node_ID) {
+                                        currentFloorPlan[i].rooms[j].nodes[k].x = new_node_frac_x;
+                                        currentFloorPlan[i].rooms[j].nodes[k].y = new_node_frac_y;
+                                    }
                                 }
                             }
                         }
                     }
+                    
 
                 })
             }
@@ -848,10 +853,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
                 floorPlanSvg.push(room);
 
                 roomGroup.add(floorPlanSvg[floorPlanSvg.length-1].addClass(groupID));
-                console.log(floorPlanGroups)
-                floorPlanGroups[room_ID] = roomGroup;
 
-                console.log(floorPlanGroups)
+                floorPlanGroups[room_ID] = roomGroup;
                 
             }
             changesMade = true;
