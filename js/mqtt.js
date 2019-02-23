@@ -1,4 +1,5 @@
 console.log(getAuth("Authorization"));
+console.log("userID", getAuth("userID"));
 function connectSocket() {
 	// if user is running mozilla then use it's built-in WebSocket
 	window.WebSocket = window.WebSocket || window.MozWebSocket;
@@ -16,7 +17,7 @@ function connectSocket() {
 		//connection.send(getAuth("Authorization"));
 		// connection is opened and ready to use
 		console.log("open");
-		connection.send('{"type":"subscribe","payload":{"userID":"487fb8be4234493ba37a59599d77f30b"}}');
+		connection.send(body);
 		//connection.on("message", function incoming(data){
 		//	console.log("received " + data);
 		//})

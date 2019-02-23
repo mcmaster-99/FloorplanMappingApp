@@ -1,11 +1,15 @@
 'use strict';
 // Redirect user if logged out
-//if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+
+
+
 
 //=============================================================
 //						  SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
+
 
 
 	var floorPlan = new SVG('floorPlan').size('100%', '100%')
@@ -37,6 +41,71 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		nodeData = {},
 		loaded = false,	 // Loaded boolean is set to false as default
 		list_loaded = false;
+
+	//=============================================================
+	//						Websocket
+	//=============================================================
+
+	const connectSocket = (deviceData) => {
+		// if user is running mozilla then use it's built-in WebSocket
+		window.WebSocket = window.WebSocket || window.MozWebSocket;
+	
+		var connection = new WebSocket('wss://api.theinlo.com/events');
+	
+		var body = '{"type":"subscribe","payload":{"userID":"' + getAuth("userID") + '"}}';
+	
+		connection.onopen = function () {
+	
+			//connection.send(getAuth("Authorization"));
+			// connection is opened and ready to use
+			console.log("open");
+			connection.send(body);
+			//connection.on("message", function incoming(data){
+			//	console.log("received " + data);
+			//})
+		};
+	
+		connection.onerror = function (error) {
+			// an error occurred when sending/receiving data
+			console.log(error);
+		};
+	
+		connection.onmessage = function (message) {
+			// try to decode json (I assume that each message
+			// from server is json)
+			try {
+			  const json = JSON.parse(message.data),
+			  		roomID = json.roomID,
+			  		nodeID = json.nodeID,
+			  		roomName = json.roomName,
+			  		newNodeID = json.nearestNodeID,
+			  		region = json.region;
+
+			  //const update_list = (device_ID, new_room_ID, new_node_ID, new_region)
+			  update_list(nodeID, roomName, newNodeID, region);
+
+			  //relocate_device = (device_ID, new_room_ID, new_node_ID, new_region)
+			  relocate_device(nodeID, roomID, newNodeID, region);
+			  
+			} catch (error) {
+			  console.error(error);
+			  console.log('This doesn\'t look like a valid JSON: ', message.data);
+			  return;
+			}
+			// handle incoming message
+		};
+	
+		connection.onclose = function (error) {
+			// socket server closed
+			console.log("closed");
+			setTimeout(connectSocket, 5000);
+		};
+	
+		function reOpen() {
+			connection = new WebSocket('wss://api.theinlo.com/events');
+		}
+  
+	}
 
 	const load_floorplan = () => {
 
@@ -144,6 +213,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	}
 
 	const render_devices_initial = () => {
+
 		for (let key in deviceData) {
 
 			const 	roomID = deviceData[key].roomID,
@@ -240,11 +310,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
 				room_y = document.getElementById(new_room_ID).getBoundingClientRect().y - svgY,
 		// current dimensions of room
 				height = document.getElementById(new_room_ID).getBoundingClientRect().height,
-				width = document.getElementById(new_room_ID).getBoundingClientRect().width;
+				width = document.getElementById(new_room_ID).getBoundingClientRect().width,
 
 		// grab raw node coordinates from floorPlanData array to determine actual node coords
-				node_x_frac = floorPlanData[new_room_ID][new_node_ID].x,
-				node_y_frac = floorPlanData[new_room_ID][new_node_ID].y,
+				node_x_frac = floorPlanData[new_room_ID].nodes[0].x,
+				node_y_frac = floorPlanData[new_room_ID].nodes[0].y,
 
 		// use raw node coordinates to compute actual node coordinates
 				node_x = node_x_frac*width + room_x,
@@ -283,12 +353,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		}
 
 		// Move device to its proper location
-		deviceLocations[device_ID]["Icon"].animate().move(device_x, device_y)
+		deviceLocations[device_ID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y)
 
 	}
 
 
-	const read_devices_database = (onReadComplete, relocate_device, populate_list) => {
+	const read_devices_database = (render_devices_initial, setup_websocket, populate_list) => {
 		$.ajax({
 			method: 'GET',
 			url: String(_config.api.inloApiUrl) + '/v1/nodes',
@@ -306,8 +376,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 		function completeRequest(result) {
 
-			console.log('Response received from API: ', result);
-
+			console.log(deviceData)
 			// Store devices in deviceData array
 			for (var i = 0; i < result.length; i++) {
 				// Separate into Nodes and Devices
@@ -315,14 +384,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
 					deviceData[result[i].nodeID] = result[i];
 				}
 			}
+			console.log(deviceData)
 
-			onReadComplete();
-			//relocate_device("dd2", "rm3", "d3", "F");
+			render_devices_initial();
+			setup_websocket(deviceData);
 			populate_list();
-			//deviceData.dd2.location = "rm1";
-			//update_list("dd2", "rm3", "d1", "F");
 		}
-
 	}
 
 	const populate_list = () => {
@@ -355,32 +422,33 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	const update_list = (device_ID, new_room_ID, new_node_ID, new_region) => {
 
-		const 	device_name = deviceData[device_ID].macAddress,
-				new_room_label = new_room_ID;
 
 		for (let key in deviceData) {
+			if (key === device_ID) {
+				const 	device_name = deviceData[key].macAddress,
+						new_room_label = new_room_ID;
+				// if nothing has changed, exit/break
+				if (deviceData[key].location === new_room_ID) {
+					continue;
+				// if room data has changed
+				} else {
+	
+					// change deviceData keys to new room data
+					deviceData[device_ID].location = new_room_ID;
+					deviceData[device_ID].nearestNodeID = new_node_ID;
+					deviceData[device_ID].region = new_region;
 
-			// if nothing has changed, exit/break
-			if (deviceData[key].location === new_room_ID) {
-				continue;
-			// if room data has changed
-			} else {
-
-				// change deviceData keys to new room data
-				deviceData[device_ID].location = new_room_ID;
-				deviceData[device_ID].node_ID = new_node_ID;
-				deviceData[device_ID].region = new_region;
-
-				// iterate through rows to check which row has the name
-				$('.item-rows').each(function() {
-					// device name equals new room label
-					if ($(this.children[0]).text() === device_name) {
-						// fade out 
-						$(this.children[1]).fadeOut();
-						this.children[1].innerText = new_room_label;
-						$(this.children[1]).fadeIn();
-					}
-				})
+					// iterate through rows to check which row has the name
+					$('.item-rows').each(function() {
+						// device name equals new room label
+						if ($(this.children[0]).text() === device_name) {
+							// fade out 
+							$(this.children[1]).fadeOut();
+							this.children[1].innerText = new_room_label;
+							$(this.children[1]).fadeIn();
+						}
+					})
+				}
 			}
 		}
 	}
@@ -414,7 +482,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	*/
 
 	load_floorplan();
-	read_devices_database(render_devices_initial, relocate_device, populate_list);
+	render_devices_initial()
+	read_devices_database(render_devices_initial, connectSocket, populate_list);
+
 
 
 
