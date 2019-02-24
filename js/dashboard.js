@@ -79,10 +79,17 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			  		nodeID = json.nodeID,
 			  		roomName = json.roomName,
 			  		newNodeID = json.nearestNodeID,
-			  		region = json.region;
+			  		region = json.region,
+                                        device_x = json.x,
+                                        device_y = json.y;
+
+			  console.log(message);
 
 			  //const update_list = (device_ID, new_room_ID, new_node_ID, new_region)
-			  update_list(nodeID, roomName, newNodeID, region);
+			  //update_list(nodeID, roomName, newNodeID, region);
+			  const 	svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
+					svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
+                          deviceLocations[nodeID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y)
 
 			  //relocate_device = (device_ID, new_room_ID, new_node_ID, new_region)
 			  relocate_device(nodeID, roomID, newNodeID, region);
@@ -184,11 +191,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 										width = result[i].rooms[j].width;
 
 
-									const node_x_frac = result[i].rooms[j].nodes[k].x,
-										  node_y_frac = result[i].rooms[j].nodes[k].y,
-
-										  node_x = node_x_frac*width + room_x,
-										  node_y = node_y_frac*height + room_y;
+									const node_x = result[i].rooms[j].nodes[k].x,
+									      node_y = result[i].rooms[j].nodes[k].y;
 
 									const drawNode = floorPlan.image("images/inlo-device.png", 15, 10);
 									drawNode.attr({
