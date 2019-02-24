@@ -1,4 +1,11 @@
+// dashboard.js
+//
+// Users main home page:
+// List View and Map view of devices in Floorplan
+//
+
 'use strict';
+
 // Redirect user if logged out
 if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
@@ -43,7 +50,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		list_loaded = false;
 
 	//=============================================================
-	//						Websocket
+	//						Websocket Connection
 	//=============================================================
 
 	const connectSocket = (deviceData) => {
@@ -60,9 +67,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			// connection is opened and ready to use
 			console.log("open");
 			connection.send(body);
-			//connection.on("message", function incoming(data){
-			//	console.log("received " + data);
-			//})
 		};
 	
 		connection.onerror = function (error) {
@@ -71,8 +75,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		};
 	
 		connection.onmessage = function (message) {
-			// try to decode json (I assume that each message
-			// from server is json)
+			// parse the json
 			try {
 			  const json = JSON.parse(message.data),
 			  		roomID = json.roomID,
@@ -85,21 +88,19 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 			  console.log(message);
 
+                          // Update list view and relocate the device on map
+
 			  //const update_list = (device_ID, new_room_ID, new_node_ID, new_region)
 			  update_list(nodeID, roomName, newNodeID, region);
-			  const 	svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
-					svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
-                          deviceLocations[nodeID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y)
 
-			  //relocate_device = (device_ID, new_room_ID, new_node_ID, new_region)
-			  //relocate_device(nodeID, roomID, newNodeID, region);
+                          deviceLocations[nodeID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y);
+			  //relocate_device(nodeID, roomID, newNodeID, region, device_x, device_y);
 			  
 			} catch (error) {
 			  console.error(error);
-			  console.log('This doesn\'t look like a valid JSON: ', message.data);
+			  console.log('Error in parsing message JSON: ', message.data);
 			  return;
 			}
-			// handle incoming message
 		};
 	
 		connection.onclose = function (error) {
@@ -113,6 +114,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		}
   
 	}
+
+
+
+	//=============================================================
+	//						Render Floorplan and Inlo Nodes
+	//=============================================================
+   
 
 	const load_floorplan = () => {
 
@@ -181,16 +189,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 									const node_ID = result[i].rooms[j].nodes[k].nodeID;
 
-									const svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
-										svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y,
-										// current coordinates of room
-										room_x = result[i].rooms[j].x - svgX,
-										room_y = result[i].rooms[j].y - svgY,
-										// current dimensions of room
-										height = result[i].rooms[j].height,
-										width = result[i].rooms[j].width;
-
-
 									const node_x = result[i].rooms[j].nodes[k].x,
 									      node_y = result[i].rooms[j].nodes[k].y;
 
@@ -216,152 +214,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 	}
 
-	const render_devices_initial = () => {
 
-		for (let key in deviceData) {
-
-			const 	roomID = deviceData[key].roomID,
-					nearestNodeID = deviceData[key].nearestNodeID,
-					region = deviceData[key].region,
-					roomName = deviceData[key].roomName;
-
-			let 	device_x,
-					device_y;
-
-			// Grab SVG coordinates so we can subtract from element coordinates 
-			// to give us the actual coordinates on the SVG document.
-			const 	svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
-					svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
-
-			// current coordinates of room
-			const	room_x = floorPlanData[roomID].x - svgX,
-					room_y = floorPlanData[roomID].y - svgY,
-			// current dimensions of room
-					height = floorPlanData[roomID].height,
-					width = floorPlanData[roomID].width;
-
-		
-			let nearestNodeData = {};
-
-			for (let n = 0; n < floorPlanData[roomID].nodes.length; n++) {
-				if (floorPlanData[roomID].nodes[n].nodeID === nearestNodeID){
-					nearestNodeData = floorPlanData[roomID].nodes[n];
-				}
-			}
-
-			let node_x_frac = nearestNodeData.x,
-				node_y_frac = nearestNodeData.y,
-
-			// use raw node coordinates to compute actual node coordinates
-				node_x = node_x_frac*width + room_x,
-				node_y = node_y_frac*height + room_y;
-
-
-			// draw node at real location inside room
-			//var inloNode = floorPlan.image("images/inlo-device.png", 15, 10);
-			//inloNode.attr({x: node_x, y: node_y, fill: "white", stroke: "#E3E3E3"})
-
-			// Determine device coordinates
-			switch(region){
-				case "N":
-					// determine x coordinate of near device
-					if (node_x_frac < 0.5) {
-						device_x = room_x + width*0.25;
-					} else {
-						device_x = room_x + width*0.75;
-					}
-					// determine y coordinate of near device
-					if (node_y_frac < 0.5) {
-						device_y = room_y + height*0.25;
-					} else {
-						device_y = room_y + height*0.75;
-					}
-					break;
-				case "F":
-					// determine x coordinate of far device
-					if (node_x_frac < 0.5) {
-						device_x = room_x + width*0.75;
-					} else {
-						device_x = room_x + width*0.25;
-					}
-					// determine y coordinate of far device
-					if (node_y_frac < 0.5) {
-						device_y = room_y + height*0.75;
-					} else {
-						device_y = room_y + height*0.25;
-					}
-					break;
-			}
-
-			// draw and store device object initializer in deviceLocations object
-			deviceLocations[key] = {};
-			deviceLocations[key]["Icon"] = floorPlan.image("images/inlo.png", 10, 10);
-			deviceLocations[key]["Icon"].attr({x: device_x, y: device_y, fill: "white", stroke: "#00D9AE"})
-
-		}
-	}
-
-	const relocate_device = (device_ID, new_room_ID, new_node_ID, new_region) => {
-
-		let device_x, device_y;
-
-		// Grab SVG coordinates so we can subtract from element coordinates 
-		// to give us the actual coordinates on the SVG document.
-		const 	svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
-			  	svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y,
-		// current coordinates of room
-				room_x = document.getElementById(new_room_ID).getBoundingClientRect().x - svgX,
-				room_y = document.getElementById(new_room_ID).getBoundingClientRect().y - svgY,
-		// current dimensions of room
-				height = document.getElementById(new_room_ID).getBoundingClientRect().height,
-				width = document.getElementById(new_room_ID).getBoundingClientRect().width,
-
-		// grab raw node coordinates from floorPlanData array to determine actual node coords
-				node_x_frac = floorPlanData[new_room_ID].nodes[0].x,
-				node_y_frac = floorPlanData[new_room_ID].nodes[0].y,
-
-		// use raw node coordinates to compute actual node coordinates
-				node_x = node_x_frac*width + room_x,
-				node_y = node_y_frac*height + room_y;
-
-		// Determine device coordinates
-		switch(new_region){
-			case "N":
-				// determine x coordinate of near device
-				if (node_x_frac < 0.5) {
-					device_x = room_x + width*0.25;
-				} else {
-					device_x = room_x + width*0.75;
-				}
-				// determine y coordinate of near device
-				if (node_y_frac < 0.5) {
-					device_y = room_y + height*0.25;
-				} else {
-					device_y = room_y + height*0.75;
-				}
-				break;
-			case "F":
-				// determine x coordinate of far device
-				if (node_x_frac < 0.5) {
-					device_x = room_x + width*0.75;
-				} else {
-					device_x = room_x + width*0.25;
-				}
-				// determine y coordinate of far device
-				if (node_y_frac < 0.5) {
-					device_y = room_y + height*0.75;
-				} else {
-					device_y = room_y + height*0.25;
-				}
-				break;
-		}
-
-		// Move device to its proper location
-		deviceLocations[device_ID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y)
-
-	}
-
-
+	//=============================================================
+	//						Render User's Devices
+	//=============================================================
+   
+	
+	// Load Data from Database
 	const read_devices_database = (render_devices_initial, setup_websocket, populate_list) => {
 		$.ajax({
 			method: 'GET',
@@ -396,6 +255,41 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		}
 	}
 
+
+	// Render initial positions of Devices on Map
+	const render_devices_initial = () => {
+
+		for (let key in deviceData) {
+
+			const 	roomID = deviceData[key].roomID,
+					nearestNodeID = deviceData[key].nearestNodeID,
+					region = deviceData[key].region,
+					roomName = deviceData[key].roomName,
+                                        device_x = deviceData[key].x,
+                                        device_y = deviceData[key].y;
+
+			// draw and store device object initializer in deviceLocations object
+			deviceLocations[key] = {};
+			deviceLocations[key]["Icon"] = floorPlan.image("images/inlo.png", 10, 10);
+			deviceLocations[key]["Icon"].attr({x: device_x, y: device_y, fill: "white", stroke: "#00D9AE"});
+                        console.log("Deviced Rendered");
+
+		}
+	}
+
+	// Relocate devices position - this function gets called on websocket updates
+        const relocate_device = (device_ID, new_room_ID, new_node_ID, new_region, device_x, device_y) => {
+
+		// Move device to its proper location
+		deviceLocations[device_ID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y)
+
+	}
+
+
+
+	//=============================================================
+	//						Load the List View
+	//=============================================================
 	const populate_list = () => {
 		// Loop through deviceData object and create new div (.item-rows) 
 		// and assign name+room text values to divs
