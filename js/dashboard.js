@@ -223,13 +223,14 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			const 	roomID = deviceData[key].roomID,
 					nearestNodeID = deviceData[key].nearestNodeID,
 					region = deviceData[key].region,
-					roomName = deviceData[key].roomName;
+					roomName = deviceData[key].roomName,
+					device_x = deviceData[key].x,
+					device_y = deviceData[key].y;
 
-			let 	device_x,
-					device_y;
 
 			// Grab SVG coordinates so we can subtract from element coordinates 
 			// to give us the actual coordinates on the SVG document.
+                        /*
 			const 	svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
 					svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
 
@@ -292,10 +293,11 @@ SVG.on(document, 'DOMContentLoaded', function() {
 					}
 					break;
 			}
-
+                   
+                        */
 			// draw and store device object initializer in deviceLocations object
 			deviceLocations[key] = {};
-			deviceLocations[key]["Icon"] = floorPlan.image("images/inlo.png", 10, 10);
+			deviceLocations[key]["Icon"] = floorPlan.image("images/inlo.png", 20, 20);
 			deviceLocations[key]["Icon"].attr({x: device_x, y: device_y, fill: "white", stroke: "#00D9AE"})
 
 		}
