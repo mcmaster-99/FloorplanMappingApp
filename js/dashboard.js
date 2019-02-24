@@ -86,13 +86,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			  console.log(message);
 
 			  //const update_list = (device_ID, new_room_ID, new_node_ID, new_region)
-			  //update_list(nodeID, roomName, newNodeID, region);
+			  update_list(nodeID, roomName, newNodeID, region);
 			  const 	svgX = document.getElementById(floorPlan.node.id).getBoundingClientRect().x,
 					svgY = document.getElementById(floorPlan.node.id).getBoundingClientRect().y;
                           deviceLocations[nodeID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y)
 
 			  //relocate_device = (device_ID, new_room_ID, new_node_ID, new_region)
-			  relocate_device(nodeID, roomID, newNodeID, region);
+			  //relocate_device(nodeID, roomID, newNodeID, region);
 			  
 			} catch (error) {
 			  console.error(error);
