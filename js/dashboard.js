@@ -270,9 +270,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 			// draw and store device object initializer in deviceLocations object
 			deviceLocations[key] = {};
-			deviceLocations[key]["Icon"] = floorPlan.image("images/inlo.png", 10, 10);
+			deviceLocations[key]["Icon"] = floorPlan.image("images/inlo.png", 25, 25);
 			deviceLocations[key]["Icon"].attr({x: device_x, y: device_y, fill: "white", stroke: "#00D9AE"});
-                        console.log("Deviced Rendered");
 
 		}
 	}
