@@ -7,12 +7,16 @@
 'use strict';
 
 // Redirect user if logged out
-//if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+
+
+
 
 //=============================================================
 //						  SVG.JS
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
+
 
 
 	var floorPlan = new SVG('floorPlan').size('100%', '100%')
@@ -30,6 +34,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 											.attr({
 												id: "edit-floorplan-btn"
 											})
+											.style('cursor', 'pointer')
 
 	$("#edit-floorplan-btn").click(function(){
 		window.location.href = "mapedit.html";
@@ -120,8 +125,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	const load_floorplan = () => {
 
 		// Empty floorPlan array of any previous/excess data
-		var i = floorPlanSvg.length;
-		while (i !== 0) {floorPlanSvg.pop(); i--}
+		let length = floorPlanSvg.length;
+		while (length !== 0) {floorPlanSvg.pop(); length--}
 
 		// Checks if floorplan is loaded
 		if (loaded === true) {
@@ -144,7 +149,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 		function completeRequest(result) {
 			console.log('Response received from API: ', result);
-			var rawFloorPlan = JSON.stringify(result.Items);
+			let rawFloorPlan = JSON.stringify(result.Items);
 
 			/*var tmpDevicesArray = [];
 
@@ -160,12 +165,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
 				$("#map-view-text").append("Map view not yet available");
 			} else {
 				// Loop through all items in database and store in floorplan array/stack
-				for (var i = 0; i < result.length; i++) {
+				for (let i = 0; i < result.length; i++) {
 
 					if (result[i].rooms.length > 0) {
 						// iterate over rooms
-						for (var j = 0; j < result[i].rooms.length; j++) {
-							var room = floorPlan.rect(result[i].rooms[j].width, result[i].rooms[j].height)
+						for (let j = 0; j < result[i].rooms.length; j++) {
+							let room = floorPlan.rect(result[i].rooms[j].width, result[i].rooms[j].height)
 								.attr({
 									x: result[i].rooms[j].x,
 									y: result[i].rooms[j].y,
@@ -174,24 +179,20 @@ SVG.on(document, 'DOMContentLoaded', function() {
 									'stroke-width': 3
 								}) 
 							room.node.id = result[i].rooms[j].roomID;
-							var room_ID = result[i].rooms[j].roomID;
+							const room_ID = result[i].rooms[j].roomID;
 							floorPlanSvg.push(room);	
 							floorPlanData[room_ID] = result[i].rooms[j];
 
 							// iterate over nodes
 							if (result[i].rooms[j].hasOwnProperty("nodes")) {
-								for (var k = 0; k < result[i].rooms[j].nodes.length; k++) {
+								for (let k = 0; k < result[i].rooms[j].nodes.length; k++) {
 
-									var node_ID = result[i].rooms[j].nodes[k].nodeID;
+									const node_ID = result[i].rooms[j].nodes[k].nodeID;
 
 									const node_x = result[i].rooms[j].nodes[k].x,
 									      node_y = result[i].rooms[j].nodes[k].y;
 
-									console.log(j);
-									console.log(room_x, room_y);
-
-
-									var drawNode = floorPlan.image("images/inlo-device.png", 15, 10);
+									const drawNode = floorPlan.image("images/inlo-device.png", 15, 10);
 									drawNode.attr({
 																x: node_x,
 																y: node_y,
@@ -238,9 +239,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 		function completeRequest(result) {
 
-			console.log('Response received from API: ', result);
-			
-
+			console.log(deviceData)
 			// Store devices in deviceData array
 			for (var i = 0; i < result.length; i++) {
 				// Separate into Nodes and Devices
@@ -248,23 +247,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 					deviceData[result[i].nodeID] = result[i];
 				}
 			}
+			console.log(deviceData)
 
 			render_devices_initial();
+			setup_websocket(deviceData);
 			populate_list();
-			//deviceData.dd2.location = "rm1";
-			//update_list("dd2", "rm3", "d1", "F");
 		}
-
 	}
-
-	function sort_list() {
-		var sorted = $(".item-names").sort(function (a, b) {
-			console.log("in sorting")
-			return a.textContent > b.textContent;
-		});
-		re_assign();
-	}
-
 
 	// Render initial positions of Devices on Map
 	const render_devices_initial = () => {
@@ -336,19 +325,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		//sort_list();
 	}
 
-	function update_list(device_ID, new_room_ID, new_node_ID, new_region) {
-		console.log(deviceData);
-		device_name = deviceData[device_ID].macAddress;
-		new_room_label = new_room_ID;
-		console.log(new_room_label);
+	const update_list = (device_ID, new_room_ID, new_node_ID, new_region) => {
 
-		for (var key in deviceData) {
-
-			// if nothing has changed, exit/break
-			if (deviceData[key].location === new_room_ID) {
-				continue;
-			// if room data has changed
-			} else {
 
 		for (let key in deviceData) {
 			if (key === device_ID) {
@@ -380,9 +358,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		}
 	}
 
-	var sorted;
-	function sort_list() {
-		var sorted = $(".item-names").sort(function (a, b) {
+	const sort_list = () => {
+		let sorted = $(".item-names").sort(function (a, b) {
 			return a.textContent > b.textContent;
 		});
 		for (var i = 0; i < sorted.length; i++) {
@@ -390,7 +367,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		}
 	}
 
-	function re_assign() {
+	const re_assign = () => {
 		$(".item-names").each(function(i){
 			console.log(this.textContent);
 			//this.textContent = sorted[i].innerText;
@@ -410,7 +387,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	*/
 
 	load_floorplan();
-	read_devices_database(render_devices_initial, relocate_device, populate_list);
+	render_devices_initial()
+	read_devices_database(render_devices_initial, connectSocket, populate_list);
+
 
 
 
