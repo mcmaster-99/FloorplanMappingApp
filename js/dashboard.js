@@ -17,10 +17,9 @@ if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 //=============================================================
 SVG.on(document, 'DOMContentLoaded', function() {
 
-
-
 	var floorPlan = new SVG('floorPlan').size('100%', '100%')
-								.panZoom({zoomMin: 0.5, zoomMax: 500, zoomFactor: 0.2})
+										.attr({id: 'floorPlanSVG'})
+										.panZoom({zoomMin: 0.5, zoomMax: 500, zoomFactor: 0.2})
 
 	var editFloorPlanButton = new SVG('edit-floorplan-btn-div')
 								.size("100%", "100%")
@@ -41,7 +40,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	})
 
 
-	var floorPlanSvg = [],	  // stores SVG nodes
+	var //floorPlan,
+		floorPlanSvg = [],	  // stores SVG nodes
 		floorPlanData = {},	 // stores initial data from database (room_ID as keys)
 		deviceLocations = {},   // stores device coordinates
 		deviceData = {},		// stores all device data
@@ -115,12 +115,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
   
 	}
 
-
-
 	//=============================================================
 	//						Render Floorplan and Inlo Nodes
 	//=============================================================
-   
 
 	const load_floorplan = () => {
 
@@ -210,9 +207,12 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 			// set loaded to true to prevent excess loading
 			loaded = true;
-		}
 
+			read_devices_database()
+		}
+		
 	}
+   
 
 
 	//=============================================================
@@ -221,7 +221,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
    
 	
 	// Load Data from Database
-	const read_devices_database = (render_devices_initial, setup_websocket, populate_list) => {
+	const read_devices_database = () => {
 		$.ajax({
 			method: 'GET',
 			url: String(_config.api.inloApiUrl) + '/v1/nodes',
@@ -239,7 +239,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 		function completeRequest(result) {
 
-			console.log(deviceData)
 			// Store devices in deviceData array
 			for (var i = 0; i < result.length; i++) {
 				// Separate into Nodes and Devices
@@ -247,11 +246,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 					deviceData[result[i].nodeID] = result[i];
 				}
 			}
-			console.log(deviceData)
-
-			render_devices_initial();
-			setup_websocket(deviceData);
-			populate_list();
+			render_devices_initial()
+			populate_list()
 		}
 	}
 
@@ -265,27 +261,26 @@ SVG.on(document, 'DOMContentLoaded', function() {
 					icon_color = deviceData[key].iconColor,
 					region = deviceData[key].region,
 					roomName = deviceData[key].roomName,
-                                        device_x = deviceData[key].x,
-                                        device_y = deviceData[key].y;
+                    device_x = deviceData[key].x,
+                    device_y = deviceData[key].y;
 
 			// draw and store device object initializer in deviceLocations object
 			deviceLocations[key] = {};
-			let iconPath = floorPlan.path("M13.4293 0H9.92157C4.44201 2.49689e-05 0 4.44204 0 9.92157V13.4294V17.3627V19.8431H2.48041H6.41376H9.92157C15.401 19.8431 19.8431 15.4011 19.8431 9.92157V6.41373V2.48039V0H17.3627H13.4293ZM7.44113 9.92153C7.44113 11.2914 8.55167 12.4019 9.92157 12.4019C11.2914 12.4019 12.4019 11.2914 12.4019 9.92153C12.4019 8.55167 11.2914 7.44113 9.92157 7.44113C8.55167 7.44113 7.44113 8.55167 7.44113 9.92153ZM9.92157 17.3627C14.0311 17.3627 17.3627 14.0312 17.3627 9.92157C17.3627 5.81194 14.0311 2.48041 9.92157 2.48041C5.8119 2.48041 2.48036 5.81194 2.48036 9.92157C2.48036 14.0312 5.8119 17.3627 9.92157 17.3627ZM23.5636 17.3626C23.5636 16.6777 23.0084 16.1225 22.3234 16.1225C21.6385 16.1225 21.0833 16.6777 21.0833 17.3626C21.1069 18.3923 20.7954 19.1329 20.1362 19.8427C19.4532 20.6059 18.4645 21.0832 17.3627 21.0832C16.6778 21.0832 16.1225 21.6385 16.1225 22.3234C16.1225 23.0084 16.6778 23.5636 17.3627 23.5636C19.1993 23.5636 20.8507 22.7636 21.9844 21.4969C22.8963 20.4515 23.54 18.874 23.5636 17.3626Z");
+
+			let iconPath = floorPlan.path("M13.4293 0H9.92157C4.44201 2.49689e-05 0 4.44204 0 9.92157V13.4294V17.3627V19.8431H2.48041H6.41376H9.92157C15.401 19.8431 19.8431 15.4011 19.8431 9.92157V6.41373V2.48039V0H17.3627H13.4293ZM7.44113 9.92153C7.44113 11.2914 8.55167 12.4019 9.92157 12.4019C11.2914 12.4019 12.4019 11.2914 12.4019 9.92153C12.4019 8.55167 11.2914 7.44113 9.92157 7.44113C8.55167 7.44113 7.44113 8.55167 7.44113 9.92153ZM9.92157 17.3627C14.0311 17.3627 17.3627 14.0312 17.3627 9.92157C17.3627 5.81194 14.0311 2.48041 9.92157 2.48041C5.8119 2.48041 2.48036 5.81194 2.48036 9.92157C2.48036 14.0312 5.8119 17.3627 9.92157 17.3627ZM23.5636 17.3626C23.5636 16.6777 23.0084 16.1225 22.3234 16.1225C21.6385 16.1225 21.0833 16.6777 21.0833 17.3626C21.1069 18.3923 20.7954 19.1329 20.1362 19.8427C19.4532 20.6059 18.4645 21.0832 17.3627 21.0832C16.6778 21.0832 16.1225 21.6385 16.1225 22.3234C16.1225 23.0084 16.6778 23.5636 17.3627 23.5636C19.1993 23.5636 20.8507 22.7636 21.9844 21.4969C22.8963 20.4515 23.54 18.874 23.5636 17.3626Z")
 			iconPath.attr({id:"iconPath",
 							'fill-rule': "evenodd",
 							'clip-rule': "evenodd",
-							fill: icon_color});
-			iconPath.x(50).y(200);
+							fill: icon_color})
+			iconPath.x(50).y(200)
 			deviceLocations[key]["Icon"] = iconPath;
-			iconPath.front();
-
-
+			iconPath.front()
 		}
 		connectSocket(deviceData);
 	}
 
 	// Relocate devices position - this function gets called on websocket updates
-        const relocate_device = (device_ID, new_room_ID, new_node_ID, new_region, device_x, device_y) => {
+    const relocate_device = (device_ID, new_room_ID, new_node_ID, new_region, device_x, device_y) => {
 
 		// Move device to its proper location
 		deviceLocations[device_ID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y)
@@ -298,6 +293,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	//						Load the List View
 	//=============================================================
 	const populate_list = () => {
+
 		// Loop through deviceData object and create new div (.item-rows) 
 		// and assign name+room text values to divs
 		for (var key in deviceData) {
@@ -386,10 +382,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		- continue
 	*/
 
-	load_floorplan();
-	render_devices_initial()
-	read_devices_database(render_devices_initial, connectSocket, populate_list);
-
+	load_floorplan()
 
 
 
@@ -402,6 +395,16 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	//$("#items-listed-div").hide();
 	//$("#dropdown-sort-div").hide();
 	$("#edit-floorplan-btn").hide();
+
+	$("#list-view-btn").removeClass('selected'); // remove selected class from previous element
+	$(this).addClass('selected'); // add selected class to (this)
+	$("#dropdown-sort-div").fadeOut();
+	$("#prompt").fadeOut();
+	$("#items-listed-div").fadeOut();
+	$("#edit-floorplan-btn").fadeIn("slow");
+	$("#floorPlan").delay(500).fadeIn("slow");
+	$("#map-view-text").delay(500).fadeIn("slow");
+	$("#map-view-div").delay(500).fadeIn("slow");
 
 	$("#list-view-btn").click(function() {
 		$("#map-view-btn").removeClass('selected'); // remove selected class from previous element
