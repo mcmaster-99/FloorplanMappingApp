@@ -1,4 +1,7 @@
-
+// mapedit.js
+//
+// Map/Floorplan Editing interface
+//
 
 'use strict';
 //=============================================================
@@ -108,9 +111,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                                     let node_ID = result[i].rooms[j].nodes[k].nodeID;
 
-                                    let node_xy =  compute_node_xy(room_ID, node_ID);
-                                    let node_x = node_xy[0];
-                                    let node_y = node_xy[1];
+                                    // let node_xy =  compute_node_xy(room_ID, node_ID);
+                                    let node_x = result[i].rooms[j].nodes[k].x;
+                                    let node_y = result[i].rooms[j].nodes[k].y;
 
                                     // draw and store device object initializer in deviceLocations object
                                     nodeLocations[node_ID] = {};
@@ -254,9 +257,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
                                     let node_ID = currentFloorPlan[i].rooms[j].nodes[k].nodeID;
 
-                                    let node_xy =  compute_node_xy(room_ID, node_ID);
-                                    let node_x = node_xy[0];
-                                    let node_y = node_xy[1];
+                                    // let node_xy =  compute_node_xy(room_ID, node_ID);
+                                    let node_x = currentFloorPlan[i].rooms[j].nodes[k].x;
+                                    let node_y = currentFloorPlan[i].rooms[j].nodes[k].y;
 
                                     // draw and store device object initializer in deviceLocations object
                                     nodeLocations[node_ID] = {};
@@ -675,8 +678,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
                                 // iterate over nodes
                                 for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
                                     if (currentFloorPlan[i].rooms[j].nodes[k].nodeID === node_ID) {
-                                        currentFloorPlan[i].rooms[j].nodes[k].x = new_node_frac_x;
-                                        currentFloorPlan[i].rooms[j].nodes[k].y = new_node_frac_y;
+                                        currentFloorPlan[i].rooms[j].nodes[k].x = new_node_x;
+                                        currentFloorPlan[i].rooms[j].nodes[k].y = new_node_y;
                                     }
                                 }
                             }
