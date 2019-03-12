@@ -396,16 +396,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	//$("#dropdown-sort-div").hide();
 	$("#edit-floorplan-btn").hide();
 
-	$("#list-view-btn").removeClass('selected'); // remove selected class from previous element
-	$(this).addClass('selected'); // add selected class to (this)
-	$("#dropdown-sort-div").fadeOut();
-	$("#prompt").fadeOut();
-	$("#items-listed-div").fadeOut();
-	$("#edit-floorplan-btn").fadeIn("slow");
-	$("#floorPlan").delay(500).fadeIn("slow");
-	$("#map-view-text").delay(500).fadeIn("slow");
-	$("#map-view-div").delay(500).fadeIn("slow");
-
 	$("#list-view-btn").click(function() {
 		$("#map-view-btn").removeClass('selected'); // remove selected class from previous element
 		$(this).addClass('selected'); // add selected class to (this)
@@ -477,3 +467,27 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 
 })
+
+
+const e = React.createElement;
+
+class EditDevicesButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { liked: false };
+  }
+
+  render() {
+    if (this.state.liked) {
+      return 'You liked this.';
+    }
+
+    return e(
+      'button',
+      { onClick: () => this.setState({ liked: true }) },
+      'Like'
+    );
+  }
+}
+const domContainer = document.querySelector('#edit-floorplan-btn-div');
+ReactDOM.render(e(EditDevicesButton), domContainer);
