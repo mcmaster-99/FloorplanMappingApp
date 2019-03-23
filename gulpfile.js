@@ -3,6 +3,10 @@ var gulp = require('gulp');
 	gutil = require('gulp-util'),
 	sass = require('gulp-sass'),
 	uglify = require('gulp-terser'),
+	browserify = require('browserify'),
+	webpack = require('webpack-stream'),
+	babelify = require('babelify'),
+	babel = require('gulp-babel'),
 	concat = require('gulp-concat'),
 	connect = require('gulp-connect');
 
@@ -11,16 +15,6 @@ var jsSource = ['js/*.js'],
 	htmlSource = ['*.html'],
 	cssOutput = "css",
 	output = 'js';
-
-gulp.task('scripts', function() {     
-	return gulp.src(       
-		[       
-		'node_modules/babel-polyfill/dist/polyfill.js',       
-		'js/es6.js'       
-		])       
-	.pipe(babel({presets: ['es2015']}))       
-	.pipe(gulp.dest('compiled')) 
-});
 
 gulp.task('copy', function(){
 	gulp.src('index.html')
@@ -41,7 +35,7 @@ gulp.task('sass', function(){
 
 gulp.task('js', function(){
 	gulp.src(jsSource)
-	.pipe(uglify())
+	.pipe(uglify()) 
 	.on('error', (err) => { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
 	.pipe(connect.reload())
 });

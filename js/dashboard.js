@@ -10,6 +10,45 @@
 if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
 
+//=============================================================
+//						  REACT.JS
+//=============================================================
+
+class ListView extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			error: null,
+			isLoaded: false,
+			itemName: '',
+			itemRoom: '',
+			deviceData: ['Test']
+		};
+	}	
+
+	render() {
+		return (
+
+			<div id="items-listed">
+
+	            <div className='item-rows'>
+	                <p className='item-names'>{this.state.deviceData}</p>
+	                <p className='item-rooms'>{this.state.deviceData}</p>
+	            </div>
+
+        	</div>
+
+        );
+	}
+}
+
+const listViewComponent = <ListView/>;
+
+ReactDOM.render(
+  listViewComponent,
+  document.getElementById('items-listed-div')
+);
+
 
 
 //=============================================================
@@ -467,27 +506,3 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 
 })
-
-
-const e = React.createElement;
-
-class EditDevicesButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { liked: false };
-  }
-
-  render() {
-    if (this.state.liked) {
-      return 'You liked this.';
-    }
-
-    return e(
-      'button',
-      { onClick: () => this.setState({ liked: true }) },
-      'Like'
-    );
-  }
-}
-const domContainer = document.querySelector('#edit-floorplan-btn-div');
-ReactDOM.render(e(EditDevicesButton), domContainer);
