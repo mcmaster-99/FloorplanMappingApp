@@ -14,7 +14,7 @@ if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 //						  REACT.JS
 //=============================================================
 
-class ListView extends React.Component {
+/*class ListView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -47,7 +47,7 @@ const listViewComponent = <ListView/>;
 ReactDOM.render(
   listViewComponent,
   document.getElementById('items-listed-div')
-);
+);*/
 
 
 
@@ -68,18 +68,13 @@ SVG.on(document, 'DOMContentLoaded', function() {
 								})							
 
 	// Edit Floorplan Button
-	var editFloorPlanIcon = editFloorPlanButton.image('images/mapeditIcon.svg')
-											.attr({
-												id: "edit-floorplan-btn"
-											})
-											.style('cursor', 'pointer')
-
-	$("#edit-floorplan-btn").click(function(){
-		window.location.href = "mapedit.html";
-	})
+	var editFloorPlanIcon = editFloorPlanButton
+							.image('images/mapeditIcon.svg')
+							.attr({id: "edit-floorplan-btn"})
+							.style('cursor', 'pointer')
 
 
-	var //floorPlan,
+	var floorPlan,
 		floorPlanSvg = [],	  // stores SVG nodes
 		floorPlanData = {},	 // stores initial data from database (room_ID as keys)
 		deviceLocations = {},   // stores device coordinates
@@ -335,6 +330,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 		// Loop through deviceData object and create new div (.item-rows) 
 		// and assign name+room text values to divs
+		console.log(deviceData)
 		for (var key in deviceData) {
 			var location = deviceData[key].roomName;
 			var device_name = deviceData[key].name; // Need to add: if no name attribute, use mac address instead
@@ -458,6 +454,10 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		$("#map-view-text").delay(500).fadeIn("slow");
 		$("#map-view-div").delay(500).fadeIn("slow");
 	});
+
+	$("#edit-floorplan-btn").click(function(){
+		window.location.href = "mapedit.html";
+	})
 
 	$(".home-icon").click(function(){
 		var homeIconClass = document.getElementsByClassName("home-icon");
