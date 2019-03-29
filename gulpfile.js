@@ -14,7 +14,7 @@ var jsSource = ['js/*.js'],
 	sassSource = ['scss/*.scss'],
 	htmlSource = ['*.html'],
 	cssOutput = "css",
-	output = 'js';
+	output = "js";
 
 gulp.task('copy', function(){
 	gulp.src('index.html')
