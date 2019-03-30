@@ -83,8 +83,8 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			  		roomName = json.roomName,
 			  		newNodeID = json.nearestNodeID,
 			  		region = json.region,
-                                        device_x = json.x,
-                                        device_y = json.y;
+					device_x = json.x,
+					device_y = json.y;
 
 			  console.log(message);
 
@@ -93,7 +93,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			  //const update_list = (device_ID, new_room_ID, new_node_ID, new_region)
 			  update_list(nodeID, roomName, newNodeID, region);
 
-                          deviceLocations[nodeID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y);
+			  deviceLocations[nodeID]["Icon"].animate({ ease: '<', delay: '1.5s' }).move(device_x, device_y);
 			  //relocate_device(nodeID, roomID, newNodeID, region, device_x, device_y);
 			  
 			} catch (error) {
@@ -294,7 +294,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		// and assign name+room text values to divs
 		for (var key in deviceData) {
 			var location = deviceData[key].roomName;
-			var device_name = deviceData[key].macAddress;
+			var device_name = deviceData[key].name; // Need to add: if no name attribute, use mac address instead
 			
 			$("#items-listed")
 				.append("<div class='item-rows'>"+
@@ -322,7 +322,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 		for (let key in deviceData) {
 			if (key === device_ID) {
-				const 	device_name = deviceData[key].macAddress,
+				const 	device_name = deviceData[key].name, // Need to add: if no name attribute, use mac address instead
 						new_room_label = new_room_ID;
 				// if nothing has changed, exit/break
 				if (deviceData[key].location === new_room_ID) {
