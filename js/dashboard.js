@@ -250,7 +250,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
 			console.log(deviceData)
 
 			render_devices_initial();
-			setup_websocket(deviceData);
 			populate_list();
 		}
 	}
@@ -263,6 +262,7 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 			const 	roomID = deviceData[key].roomID,
 					nearestNodeID = deviceData[key].nearestNodeID,
+					icon_color = deviceData[key].iconColor,
 					region = deviceData[key].region,
 					roomName = deviceData[key].roomName,
                                         device_x = deviceData[key].x,
@@ -270,10 +270,18 @@ SVG.on(document, 'DOMContentLoaded', function() {
 
 			// draw and store device object initializer in deviceLocations object
 			deviceLocations[key] = {};
-			deviceLocations[key]["Icon"] = floorPlan.image("images/inlo.png", 25, 25);
-			deviceLocations[key]["Icon"].attr({x: device_x, y: device_y, fill: "white", stroke: "#00D9AE"});
+			let iconPath = floorPlan.path("M13.4293 0H9.92157C4.44201 2.49689e-05 0 4.44204 0 9.92157V13.4294V17.3627V19.8431H2.48041H6.41376H9.92157C15.401 19.8431 19.8431 15.4011 19.8431 9.92157V6.41373V2.48039V0H17.3627H13.4293ZM7.44113 9.92153C7.44113 11.2914 8.55167 12.4019 9.92157 12.4019C11.2914 12.4019 12.4019 11.2914 12.4019 9.92153C12.4019 8.55167 11.2914 7.44113 9.92157 7.44113C8.55167 7.44113 7.44113 8.55167 7.44113 9.92153ZM9.92157 17.3627C14.0311 17.3627 17.3627 14.0312 17.3627 9.92157C17.3627 5.81194 14.0311 2.48041 9.92157 2.48041C5.8119 2.48041 2.48036 5.81194 2.48036 9.92157C2.48036 14.0312 5.8119 17.3627 9.92157 17.3627ZM23.5636 17.3626C23.5636 16.6777 23.0084 16.1225 22.3234 16.1225C21.6385 16.1225 21.0833 16.6777 21.0833 17.3626C21.1069 18.3923 20.7954 19.1329 20.1362 19.8427C19.4532 20.6059 18.4645 21.0832 17.3627 21.0832C16.6778 21.0832 16.1225 21.6385 16.1225 22.3234C16.1225 23.0084 16.6778 23.5636 17.3627 23.5636C19.1993 23.5636 20.8507 22.7636 21.9844 21.4969C22.8963 20.4515 23.54 18.874 23.5636 17.3626Z");
+			iconPath.attr({id:"iconPath",
+							'fill-rule': "evenodd",
+							'clip-rule': "evenodd",
+							fill: icon_color});
+			iconPath.x(50).y(200);
+			deviceLocations[key]["Icon"] = iconPath;
+			iconPath.front();
+
 
 		}
+		connectSocket(deviceData);
 	}
 
 	// Relocate devices position - this function gets called on websocket updates
