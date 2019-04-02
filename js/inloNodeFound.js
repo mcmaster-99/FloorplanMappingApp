@@ -81,16 +81,21 @@ class Jumbotron extends React.Component {
 		this.state = {
 			title: "Inlo Node Found!",
 			prompt: "Tell us where your Inlo node is."
+		}
 	}	
 
 	render() {
 		return (
 
 			<div id="jumbotron-div">
-		        
-				<h1 id="title">{this.state.title}</h1>
 
-				<h3 id="prompt">{this.state.prompt}</h3>
+				<div id="jumbotron">
+		        
+					<h1 id="title">{this.state.title}</h1>
+
+					<h3 id="prompt">{this.state.prompt}</h3>
+
+				</div>
 
 		    </div>
 
@@ -143,8 +148,6 @@ class Prompt extends React.Component {
 
 ReactDOM.render((
 	<Router>
-		<AccessPointNotExist/>
-		<Route path="/AccessPointNotExist" component={AccessPointNotExist}/>
-		<Route path="/AddAccessPointFAQPrompt/" component={AddAccessPointFAQPrompt}/>
+		<Route path="/" component={AccessPointNotExist}/>
 	</Router>
 ),document.getElementById("root"));

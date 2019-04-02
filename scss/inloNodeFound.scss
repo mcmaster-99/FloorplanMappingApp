@@ -49,25 +49,22 @@ nav {
 /* ---------------- NAVBAR END ---------------- */
 
 
-#how-to-text-div {
-  display: block;
-  margin: 0 auto;
+#jumbotron-div {
   text-align: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 75vh;
-  width: 40vw;
-}
-
-#how-to-text {
-  text-align: center;
-  margin-top: 5vh;
-}
-
-#how-to-links-div>button {
-  background-color: silver;
-  padding: 10px;
-  width: 20vw;
-  margin-top: 10vh;
+  #jumbotron {
+    box-shadow: 0px 2px 5px 1px #9A9D9D;
+    border-radius: 10px;
+    background-color: white;
+    margin-top: 50px;
+    display: inline-block;
+    width: 450px;
+    height: 500px;
+    #title {
+      font-size: 25px;
+      margin-top: 20px;
+    }
+    #prompt {
+      margin-top: 20px;
+    }
+  }
 }
