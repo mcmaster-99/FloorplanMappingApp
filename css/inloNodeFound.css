@@ -54,3 +54,14 @@ nav {
       margin-top: 20px; }
     #jumbotron-div #jumbotron #prompt {
       margin-top: 20px; }
+
+button {
+  background-color: white;
+  border: 1px solid silver;
+  width: 250px;
+  margin-top: 35px;
+  text-align: center; }
+  button #dropdown-img {
+    float: right;
+    width: 20px;
+    height: 20px; }

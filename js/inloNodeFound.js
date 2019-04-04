@@ -95,6 +95,10 @@ class Jumbotron extends React.Component {
 
 					<h3 id="prompt">{this.state.prompt}</h3>
 
+					<div>
+						<DropDown/>
+					</div>
+
 				</div>
 
 		    </div>
@@ -141,6 +145,67 @@ class Prompt extends React.Component {
 
 
         );
+	}
+}
+
+class DropDown extends React.Component {
+	constructor() {
+		super();
+
+		this.state = {
+			showMenu: false,
+		};
+
+		this.showMenu = this.showMenu.bind(this);
+		this.closeMenu = this.closeMenu.bind(this);
+	}
+  
+	showMenu(event) {
+		event.preventDefault();
+
+		this.setState({ showMenu: true }, () => {
+			document.addEventListener('click', this.closeMenu);
+		});
+	}
+  
+	closeMenu(event) {
+
+		if (!this.dropdownMenu.contains(event.target)) {
+		  
+			this.setState({ showMenu: false }, () => {
+				document.removeEventListener('click', this.closeMenu);
+			});  
+		  
+		}
+	}
+
+	render() {
+		return (
+			<div>
+			    <button onClick={this.showMenu}>
+			    	Select Room
+			    	<img src="https://www.materialui.co/materialIcons/navigation/arrow_drop_down_black_192x192.png" id="dropdown-img"></img>
+			    </button>
+			    
+			    {
+			      this.state.showMenu
+			        ? (
+			          <div
+			            className="menu"
+			            ref={(element) => {
+			              this.dropdownMenu = element;
+			            }}
+			          >
+			            <button> Room 1</button>
+			            <button> Room 2</button>
+			          </div>
+			        )
+			        : (
+			          null
+			        )
+			    }
+			</div>
+		);
 	}
 }
 
