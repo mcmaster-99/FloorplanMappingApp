@@ -59,7 +59,7 @@ function accessPointNotExistFAQ() {
 	);
 }
 
-class AccessPointNotExist extends React.Component {
+class InloNodeFound extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -116,7 +116,11 @@ class Jumbotron extends React.Component {
 
 					<h3 id="prompt">{this.state.prompt}</h3>
 
-					<SimpleMenu/>
+					<SelectRoomMenu/>
+
+					<p id="option1">or <a href=""><b>Create a New Room</b></a></p>
+					
+					<p id="option2"><a href=""><b>Cancel</b></a></p>
 
 				</div>
 
@@ -127,70 +131,33 @@ class Jumbotron extends React.Component {
 	}
 }
 
-class Prompt extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
 
-		}
-	}	
+class SelectRoomMenu extends React.Component {
+	state = {
+		anchorEl: null,
+	};
+
+	handleClick = event => {
+		this.setState({ anchorEl: event.currentTarget });
+	};
+
+	handleClose = () => {
+		this.setState({ anchorEl: null });
+	};
 
 	render() {
-		return (
+    	const { anchorEl } = this.state;
 
-			<div>
-		        <img src="" id="how-to-img"></img>
-
-		        <div id="how-to-text-div">
-		            <h3 id="how-to-title">Add Inlo Hub</h3>
-
-		            <p id="how-to-text">
-		                You haven’t added an Inlo hub! Add one using the Inlo mobile app by following these steps :
-		                1. Download the Inlo mobile app on the App Store or Goolge Play.
-		                2. Open the Inlo mobile app and log in.
-		                3. Click Add Inlo Hub.
-		                4. Follow the prompts.
-
-		            </p>
-
-		            <div id="how-to-links-div">
-		                <button>Go Back Home</button>
-		                <Link to="/AddAccessPointFAQPrompt/">Need help or have questions?</Link>
-		            </div>
-
-		        </div>
-
-		    </div>
-
-
-        );
-	}
-}
-
-class SimpleMenu extends React.Component {
-  state = {
-    anchorEl: null,
-  };
-
-  handleClick = event => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  handleClose = () => {
-    this.setState({ anchorEl: null });
-  };
-
-  render() {
-    const { anchorEl } = this.state;
-
-    return (
-      <div>
-        <Button
-          aria-owns={anchorEl ? 'simple-menu' : undefined}
-          aria-haspopup="true"
-          onClick={this.handleClick}
-        >
-          Select Room
+	return (
+		<div>
+		<Button
+			id="menu-button"
+		  	aria-owns={anchorEl ? 'simple-menu' : undefined}
+		  	aria-haspopup="true"
+		  	onClick={this.handleClick}
+		>
+          <p id="select-room-txt">Select Room</p>
+          <p><img id="dropdown-img" src="https://image.flaticon.com/icons/svg/60/60995.svg"></img></p>
         </Button>
         <Menu
           id="simple-menu"
@@ -210,5 +177,5 @@ class SimpleMenu extends React.Component {
 
 
 ReactDOM.render((
-	<AccessPointNotExist/>
+	<InloNodeFound/>
 ),document.getElementById("root"));

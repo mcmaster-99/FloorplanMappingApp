@@ -42,8 +42,7 @@ gulp.task('sass', function(){
 
 gulp.task('js', function(){
 	gulp.src(jsSource)
-	.pipe(connect.reload())
-	.pipe(gulp.dest("js"));
+	.pipe(connect.reload());
 });
 
 gulp.task('watch', function(){
