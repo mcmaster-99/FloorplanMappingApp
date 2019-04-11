@@ -3,14 +3,9 @@
 // Users main home page:
 // List View and Map view of devices in Floorplan
 //
+'use strict'; // Redirect user if logged out
 
-'use strict';
-
-// Redirect user if logged out
-if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
-
-
-//=============================================================
+if (getAuth("Authorization").length === 0) window.location.href = "signin.html"; //=============================================================
 //						  REACT.JS
 //=============================================================
 
@@ -48,9 +43,6 @@ ReactDOM.render(
   listViewComponent,
   document.getElementById('items-listed-div')
 );*/
-
-
-
 //=============================================================
 //						  SVG.JS
 //=============================================================
@@ -473,36 +465,106 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		$("#dropdown-menu").toggle(500);
 	});
 	// VIEW SWITCHERS END
-
-	// SIGN OUT API CALL
-	$("#sign-out").click(function() {
-		$.ajax({
-            method: 'DELETE',
-            url: String(_config.api.inloApiUrl) + '/v1/user/login',
-            headers: {
-                Authorization: 'Bearer ' + getAuth("Authorization")
-            },
-            success: completeRequest,
-            error: function ajaxError(jqXHR, textStatus, errorThrown) {
-                console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
-                console.error('Response: ', jqXHR.responseText);
-            }
-        });
-        function completeRequest() {
-        	// delete cookie by setting past expiration date
-        	document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/';
-
-        	// alert user of successful sign out
-        	alert("Successfully signed out");
-
-        	// redirect user to sign in page
-        	window.location.href = "signin.html";
-        }
-	});
-
-	/*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
-		return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
-	}))*/
+	
+	//=============================================================
+  //						Render User's Devices
+  //=============================================================
+  // Load Data from Database
 
 
-})
+
+  //=============================================================
+  //						Load the List View
+  //=============================================================
+
+  /* function update_list(device_ID, new_room_ID, new_node_ID, new_region)
+  IF mqtt and change found
+  	- loop through divs to find changed item
+  	- IF item found
+  		change room to correct room
+  ELSE IF mqtt and nothing changed
+  	- continue
+  ELSE
+  	- continue
+  */
+
+
+  load_floorplan(); //=========================================
+  // ========== BUTTON CLICKS ===============
+  //=========================================
+  // VIEW SWITCHERS
+  //$("#items-listed-div").hide();
+  //$("#dropdown-sort-div").hide();
+
+  $("#edit-floorplan-btn").hide();
+  $("#list-view-btn").click(function () {
+    $("#map-view-btn").removeClass('selected'); // remove selected class from previous element
+
+    $(this).addClass('selected'); // add selected class to (this)
+
+    $("#prompt").fadeOut();
+    $("#floorPlan").fadeOut();
+    $("#map-view-div").fadeOut();
+    $("#edit-floorplan-btn").fadeOut();
+    $("#items-listed-div").delay(500).fadeIn("slow");
+    $("#dropdown-sort-div").delay(500).fadeIn("slow");
+  });
+  $("#map-view-btn").click(function () {
+    $("#list-view-btn").removeClass('selected'); // remove selected class from previous element
+
+    $(this).addClass('selected'); // add selected class to (this)
+
+    $("#dropdown-sort-div").fadeOut();
+    $("#prompt").fadeOut();
+    $("#items-listed-div").fadeOut();
+    $("#edit-floorplan-btn").fadeIn("slow");
+    $("#floorPlan").delay(500).fadeIn("slow");
+    $("#map-view-text").delay(500).fadeIn("slow");
+    $("#map-view-div").delay(500).fadeIn("slow");
+  });
+  $("#edit-floorplan-btn").click(function () {
+    window.location.href = "mapedit.html";
+  });
+  $(".home-icon").click(function () {
+    var homeIconClass = document.getElementsByClassName("home-icon");
+    var homeIconId = document.getElementById("home-icon-svg");
+
+    for (var i = 0; i < $(".home-icon").length; i++) {
+      homeIconClass[i].attributes[4].nodeValue = "#00D9A7";
+    }
+
+    homeIconId.style.borderBottom = "6px solid #00D9A7";
+    homeIconId.style.paddingBottom = ".6em";
+  });
+  $("#dropdown-btn").click(function () {
+    $("#dropdown-menu").toggle(500);
+  }); // VIEW SWITCHERS END
+  // SIGN OUT API CALL
+
+  $("#sign-out").click(function () {
+    $.ajax({
+      method: 'DELETE',
+      url: String(_config.api.inloApiUrl) + '/v1/user/login',
+      headers: {
+        Authorization: 'Bearer ' + getAuth("Authorization")
+      },
+      success: completeRequest,
+      error: function ajaxError(jqXHR, textStatus, errorThrown) {
+        console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+        console.error('Response: ', jqXHR.responseText);
+      }
+    });
+
+    function completeRequest() {
+      // delete cookie by setting past expiration date
+      document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/'; // alert user of successful sign out
+
+      alert("Successfully signed out"); // redirect user to sign in page
+
+      window.location.href = "signin.html";
+    }
+  });
+  /*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
+  	return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
+  }))*/
+});

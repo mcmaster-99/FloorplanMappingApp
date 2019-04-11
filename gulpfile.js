@@ -2,27 +2,34 @@ var gulp = require('gulp');
 	babel = require('gulp-babel'),
 	gutil = require('gulp-util'),
 	sass = require('gulp-sass'),
+	babel = require('gulp-babel'),
 	uglify = require('gulp-terser'),
 	browserify = require('browserify'),
 	webpack = require('webpack-stream'),
 	babelify = require('babelify'),
-	babel = require('gulp-babel'),
+	babelregister = require('babel-core'),
 	concat = require('gulp-concat'),
 	connect = require('gulp-connect');
 
 var jsSource = ['js/*.js'],
+	jsxSource = ['js/*.jsx'],
 	sassSource = ['scss/*.scss'],
 	htmlSource = ['*.html'],
 	cssOutput = "css",
 	output = "js";
 
-gulp.task('copy', function(){
+/*gulp.task('copy', function(){
 	gulp.src('index.html')
 	.pipe(gulp.dest(output))
 });
 
 gulp.task('log', function(){
 	gutil.log('== My Log Task ==')
+});*/
+
+gulp.task('html', function(){
+	gulp.src(htmlSource)
+	.pipe(connect.reload())
 });
 
 gulp.task('sass', function(){
@@ -35,9 +42,8 @@ gulp.task('sass', function(){
 
 gulp.task('js', function(){
 	gulp.src(jsSource)
-	.pipe(uglify()) 
-	.on('error', (err) => { gutil.log(gutil.colors.red('[Error]'), err.toString()); })
 	.pipe(connect.reload())
+	.pipe(gulp.dest("js"));
 });
 
 gulp.task('watch', function(){
@@ -52,11 +58,6 @@ gulp.task('connect', function() {
 		root: '.',
 		livereload: true
 	});
-});
-
-gulp.task('html', function(){
-	gulp.src(htmlSource)
-	.pipe(connect.reload())
 });
 
 gulp.task('default', ['js', 'sass', 'connect', 'watch', 'html']);

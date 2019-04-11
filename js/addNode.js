@@ -1,78 +1,189 @@
-// dashboard.js
-//
-// Users main home page:
-// List View and Map view of devices in Floorplan
-//
+"use strict";
 
-'use strict';
+function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
 
-// Redirect user if logged out
-if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+var _react = _interopRequireDefault(require("react"));
+
+var _reactDom = _interopRequireDefault(require("react-dom"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    "default": obj
+  };
+}
+
+function _typeof(obj) {
+  if (typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (_typeof(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+'use strict'; // Redirect user if logged out
 
 
-//=============================================================
+if (getAuth("Authorization").length === 0) window.location.href = "signin.html"; //=============================================================
 //						  REACT.JS
 //=============================================================
 
-class AddNodePage extends React.Component {
-	constructor(props) {
-		super(props);
+var AddNodePage =
+/*#__PURE__*/
+function (_React$Component) {
+  _inherits(AddNodePage, _React$Component);
 
-	}	
+  function AddNodePage(props) {
+    _classCallCheck(this, AddNodePage);
 
-	render() {
-		return (
+    return _possibleConstructorReturn(this, _getPrototypeOf(AddNodePage).call(this, props));
+  }
 
-			<div>
-				<NavBar/>
-				<Prompt/>
-				<ExistingRoomButton/>
-				<NewRoomButton/>
-			</div>
+  _createClass(AddNodePage, [{
+    key: "render",
+    value: function render() {
+      return _react["default"].createElement("div", null, _react["default"].createElement(NavBar, null), _react["default"].createElement(Prompt, null), _react["default"].createElement(ExistingRoomButton, null), _react["default"].createElement(NewRoomButton, null));
+    }
+  }]);
 
-        );
-	}
-}
+  return AddNodePage;
+}(_react["default"].Component);
 
+var NavBar =
+/*#__PURE__*/
+function (_React$Component2) {
+  _inherits(NavBar, _React$Component2);
 
-class NavBar extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			title: 'Describe Room'
-		};
-	}	
+  function NavBar(props) {
+    var _this;
 
-	render() {
-		return (
+    _classCallCheck(this, NavBar);
 
-			<div className="navbar">
-				<p id="navbar-title">{this.state.title}</p>
-			</div>
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(NavBar).call(this, props));
+    _this.state = {
+      title: 'Describe Room'
+    };
+    return _this;
+  }
 
-        );
-	}
-}
+  _createClass(NavBar, [{
+    key: "render",
+    value: function render() {
+      return _react["default"].createElement("div", {
+        className: "navbar"
+      }, _react["default"].createElement("p", {
+        id: "navbar-title"
+      }, this.state.title));
+    }
+  }]);
 
-class Prompt extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			text: 'In which room is new node plugged in?'
-		};
-	}	
+  return NavBar;
+}(_react["default"].Component);
 
-	render() {
-		return (
+var Prompt =
+/*#__PURE__*/
+function (_React$Component3) {
+  _inherits(Prompt, _React$Component3);
 
-			<div className="prompt-div">
-				<p id="prompt-text">{this.state.text}</p>
-			</div>
+  function Prompt(props) {
+    var _this2;
 
-        );
-	}
-}
+    _classCallCheck(this, Prompt);
 
+    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Prompt).call(this, props));
+    _this2.state = {
+      text: 'In which room is new node plugged in?'
+    };
+    return _this2;
+  }
+
+  _createClass(Prompt, [{
+    key: "render",
+    value: function render() {
+      return _react["default"].createElement("div", {
+        className: "prompt-div"
+      }, _react["default"].createElement("p", {
+        id: "prompt-text"
+      }, this.state.text));
+    }
+  }]);
+
+  return Prompt;
+}(_react["default"].Component);
 /*	constructor(props) {
 		super(props);
 		this.state = {
@@ -98,52 +209,78 @@ class Prompt extends React.Component {
 	}
 }*/
 
-class ExistingRoomButton extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			title: 'Existing Room'
-		};
 
-		this.handleClick = this.handleClick.bind(this);
-	}
+var ExistingRoomButton =
+/*#__PURE__*/
+function (_React$Component4) {
+  _inherits(ExistingRoomButton, _React$Component4);
 
-	handleClick() {
-		this.setState(state => ({
-			title: 'Position New Device in Room'
-		}));
-	}
+  function ExistingRoomButton(props) {
+    var _this3;
 
-	render() {
-		return (
+    _classCallCheck(this, ExistingRoomButton);
 
-			<div className="existing-room-btn buttons" onClick={this.handleClick}>
-				<p id="existing-room-btn-text">{this.state.title}</p>
-			</div>
-        );
-	}
-}
+    _this3 = _possibleConstructorReturn(this, _getPrototypeOf(ExistingRoomButton).call(this, props));
+    _this3.state = {
+      title: 'Existing Room'
+    };
+    _this3.handleClick = _this3.handleClick.bind(_assertThisInitialized(_this3));
+    return _this3;
+  }
 
-class NewRoomButton extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			title: 'New Room'
-		};
-	}	
+  _createClass(ExistingRoomButton, [{
+    key: "handleClick",
+    value: function handleClick() {
+      this.setState(function (state) {
+        return {
+          title: 'Position New Device in Room'
+        };
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return _react["default"].createElement("div", {
+        className: "existing-room-btn buttons",
+        onClick: this.handleClick
+      }, _react["default"].createElement("p", {
+        id: "existing-room-btn-text"
+      }, this.state.title));
+    }
+  }]);
 
-	render() {
-		return (
-			<div className="new-room-btn buttons">
-				<p id="new-room-btn-text">{this.state.title}</p>
-			</div>
+  return ExistingRoomButton;
+}(_react["default"].Component);
 
-        );
-	}
-}
+var NewRoomButton =
+/*#__PURE__*/
+function (_React$Component5) {
+  _inherits(NewRoomButton, _React$Component5);
 
+  function NewRoomButton(props) {
+    var _this4;
 
-ReactDOM.render(
-  <AddNodePage/>,
-  document.getElementById("root")
-);
+    _classCallCheck(this, NewRoomButton);
+
+    _this4 = _possibleConstructorReturn(this, _getPrototypeOf(NewRoomButton).call(this, props));
+    _this4.state = {
+      title: 'New Room'
+    };
+    return _this4;
+  }
+
+  _createClass(NewRoomButton, [{
+    key: "render",
+    value: function render() {
+      return _react["default"].createElement("div", {
+        className: "new-room-btn buttons"
+      }, _react["default"].createElement("p", {
+        id: "new-room-btn-text"
+      }, this.state.title));
+    }
+  }]);
+
+  return NewRoomButton;
+}(_react["default"].Component);
+
+_reactDom["default"].render(_react["default"].createElement(AddNodePage, null), document.getElementById("root"));
