@@ -29,84 +29,64 @@ body {
   background-color: #f9f8fb;
 }
 /* ---------------- NAVBAR ---------------- */
-#navbar-div {
-  background-color: white;
-  box-shadow: 0px 2px 5px 0px #9A9D9D;
-  width: 100%;
+#navbar-div{
+  text-align: center;
 }
-
 nav {
+  background-color: white;
   width: 100%;
   height: 3.5em;
+  box-shadow: 0px 2px 5px 1px #9A9D9D;
   padding: 10px;
   text-align: center;
-  word-spacing: 15em;
-  /* give space between navbar icons */
 }
 
 #inlo-banner {
   width: 100px;
   height: 27px;
   color: #00D0A7;
-  float: left;
-}
-
-.right-nav-icons {
-  width: 2.5vw;
-  height: 4vh;
-  color: gray;
-  float: right;
-  padding: 2px;
-  margin-right: 3vw;
-  filter: grayscale(100%);
-}
-
-#add-devices-dropdown-div {
-  float: right;
-}
-
-#dropdown-btn {
-  background: none;
-  border: none;
-}
-
-#dropdown-menu {
-  display: none;
-  width: 15vw;
-  height: 15vh;
-  background-color: silver;
-  position: absolute;
-  white-space: normal;
-  right: 2vw;
-  word-spacing: .1vw;
-}
-#dropdown-menu>li {
-  margin-top: 2vh;
-  white-space: nowrap;
-  word-spacing: .1vw;
 }
 /* ---------------- NAVBAR END ---------------- */
 
 
-#how-to-text-div {
-  display: block;
-  margin: 0 auto;
+#jumbotron-div {
   text-align: center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 75vh;
-  width: 40vw;
+  #jumbotron {
+    box-shadow: 0px 2px 5px 1px #9A9D9D;
+    border-radius: 10px;
+    background-color: white;
+    margin-top: 50px;
+    display: inline-block;
+    width: 450px;
+    height: 500px;
+    #title {
+      font-size: 25px;
+      margin-top: 20px;
+    }
+    #prompt {
+      margin-top: 20px;
+    }
+  }
 }
 
-#how-to-text {
+#menu-button {
+  border: 1px solid silver;
+  width: 250px;
+  margin-top: 50px;
   text-align: center;
-  margin-top: 5vh;
+  #select-room-txt {
+    position: absolute;
+  }
+  img#dropdown-img {
+    margin-left: 200px;
+    width: 20px;
+    height: 10px;
+  }
 }
 
-#how-to-links-div>button {
-  background-color: silver;
-  padding: 10px;
-  width: 20vw;
-  margin-top: 10vh;
+#option1 {
+  margin-top: 30px;
+}
+#option2 {
+  margin-top: 200px;
 }

@@ -18,6 +18,9 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline; }
 
+body {
+  background-color: #f9f8fb; }
+
 /* ---------------- NAVBAR ---------------- */
 .navbar {
   background-color: silver;
@@ -51,22 +54,45 @@ nav {
   margin-right: 3vw;
   filter: grayscale(100%); }
 
-.buttons {
+#add-devices-dropdown-div {
+  float: right; }
+
+#dropdown-btn {
+  background: none;
+  border: none; }
+
+#dropdown-menu {
+  display: none;
+  width: 15vw;
+  height: 15vh;
   background-color: silver;
-  height: 60px;
-  width: 300px;
   position: absolute;
-  left: 50%;
-  margin-left: -150px;
-  margin-top: 100px;
-  text-align: center;
-  line-height: 3em;
-  border-radius: 50px;
-  cursor: pointer; }
+  white-space: normal;
+  right: 2vw;
+  word-spacing: .1vw; }
 
-.new-room-btn {
-  margin-top: 180px; }
+#dropdown-menu > li {
+  margin-top: 2vh;
+  white-space: nowrap;
+  word-spacing: .1vw; }
 
-.prompt-div {
+/* ---------------- NAVBAR END ---------------- */
+#how-to-text-div {
+  display: block;
+  margin: 0 auto;
   text-align: center;
-  margin-top: 125px; }
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 75vh;
+  width: 40vw; }
+
+#how-to-text {
+  text-align: center;
+  margin-top: 5vh; }
+
+#how-to-links-div > button {
+  background-color: silver;
+  padding: 10px;
+  width: 20vw;
+  margin-top: 10vh; }
