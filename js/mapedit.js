@@ -714,17 +714,22 @@ SVG.on(document, 'DOMContentLoaded', function () {
         var groupID = room_ID + "group",
             roomGroup = drawing.group().addClass(groupID),
             room_data = {
-          "rooms": [{
-            "roomID": room_ID,
-            "roomName": "Kitchen",
-            "floor": floor,
-            "x": x,
-            "y": y,
-            "width": width,
-            "height": height
-          }]
+              "rooms": [{
+              "roomID": room_ID,
+              "roomName": "Kitchen",
+              "floor": floor,
+              "x": x,
+              "y": y,
+              "width": width,
+              "height": height
+            }]
         };
+        console.log(currentFloorPlan)
+        if( currentFloorPlan.length == 0 ) {
+          create_floorplan()
+        } else {
         currentFloorPlan[floorID].rooms.push(room_data.rooms[0]);
+        }
         floorPlanSvg.push(room);
         roomGroup.add(floorPlanSvg[floorPlanSvg.length - 1].addClass(groupID));
         floorPlanGroups[room_ID] = roomGroup;
