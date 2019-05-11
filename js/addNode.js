@@ -99,7 +99,7 @@ function _setPrototypeOf(o, p) {
 
 
 if (getAuth("Authorization").length === 0) window.location.href = "signin.html"; //=============================================================
-//						  REACT.JS
+//              REACT.JS
 //=============================================================
 
 var AddNodePage =
@@ -184,29 +184,29 @@ function (_React$Component3) {
 
   return Prompt;
 }(_react["default"].Component);
-/*	constructor(props) {
-		super(props);
-		this.state = {
-			title: ''
-		};
+/*  constructor(props) {
+    super(props);
+    this.state = {
+      title: ''
+    };
 
-		this.handleClick = this.handleClick.bind(this);
-	}
+    this.handleClick = this.handleClick.bind(this);
+  }
 
-	handleClick() {
-		this.setState(state => ({
-			title: 'Position New Device in Room'
-		}));
-	}
+  handleClick() {
+    this.setState(state => ({
+      title: 'Position New Device in Room'
+    }));
+  }
 
-	render() {
-		return (
-			<div className="btn">
-				<p id="btn-name">{this.state.title}</p>
-			</div>
+  render() {
+    return (
+      <div className="btn">
+        <p id="btn-name">{this.state.title}</p>
+      </div>
 
         );
-	}
+  }
 }*/
 
 

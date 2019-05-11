@@ -8,35 +8,33 @@
 
 const {
 	anchorEl,
-  Button,
-  colors,
-  createMuiTheme,
-  CssBaseline,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Icon,
-  MuiThemeProvider,
-  Menu,
-  MenuItem,
-  Typography,
-  withStyles,
+	Button,
+	colors,
+	createMuiTheme,
+	CssBaseline,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	FormControl,
+	Icon,
+	InputBase,
+	MuiThemeProvider,
+	Menu,
+	MenuItem,
+	NativeSelect,
+	Select,
+	Typography,
+	withStyles,
 } = window['material-ui'];
-
-var Router = window.ReactRouterDOM.BrowserRouter;
-var Route = window.ReactRouterDOM.Route;
-var IndexRoute = window.ReactRouterDOM.IndexRoute;
-var Link = window.ReactRouterDOM.Link;
-var browserHistory = window.ReactRouterDOM.browserHistory;
+console.log(window['material-ui'])
 
 
 'use strict';
 
 // Redirect user if logged out
 if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
-
 
 //=============================================================
 //						  REACT.JS
@@ -59,24 +57,6 @@ function accessPointNotExistFAQ() {
 	);
 }
 
-class InloNodeFound extends React.Component {
-	constructor(props) {
-		super(props);
-
-	}	
-
-	render() {
-		return (
-
-			<div>
-				<NavBar/>
-				<Jumbotron/>
-			</div>
-
-        );
-	}
-}
-
 
 class NavBar extends React.Component {
 	constructor(props) {
@@ -96,13 +76,127 @@ class NavBar extends React.Component {
 	}
 }
 
-class Jumbotron extends React.Component {
+
+class InloNodeFound extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			title: "Inlo Node Found!",
-			prompt: "Tell us where your Inlo node is."
+			prompt: "Tell us where your Inlo node is.",
+			addLink: "Add a New Room",
+			backLink: "",
+			nextLink: "",
+			cancelLink: "Cancel",
+			or: "or ",
+			addNewRoomBtnId: "addNewRoomBtn",
+			backBtnId: "",
+			nextBtnId: "",
+			cancelBtnId: "cancelBtn",
+			showRoom: false,
+			showMenu: true
 		}
+		this.updateStateNewRm = this.updateStateNewRm.bind(this);
+		this.updateStateExistingRm = this.updateStateExistingRm.bind(this);
+		this.revertToOriginalState = this.revertToOriginalState.bind(this);
+	}
+
+
+	revertToOriginalState(){
+		this.setState({
+			title: "Inlo Node Found!",
+			prompt: "Tell us where your Inlo node is.",
+			addLink: "Add a New Room",
+			backLink: "",
+			nextLink: "",
+			cancelLink: "Cancel",
+			or: "or ",
+			addNewRoomBtnId: "addNewRoomBtn",
+			backBtnId: "",
+			nextBtnId: "",
+			cancelBtnId: "cancelBtn",
+			showRoom: false,
+			showMenu: true
+		})
+		$("#cancelBtn").css("margin-top", "200px");
+	}
+
+	updateStateNewRm(){
+		this.setState({
+			title: "Add a New Room", 
+			prompt: "What do you want to name your new room?",
+			addLink: "",
+			backLink: "Back",
+			nextLink: "Next",
+			cancelLink: "Cancel",
+			or: "",
+			addNewRoomBtnId: "addNewRoomBtn",
+			backBtnId: "backBtn",
+			nextBtnId: "nextBtn",
+			cancelBtnId: "cancelBtn"
+		})
+	}
+	updateStateExistingRm(){
+		this.setState({
+			title: "Position Inlo Node", 
+			prompt: "Select the wall on which the Inlo node has been plugged in. This can be adjusted later on.",
+			addLink: "",
+			backLink: "Back",
+			nextLink: "Next",
+			cancelLink: "Cancel",
+			or: "",
+			addNewRoomBtnId: "addNewRoomBtn",
+			backBtnId: "backBtn",
+			nextBtnId: "nextBtn",
+			cancelBtnId: "cancelBtn",
+			showRoom: true,
+			showMenu: false
+		})
+		$("#cancelBtn").css("margin-top", "25px");
+	}
+
+	render() {
+		return (
+
+			<div>
+				<h1 id="title">{this.state.title}</h1>
+
+				<h3 id="prompt">{this.state.prompt}</h3>
+
+				{
+					this.state.showMenu == true &&
+						<SelectRoomMenu updateStateExistingRm={this.updateStateExistingRm.bind(this)}/>
+				}
+
+				<p id={this.state.addNewRoomBtnId}>{this.state.or}<a style={{cursor: 'pointer'}} onClick={this.updateStateNewRm}><b>{this.state.addLink}</b></a></p>
+				
+				{
+					this.state.showRoom == true &&
+						<div id="roomSVGDiv">
+						  <svg width="200" height="200">
+						    <rect id="room" width="200" height="200" fill="none" stroke="black"></rect>
+						  </svg>
+						</div>
+				}
+
+				<h1 id={this.state.backBtnId} onClick={this.revertToOriginalState}>
+					<p><b>{this.state.backLink}</b></p>
+				</h1>
+
+				<h1 id={this.state.nextBtnId}><p id="nextTxt">
+					<b>{this.state.nextLink}</b></p>
+				</h1>
+
+				<h1 id={this.state.cancelBtnId}>
+					<p><b>{this.state.cancelLink}</b></p>
+				</h1>
+			</div>
+		);
+	}
+}
+
+class Jumbotron extends React.Component {
+	constructor(props) {
+		super(props);
 	}	
 
 	render() {
@@ -110,17 +204,10 @@ class Jumbotron extends React.Component {
 
 			<div id="jumbotron-div">
 
+
 				<div id="jumbotron">
-		        
-					<h1 id="title">{this.state.title}</h1>
 
-					<h3 id="prompt">{this.state.prompt}</h3>
-
-					<SelectRoomMenu/>
-
-					<p id="option1">or <a href=""><b>Create a New Room</b></a></p>
-					
-					<p id="option2"><a href=""><b>Cancel</b></a></p>
+					<InloNodeFound/>
 
 				</div>
 
@@ -132,50 +219,58 @@ class Jumbotron extends React.Component {
 }
 
 
+const BootstrapInput = withStyles(theme => ({
+  input: {
+  	textAlign: 'center',
+    backgroundColor: theme.palette.background.paper,
+    border: '1px solid #ced4da',
+    fontSize: 16,
+    height: '15px',
+    width: '200px',
+    padding: '10px 26px 10px 12px',
+  },
+}))(InputBase);
+
+
 class SelectRoomMenu extends React.Component {
 	state = {
 		anchorEl: null,
+		room: "Select Room"
 	};
 
-	handleClick = event => {
-		this.setState({ anchorEl: event.currentTarget });
+	updateStateNewRm = () => {
+		this.props.updateStateNewRm();
 	};
-
-	handleClose = () => {
-		this.setState({ anchorEl: null });
+	updateStateExistingRm = () => {
+		this.props.updateStateExistingRm();
+		this.setState({ room: event.target.value });
 	};
 
 	render() {
-    	const { anchorEl } = this.state;
+    	const { classes } = this.props;
 
-	return (
-		<div>
-		<Button
-			id="menu-button"
-		  	aria-owns={anchorEl ? 'simple-menu' : undefined}
-		  	aria-haspopup="true"
-		  	onClick={this.handleClick}
-		>
-          <p id="select-room-txt">Select Room</p>
-          <p><img id="dropdown-img" src="https://image.flaticon.com/icons/svg/60/60995.svg"></img></p>
-        </Button>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={this.handleClose}
-        >
-          <MenuItem onClick={this.handleClose}>Bedroom</MenuItem>
-          <MenuItem onClick={this.handleClose}>Kitchen</MenuItem>
-          <MenuItem onClick={this.handleClose}>Bathroom</MenuItem>
-        </Menu>
-      </div>
-    );
+	    return (
+	      <form autoComplete="off">
+	        <FormControl id="native-menu-select">
+	          <NativeSelect
+	            value={this.state.room}
+	            onChange={this.updateStateExistingRm}
+	            input={<BootstrapInput name="room" id="room-customized-select" />}
+	            id="native-select-div"
+	          >
+	            <option class="option" value="SELECT ROOM">{this.state.room}</option>
+	            <option class="option" value={"Bedroom"} onClick={this.updateStateExistingRm}>Bedroom</option>
+	            <option class="option" value={"Living Room"} onClick={this.updateStateExistingRm}>Living Room</option>
+	            <option class="option" value={"Kitchen"} onClick={this.updateStateExistingRm}>Kitchen</option>
+	          </NativeSelect>
+	        </FormControl>
+	      </form>
+	    );
   }
 }
 
 
 
 ReactDOM.render((
-	<InloNodeFound/>
+	<Jumbotron/>
 ),document.getElementById("root"));
