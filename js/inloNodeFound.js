@@ -40,6 +40,7 @@ if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 //						  REACT.JS
 //=============================================================
 
+
 function accessPointNotExistFAQ() {
 	return (
 			<div id="how-to-text-div">
@@ -93,65 +94,44 @@ class InloNodeFound extends React.Component {
 			nextBtnId: "",
 			cancelBtnId: "cancelBtn",
 			showRoom: false,
-			showMenu: true
+			showMenu: false,
+			rooms: []
 		}
-		this.updateStateNewRm = this.updateStateNewRm.bind(this);
-		this.updateStateExistingRm = this.updateStateExistingRm.bind(this);
-		this.revertToOriginalState = this.revertToOriginalState.bind(this);
 	}
 
+	componentDidMount() {
+		const that = this;
+		$.ajax({
+	      method: 'GET',
+	      url: String(_config.api.inloApiUrl) + '/v1/floorplan',
+	      headers: {
+	        Authorization: 'Bearer ' + getAuth("Authorization")
+	      },
+	      success: completeAjaxRequest,
+	      error: function ajaxError(jqXHR, textStatus, errorThrown) {
+	        console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+	        console.error('Response: ', jqXHR.responseText);
+	      }
+	    })
+	    function completeAjaxRequest(result) {
+	    	for (let i = 0; i < result.length; i++) {
 
-	revertToOriginalState(){
-		this.setState({
-			title: "Inlo Node Found!",
-			prompt: "Tell us where your Inlo node is.",
-			addLink: "Add a New Room",
-			backLink: "",
-			nextLink: "",
-			cancelLink: "Cancel",
-			or: "or ",
-			addNewRoomBtnId: "addNewRoomBtn",
-			backBtnId: "",
-			nextBtnId: "",
-			cancelBtnId: "cancelBtn",
-			showRoom: false,
-			showMenu: true
-		})
-		$("#cancelBtn").css("margin-top", "200px");
-	}
-
-	updateStateNewRm(){
-		this.setState({
-			title: "Add a New Room", 
-			prompt: "What do you want to name your new room?",
-			addLink: "",
-			backLink: "Back",
-			nextLink: "Next",
-			cancelLink: "Cancel",
-			or: "",
-			addNewRoomBtnId: "addNewRoomBtn",
-			backBtnId: "backBtn",
-			nextBtnId: "nextBtn",
-			cancelBtnId: "cancelBtn"
-		})
-	}
-	updateStateExistingRm(){
-		this.setState({
-			title: "Position Inlo Node", 
-			prompt: "Select the wall on which the Inlo node has been plugged in. This can be adjusted later on.",
-			addLink: "",
-			backLink: "Back",
-			nextLink: "Next",
-			cancelLink: "Cancel",
-			or: "",
-			addNewRoomBtnId: "addNewRoomBtn",
-			backBtnId: "backBtn",
-			nextBtnId: "nextBtn",
-			cancelBtnId: "cancelBtn",
-			showRoom: true,
-			showMenu: false
-		})
-		$("#cancelBtn").css("margin-top", "25px");
+                if (result[i].rooms.length > 0) {
+                	console.log(result[i].rooms)
+                	that.setState({
+                		rooms: result[i].rooms
+                	})
+                    // iterate over rooms
+                    /*for (let j = 0; j < result[i].rooms.length; j++) {
+                    	
+                    	this.state.rooms.push(result[i].rooms[j].roomName)
+                    }*/
+                }
+            }
+            that.setState({
+            	showMenu: true
+            })
+	    }
 	}
 
 	render() {
@@ -162,21 +142,17 @@ class InloNodeFound extends React.Component {
 
 				<h3 id="prompt">{this.state.prompt}</h3>
 
-				{
-					this.state.showMenu == true &&
-						<SelectRoomMenu updateStateExistingRm={this.updateStateExistingRm.bind(this)}/>
-				}
+				{ this.state.showMenu && (
+					<SelectRoomMenu rooms={this.state.rooms}/>
+				)}
 
 				<p id={this.state.addNewRoomBtnId}>{this.state.or}<a style={{cursor: 'pointer'}} onClick={this.updateStateNewRm}><b>{this.state.addLink}</b></a></p>
 				
-				{
-					this.state.showRoom == true &&
-						<div id="roomSVGDiv">
-						  <svg width="200" height="200">
-						    <rect id="room" width="200" height="200" fill="none" stroke="black"></rect>
-						  </svg>
-						</div>
-				}
+				{/*<div id="roomSVGDiv">
+				  <svg width="200" height="200">
+				    <rect id="room" width="200" height="200" fill="none" stroke="black"></rect>
+				  </svg>
+				</div>*/}
 
 				<h1 id={this.state.backBtnId} onClick={this.revertToOriginalState}>
 					<p><b>{this.state.backLink}</b></p>
@@ -225,7 +201,7 @@ const BootstrapInput = withStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     border: '1px solid #ced4da',
     fontSize: 16,
-    height: '15px',
+    height: '20px',
     width: '200px',
     padding: '10px 26px 10px 12px',
   },
@@ -247,21 +223,25 @@ class SelectRoomMenu extends React.Component {
 	};
 
 	render() {
-    	const { classes } = this.props;
-
+    	const classes = this.props;
+    	let value
 	    return (
 	      <form autoComplete="off">
 	        <FormControl id="native-menu-select">
 	          <NativeSelect
 	            value={this.state.room}
+	            label="Select Room"
 	            onChange={this.updateStateExistingRm}
 	            input={<BootstrapInput name="room" id="room-customized-select" />}
 	            id="native-select-div"
 	          >
-	            <option class="option" value="SELECT ROOM">{this.state.room}</option>
-	            <option class="option" value={"Bedroom"} onClick={this.updateStateExistingRm}>Bedroom</option>
-	            <option class="option" value={"Living Room"} onClick={this.updateStateExistingRm}>Living Room</option>
-	            <option class="option" value={"Kitchen"} onClick={this.updateStateExistingRm}>Kitchen</option>
+	          <option defaultValue='' disabled>Select Room</option>
+	          	{
+	          		classes.rooms.map((item,i) => 
+			        	<option key={item._id}>{item.roomName}</option>
+		          	)
+	          	}
+	     
 	          </NativeSelect>
 	        </FormControl>
 	      </form>
