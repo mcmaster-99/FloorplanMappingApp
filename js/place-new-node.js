@@ -11,14 +11,6 @@ if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 //						  REACT.JS
 //=============================================================
 
-var encoded =  window.location.href;
-
-try {
-  console.log(decodeURIComponent(encoded));
-} catch(e) { // catches a malformed URI
-  console.error(e);
-}
-
 class NavBar extends React.Component {
 	constructor(props) {
 		super(props);
@@ -43,17 +35,70 @@ class PlaceNewNode extends React.Component {
 		this.state = {
 			title: "Position Inlo Node",
 			prompt: "Select the wall on which the Inlo node has been plagugged in. This can be adjusted later on.",
+			backLink: "",
+			nextLink: "",
 			cancelLink: "Cancel",
-			or: "or ",
-			addNewRoomBtnId: "addNewRoomBtn",
 			backBtnId: "",
 			nextBtnId: "",
 			cancelBtnId: "cancelBtn",
-			showRoom: false,
-			showMenu: false,
-			rooms: []
+			dataLoaded: false,
+			rooms: [],
+			decodedRoomID: '',
+			roomData: []
 		}
 	}
+
+	componentDidMount() {
+
+		var encoded =  window.location.href;
+		const _this = this;
+
+		try {
+			// decoding URL to get params
+			let str = decodeURIComponent(encoded),
+				params = JSON.parse(str.substr(str.indexOf("?")+1));
+
+			_this.setState({
+				decodedRoomID: params.roomID
+			})
+
+		  	console.log(_this.state.decodedRoomID)
+		} catch(e) { // catches a malformed URI
+		  console.error(e);
+		}
+
+		
+		$.ajax({
+	      method: 'GET',
+	      url: String(_config.api.inloApiUrl) + '/v1/floorplan',
+	      headers: {
+	        Authorization: 'Bearer ' + getAuth("Authorization")
+	      },
+	      success: completeAjaxRequest,
+	      error: function ajaxError(jqXHR, textStatus, errorThrown) {
+	        console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+	        console.error('Response: ', jqXHR.responseText);
+	      }
+	    })
+	    function completeAjaxRequest(result) {
+	    	for (let i = 0; i < result.length; i++) {
+                if (result[i].rooms.length > 0) {
+                	for (let j = 0; j < result[i].rooms.length; j++) {
+	                	if (result[i].rooms[j].roomID == _this.state.decodedRoomID)
+	                	
+	                	_this.setState({
+	                		roomData: result[i].rooms[j]
+	                	})
+	                }
+                }
+            }
+            _this.setState({
+            	dataLoaded: true
+            })
+            
+	    }
+	}
+
 	render() {
 		return (
 
@@ -63,10 +108,14 @@ class PlaceNewNode extends React.Component {
 				<h3 id="prompt">{this.state.prompt}</h3>
 
 				<div id="roomSVGDiv">
-				  <svg width="200" height="200">
-				    <rect id="room" width="200" height="200" fill="none" stroke="black"></rect>
+				  <svg width={this.state.roomData.width} height={this.state.roomData.width}>
+				    <rect id={this.state.roomData.roomID} width={this.state.roomData.width} height={this.state.roomData.height} fill="none" stroke="black"></rect>
 				  </svg>
 				</div>
+
+				{ this.state.dataLoaded == true && (
+					console.log(this.state.roomData)
+				)}
 
 				<h1 id={this.state.backBtnId} onClick={this.revertToOriginalState}>
 					<p><b>{this.state.backLink}</b></p>

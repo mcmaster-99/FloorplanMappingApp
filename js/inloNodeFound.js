@@ -95,8 +95,7 @@ class InloNodeFound extends React.Component {
 			cancelBtnId: "cancelBtn",
 			showRoom: false,
 			showMenu: false,
-			roomNames: [],
-			roomIDs: []
+			rooms: []
 		}
 		this.redirectToPlaceNewNode = this.redirectToPlaceNewNode.bind(this);
 	}
@@ -104,7 +103,7 @@ class InloNodeFound extends React.Component {
 	redirectToPlaceNewNode() {
 		let room = document.getElementById("native-select-div").value;
 
-		let myObject = {'roomName' : room};
+		let myObject = {'roomID' : room};
 
 		var objStr = encodeURIComponent(JSON.stringify(myObject));
 		console.log(objStr)
@@ -131,9 +130,13 @@ class InloNodeFound extends React.Component {
                 if (result[i].rooms.length > 0) {
                 	console.log(result[i].rooms)
                 	that.setState({
-                		roomNames: result[i].rooms,
-                		roomIDs: result[i].roomID
+                		rooms: result[i].rooms
                 	})
+                    // iterate over rooms
+                    /*for (let j = 0; j < result[i].rooms.length; j++) {
+                    	
+                    	this.state.rooms.push(result[i].rooms[j].roomName)
+                    }*/
                 }
             }
             that.setState({
@@ -151,7 +154,7 @@ class InloNodeFound extends React.Component {
 				<h3 id="prompt">{this.state.prompt}</h3>
 
 				{ this.state.showMenu && (
-					<SelectRoomMenu state={this.state} redirectToPlaceNewNode={this.redirectToPlaceNewNode}/>
+					<SelectRoomMenu rooms={this.state.rooms} redirectToPlaceNewNode={this.redirectToPlaceNewNode}/>
 				)}
 
 				<p id={this.state.addNewRoomBtnId}>{this.state.or}<a style={{cursor: 'pointer'}} onClick={this.updateStateNewRm}><b>{this.state.addLink}</b></a></p>
@@ -223,6 +226,7 @@ class SelectRoomMenu extends React.Component {
 
 	render() {
     	const classes = this.props;
+    	let value
 	    return (
 	      <form autoComplete="off">
 	        <FormControl id="native-menu-select">
@@ -235,8 +239,8 @@ class SelectRoomMenu extends React.Component {
 	          >
 	          <option defaultValue='' disabled>Select Room</option>
 	          	{
-	          		classes.roomNames.map((item,i) => 
-			        	<option value={this.props.roomIDs[i]} key={item._id}>{item.roomName}</option>
+	          		classes.rooms.map((item,i) => 
+			        	<option value={item.roomID} key={item.roomID}>{item.roomName}</option>
 		          	)
 	          	}
 	     
