@@ -1,0 +1,113 @@
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+$inlo-bg-color: #f9f8fb;
+$border-shadow-color: #9A9D9D;
+$save-changes-btn-color: #363636;
+
+
+body {
+  background-color: #f9f8fb;
+}
+/* ---------------- NAVBAR ---------------- */
+#navbar-div{
+  text-align: center;
+}
+nav {
+  background-color: white;
+  width: 100%;
+  height: 3.5em;
+  box-shadow: 0px 2px 5px 1px #9A9D9D;
+  padding: 10px;
+  text-align: center;
+}
+
+#inlo-banner {
+  width: 100px;
+  height: 27px;
+  color: #00D0A7;
+}
+/* ---------------- NAVBAR END ---------------- */
+
+
+#jumbotron-div {
+  text-align: center;
+  #jumbotron {
+    text-align: center;
+    box-shadow: 0px 2px 5px 1px #9A9D9D;
+    border-radius: 10px;
+    background-color: white;
+    margin-top: 50px;
+    display: inline-block;
+    width: 450px;
+    height: 500px;
+    #title {
+      font-size: 25px;
+      margin-top: 20px;
+    }
+    #prompt {
+      margin-top: 20px;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-bottom: 50px;
+    }
+    .option {
+      text-align: center;
+    }
+  }
+  
+}
+
+
+#addNewRoomBtn {
+  margin-top: 30px;
+}
+#backBtn {
+  display: inline-block;
+  cursor: pointer;
+  margin-top: 0px;
+  margin-left: 0px;
+  font-weight: bold;
+}
+#cancelBtn {
+  display: inline-block;
+  margin-top: 100px;
+  font-weight: bold;
+  cursor: pointer;
+}
+#nextBtn {
+  cursor: pointer;
+  display: inline-block;
+  line-height: 32px;
+  margin-left: 60px;
+  margin-right: 50px;
+  background-color: #116cd2;
+  border-radius: 20px;
+  width: 125px;
+  height: 35px;
+  #nextTxt {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+  }
+}

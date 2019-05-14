@@ -95,8 +95,20 @@ class InloNodeFound extends React.Component {
 			cancelBtnId: "cancelBtn",
 			showRoom: false,
 			showMenu: false,
-			rooms: []
+			roomNames: [],
+			roomIDs: []
 		}
+		this.redirectToPlaceNewNode = this.redirectToPlaceNewNode.bind(this);
+	}
+
+	redirectToPlaceNewNode() {
+		let room = document.getElementById("native-select-div").value;
+
+		let myObject = {'roomName' : room};
+
+		var objStr = encodeURIComponent(JSON.stringify(myObject));
+		console.log(objStr)
+		window.location.href = 'place-new-node.html?' + objStr; 
 	}
 
 	componentDidMount() {
@@ -119,13 +131,9 @@ class InloNodeFound extends React.Component {
                 if (result[i].rooms.length > 0) {
                 	console.log(result[i].rooms)
                 	that.setState({
-                		rooms: result[i].rooms
+                		roomNames: result[i].rooms,
+                		roomIDs: result[i].roomID
                 	})
-                    // iterate over rooms
-                    /*for (let j = 0; j < result[i].rooms.length; j++) {
-                    	
-                    	this.state.rooms.push(result[i].rooms[j].roomName)
-                    }*/
                 }
             }
             that.setState({
@@ -143,16 +151,10 @@ class InloNodeFound extends React.Component {
 				<h3 id="prompt">{this.state.prompt}</h3>
 
 				{ this.state.showMenu && (
-					<SelectRoomMenu rooms={this.state.rooms}/>
+					<SelectRoomMenu state={this.state} redirectToPlaceNewNode={this.redirectToPlaceNewNode}/>
 				)}
 
 				<p id={this.state.addNewRoomBtnId}>{this.state.or}<a style={{cursor: 'pointer'}} onClick={this.updateStateNewRm}><b>{this.state.addLink}</b></a></p>
-				
-				{/*<div id="roomSVGDiv">
-				  <svg width="200" height="200">
-				    <rect id="room" width="200" height="200" fill="none" stroke="black"></rect>
-				  </svg>
-				</div>*/}
 
 				<h1 id={this.state.backBtnId} onClick={this.revertToOriginalState}>
 					<p><b>{this.state.backLink}</b></p>
@@ -214,31 +216,27 @@ class SelectRoomMenu extends React.Component {
 		room: "Select Room"
 	};
 
-	updateStateNewRm = () => {
-		this.props.updateStateNewRm();
-	};
-	updateStateExistingRm = () => {
-		this.props.updateStateExistingRm();
+	redirectToPlaceNewNode = () => {
+		this.props.redirectToPlaceNewNode();
 		this.setState({ room: event.target.value });
 	};
 
 	render() {
     	const classes = this.props;
-    	let value
 	    return (
 	      <form autoComplete="off">
 	        <FormControl id="native-menu-select">
 	          <NativeSelect
 	            value={this.state.room}
 	            label="Select Room"
-	            onChange={this.updateStateExistingRm}
+	            onChange={this.props.redirectToPlaceNewNode}
 	            input={<BootstrapInput name="room" id="room-customized-select" />}
 	            id="native-select-div"
 	          >
 	          <option defaultValue='' disabled>Select Room</option>
 	          	{
-	          		classes.rooms.map((item,i) => 
-			        	<option key={item._id}>{item.roomName}</option>
+	          		classes.roomNames.map((item,i) => 
+			        	<option value={this.props.roomIDs[i]} key={item._id}>{item.roomName}</option>
 		          	)
 	          	}
 	     
