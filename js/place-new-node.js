@@ -56,10 +56,10 @@ class PlaceNewNode extends React.Component {
 		try {
 			// decoding URL to get params
 			let str = decodeURIComponent(encoded),
-				params = JSON.parse(str.substr(str.indexOf("?")+1));
+				roomID = str.substr(str.indexOf("=")+1);
 
 			_this.setState({
-				decodedRoomID: params.roomID
+				decodedRoomID: roomID
 			})
 
 		  	console.log(_this.state.decodedRoomID)

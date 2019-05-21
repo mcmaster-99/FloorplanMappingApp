@@ -101,13 +101,11 @@ class InloNodeFound extends React.Component {
 	}
 
 	redirectToPlaceNewNode() {
-		let room = document.getElementById("native-select-div").value;
+		let roomID = document.getElementById("native-select-div").value;
 
-		let myObject = {'roomID' : room};
-
-		var objStr = encodeURIComponent(JSON.stringify(myObject));
+		var objStr = encodeURIComponent(roomID);
 		console.log(objStr)
-		window.location.href = 'place-new-node.html?' + objStr; 
+		window.location.href = 'place-new-node.html?' + "roomID=" + objStr; 
 	}
 
 	componentDidMount() {
