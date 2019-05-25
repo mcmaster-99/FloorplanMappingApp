@@ -5,7 +5,7 @@
 'use strict';
 
 // Redirect user if logged out
-if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
+//if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
 //=============================================================
 //						  REACT.JS
@@ -20,12 +20,12 @@ class NavBar extends React.Component {
 		return (
 
 			<div id="navbar-div">
-		      <nav>
-		        <img src="images/theinlo.png" id="inlo-banner"></img>
-		      </nav>
-		    </div>
+			  <nav>
+				<img src="images/theinlo.png" id="inlo-banner"></img>
+			  </nav>
+			</div>
 
-        );
+		);
 	}
 }
 
@@ -44,8 +44,29 @@ class PlaceNewNode extends React.Component {
 			dataLoaded: false,
 			rooms: [],
 			decodedRoomID: '',
-			roomData: []
+			roomData: [],
+			placeNewNodeRoom: ""
 		}
+		this.PlaceNewNode = this.PlaceNewNode.bind(this);
+	}
+
+	PlaceNewNode(e) {
+			e.persist() // retain event object
+			console.log(e)
+			/*var placeNodeSVG = new SVG('roomSVG').size("100%", "100%").panZoom({
+						    zoomMin: 0.5,
+						    zoomMax: 2,
+						    zoomFactor: 0.1
+						  })
+			let node = placeNodeSVG.image("images/inlo-device.png", 15, 10);
+					node.attr({
+			      x: e.clientX,
+			      y: e.clientY,
+			      fill: "white",
+			      stroke: "#E3E3E3",
+			      id: "testID"
+					})*/
+		
 	}
 
 	componentDidMount() {
@@ -62,41 +83,41 @@ class PlaceNewNode extends React.Component {
 				decodedRoomID: roomID
 			})
 
-		  	console.log(_this.state.decodedRoomID)
+			console.log(_this.state.decodedRoomID)
 		} catch(e) { // catches a malformed URI
 		  console.error(e);
 		}
 
 		
 		$.ajax({
-	      method: 'GET',
-	      url: String(_config.api.inloApiUrl) + '/v1/floorplan',
-	      headers: {
-	        Authorization: 'Bearer ' + getAuth("Authorization")
-	      },
-	      success: completeAjaxRequest,
-	      error: function ajaxError(jqXHR, textStatus, errorThrown) {
-	        console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
-	        console.error('Response: ', jqXHR.responseText);
-	      }
-	    })
-	    function completeAjaxRequest(result) {
-	    	for (let i = 0; i < result.length; i++) {
-                if (result[i].rooms.length > 0) {
-                	for (let j = 0; j < result[i].rooms.length; j++) {
-	                	if (result[i].rooms[j].roomID == _this.state.decodedRoomID)
-	                	
-	                	_this.setState({
-	                		roomData: result[i].rooms[j]
-	                	})
-	                }
-                }
-            }
-            _this.setState({
-            	dataLoaded: true
-            })
-            
-	    }
+		  method: 'GET',
+		  url: String(_config.api.inloApiUrl) + '/v1/floorplan',
+		  headers: {
+			Authorization: 'Bearer ' + getAuth("Authorization")
+		  },
+		  success: completeAjaxRequest,
+		  error: function ajaxError(jqXHR, textStatus, errorThrown) {
+			console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+			console.error('Response: ', jqXHR.responseText);
+		  }
+		})
+		function completeAjaxRequest(result) {
+			for (let i = 0; i < result.length; i++) {
+				if (result[i].rooms.length > 0) {
+					for (let j = 0; j < result[i].rooms.length; j++) {
+						if (result[i].rooms[j].roomID == _this.state.decodedRoomID)
+						
+						_this.setState({
+							roomData: result[i].rooms[j]
+						})
+					}
+				}
+			}
+			_this.setState({
+				dataLoaded: true
+			})
+			
+		}
 	}
 
 	render() {
@@ -107,11 +128,13 @@ class PlaceNewNode extends React.Component {
 
 				<h3 id="prompt">{this.state.prompt}</h3>
 
-				<div id="roomSVGDiv">
-				  <svg width={this.state.roomData.width} height={this.state.roomData.width}>
-				    <rect id={this.state.roomData.roomID} width={this.state.roomData.width} height={this.state.roomData.height} fill="none" stroke="black"></rect>
-				  </svg>
-				</div>
+					
+					{$('#jumbotron').click(function(e){
+						console.log(e)
+					})}
+				  {/*<svg id="roomSVG" onClick={this.PlaceNewNode} width={this.state.roomData.width} height={this.state.roomData.width}>
+						<rect id={this.state.roomData.roomID} width={this.state.roomData.width} height={this.state.roomData.height} fill="none" stroke="black"></rect>
+				  </svg>*/}
 
 				{ this.state.dataLoaded == true && (
 					console.log(this.state.roomData)
@@ -150,10 +173,10 @@ class Jumbotron extends React.Component {
 
 				</div>
 
-		    </div>
+			</div>
 
 
-        );
+		);
 	}
 }
 
