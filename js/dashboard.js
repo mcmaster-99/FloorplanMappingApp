@@ -410,61 +410,6 @@ SVG.on(document, 'DOMContentLoaded', function() {
 	*/
 
 	load_floorplan()
-
-
-
-	//=========================================
-	// ========== BUTTON CLICKS ===============
-	//=========================================
-
-	// VIEW SWITCHERS
-
-	//$("#items-listed-div").hide();
-	//$("#dropdown-sort-div").hide();
-	$("#edit-floorplan-btn").hide();
-
-	$("#list-view-btn").click(function() {
-		$("#map-view-btn").removeClass('selected'); // remove selected class from previous element
-		$(this).addClass('selected'); // add selected class to (this)
-		$("#prompt").fadeOut();
-		$("#floorPlan").fadeOut();
-		$("#map-view-div").fadeOut();
-		$("#edit-floorplan-btn").fadeOut();
-		$("#items-listed-div").delay(500).fadeIn("slow");
-		$("#dropdown-sort-div").delay(500).fadeIn("slow");
-	});
-
-
-	$("#map-view-btn").click(function() {
-		$("#list-view-btn").removeClass('selected'); // remove selected class from previous element
-		$(this).addClass('selected'); // add selected class to (this)
-		$("#dropdown-sort-div").fadeOut();
-		$("#prompt").fadeOut();
-		$("#items-listed-div").fadeOut();
-		$("#edit-floorplan-btn").fadeIn("slow");
-		$("#floorPlan").delay(500).fadeIn("slow");
-		$("#map-view-text").delay(500).fadeIn("slow");
-		$("#map-view-div").delay(500).fadeIn("slow");
-	});
-
-	$("#edit-floorplan-btn").click(function(){
-		window.location.href = "mapedit.html";
-	})
-
-	$(".home-icon").click(function(){
-		var homeIconClass = document.getElementsByClassName("home-icon");
-		var homeIconId = document.getElementById("home-icon-svg");
-		for (var i = 0; i < $(".home-icon").length; i++) {
-			homeIconClass[i].attributes[4].nodeValue = "#00D9A7";
-		}
-		homeIconId.style.borderBottom = "6px solid #00D9A7";
-		homeIconId.style.paddingBottom = ".6em";
-    })
-
-	$("#dropdown-btn").click(function() {
-		$("#dropdown-menu").toggle(500);
-	});
-	// VIEW SWITCHERS END
 	
 	//=============================================================
   //						Render User's Devices
@@ -488,83 +433,91 @@ SVG.on(document, 'DOMContentLoaded', function() {
   	- continue
   */
 
+});
 
-  //=========================================
-  // ========== BUTTON CLICKS ===============
-  //=========================================
-  // VIEW SWITCHERS
-  //$("#items-listed-div").hide();
-  //$("#dropdown-sort-div").hide();
+$(document).ready(function(){
+		//=========================================
+	  // ========== BUTTON CLICKS ===============
+	  //=========================================
+	  // VIEW SWITCHERS
+	  //$("#items-listed-div").hide();
+	  //$("#dropdown-sort-div").hide();
 
-  $("#edit-floorplan-btn").hide();
-  $("#list-view-btn").click(function () {
-    $("#map-view-btn").removeClass('selected'); // remove selected class from previous element
+	  $("#edit-floorplan-btn").hide();
 
-    $(this).addClass('selected'); // add selected class to (this)
+	  // Display list view and hide map view
+	  $("#list-view-btn").click(function () {
+	    $("#map-view-btn").removeClass('selected'); // remove selected class from previous element
 
-    $("#prompt").fadeOut();
-    $("#floorPlan").fadeOut();
-    $("#map-view-div").fadeOut();
-    $("#edit-floorplan-btn").fadeOut();
-    $("#items-listed-div").delay(500).fadeIn("slow");
-    $("#dropdown-sort-div").delay(500).fadeIn("slow");
-  });
-  $("#map-view-btn").click(function () {
-    $("#list-view-btn").removeClass('selected'); // remove selected class from previous element
+	    $(this).addClass('selected'); // add selected class to (this)
 
-    $(this).addClass('selected'); // add selected class to (this)
+	    $("#prompt").fadeOut();
+	    $("#floorPlan").fadeOut();
+	    $("#map-view-div").fadeOut();
+	    $("#edit-floorplan-btn").fadeOut();
+	    $("#items-listed-div").delay(500).fadeIn("slow");
+	    $("#dropdown-sort-div").delay(500).fadeIn("slow");
+	  });
+	  // Display map view and hide list view
+	  $("#map-view-btn").click(function () {
+	    $("#list-view-btn").removeClass('selected'); // remove selected class from previous element
 
-    $("#dropdown-sort-div").fadeOut();
-    $("#prompt").fadeOut();
-    $("#items-listed-div").fadeOut();
-    $("#edit-floorplan-btn").fadeIn("slow");
-    $("#floorPlan").delay(500).fadeIn("slow");
-    $("#map-view-text").delay(500).fadeIn("slow");
-    $("#map-view-div").delay(500).fadeIn("slow");
-  });
-  $("#edit-floorplan-btn").click(function () {
-    window.location.href = "mapedit.html";
-  });
-  $(".home-icon").click(function () {
-    var homeIconClass = document.getElementsByClassName("home-icon");
-    var homeIconId = document.getElementById("home-icon-svg");
+	    $(this).addClass('selected'); // add selected class to (this)
 
-    for (var i = 0; i < $(".home-icon").length; i++) {
-      homeIconClass[i].attributes[4].nodeValue = "#00D9A7";
-    }
+	    $("#dropdown-sort-div").fadeOut();
+	    $("#prompt").fadeOut();
+	    $("#items-listed-div").fadeOut();
+	    $("#edit-floorplan-btn").fadeIn("slow");
+	    $("#floorPlan").delay(500).fadeIn("slow");
+	    $("#map-view-text").delay(500).fadeIn("slow");
+	    $("#map-view-div").delay(500).fadeIn("slow");
+	  });
+	  $("#edit-floorplan-btn").click(function () {
+	    window.location.href = "mapedit.html";
+	  });
+	  $(".home-icon").click(function () {
+	    var homeIconClass = document.getElementsByClassName("home-icon");
+	    var homeIconId = document.getElementById("home-icon-svg");
 
-    homeIconId.style.borderBottom = "6px solid #00D9A7";
-    homeIconId.style.paddingBottom = ".6em";
-  });
-  $("#dropdown-btn").click(function () {
-    $("#dropdown-menu").toggle(500);
-  }); // VIEW SWITCHERS END
-  // SIGN OUT API CALL
+	    for (var i = 0; i < $(".home-icon").length; i++) {
+	      homeIconClass[i].attributes[4].nodeValue = "#00D9A7";
+	    }
 
-  $("#sign-out").click(function () {
-    $.ajax({
-      method: 'DELETE',
-      url: String(_config.api.inloApiUrl) + '/v1/user/login',
-      headers: {
-        Authorization: 'Bearer ' + getAuth("Authorization")
-      },
-      success: completeRequest,
-      error: function ajaxError(jqXHR, textStatus, errorThrown) {
-        console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
-        console.error('Response: ', jqXHR.responseText);
-      }
-    });
+	    homeIconId.style.borderBottom = "6px solid #00D9A7";
+	    homeIconId.style.paddingBottom = ".6em";
+	  });
+	  $("#dropdown-btn").click(function () {
+	    $("#dropdown-menu").toggle(500);
+	  });
+	  // VIEW SWITCHERS END
 
-    function completeRequest() {
-      // delete cookie by setting past expiration date
-      document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/'; // alert user of successful sign out
 
-      alert("Successfully signed out"); // redirect user to sign in page
+	  // SIGN OUT API CALL
 
-      window.location.href = "signin.html";
-    }
-  });
-  /*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
-  	return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
-  }))*/
+	  $("#sign-out").click(function () {
+	    $.ajax({
+	      method: 'DELETE',
+	      url: String(_config.api.inloApiUrl) + '/v1/user/login',
+	      headers: {
+	        Authorization: 'Bearer ' + getAuth("Authorization")
+	      },
+	      success: completeRequest,
+	      error: function ajaxError(jqXHR, textStatus, errorThrown) {
+	        console.error('Error requesting devices: ', textStatus, ', Details: ', errorThrown);
+	        console.error('Response: ', jqXHR.responseText);
+	      }
+	    });
+
+	    function completeRequest() {
+	      // delete cookie by setting past expiration date
+	      document.cookie = 'Authorization=; expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/'; // alert user of successful sign out
+
+	      alert("Successfully signed out"); // redirect user to sign in page
+
+	      window.location.href = "signin.html";
+	    }
+	  });
+	  /*$("#sort-selection").html($("#sort-selection option").sort(function (a, b) {
+	  	return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
+	  }))*/
 });
