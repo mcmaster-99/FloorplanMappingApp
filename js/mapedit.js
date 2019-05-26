@@ -564,8 +564,8 @@ SVG.on(document, 'DOMContentLoaded', function () {
                       }
                   }
 
-                  let new_node_x = document.getElementById(node_ID).getBoundingClientRect().x - svgX - roomX,
-                      new_node_y = document.getElementById(node_ID).getBoundingClientRect().y - svgY - roomY,
+                  let new_node_x = document.getElementById(node_ID).getBoundingClientRect().x - svgX,
+                      new_node_y = document.getElementById(node_ID).getBoundingClientRect().y - svgY,
 
                       new_node_frac_x = new_node_x/roomWidth,
                       new_node_frac_y = new_node_y/roomHeight,
