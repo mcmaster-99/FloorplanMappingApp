@@ -324,8 +324,9 @@ SVG.on(document, 'DOMContentLoaded', function() {
 		// and assign name+room text values to divs
 		console.log(deviceData)
 		for (var key in deviceData) {
-			var location = deviceData[key].roomName;
-			var device_name = deviceData[key].name; // Need to add: if no name attribute, use mac address instead
+			var location = deviceData[key].roomName || "Unknown";
+			var device_name = deviceData[key].name || deviceData[key].macAddress
+			console.log(device_name)
 			
 			$("#items-listed")
 				.append("<div class='item-rows'>"+
