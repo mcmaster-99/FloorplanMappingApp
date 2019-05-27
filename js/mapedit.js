@@ -191,7 +191,9 @@ SVG.on(document, 'DOMContentLoaded', function () {
     return [node_x, node_y];
   }; // END compute_node_xy()
 
-
+  // ===============================
+  //         Cancel Changes
+  // ================================
   var cancelChanges = function cancelChanges() {
     // prompt user
     var userResponse = confirm("Are you sure you want to cancel changes?"); // if user clicks OK
@@ -231,9 +233,8 @@ SVG.on(document, 'DOMContentLoaded', function () {
             if (currentFloorPlan[_i].rooms[j].hasOwnProperty("nodes")) {
               for (var k = 0; k < currentFloorPlan[_i].rooms[j].nodes.length; k++) {
                 var node_ID = currentFloorPlan[_i].rooms[j].nodes[k].nodeID;
-                var node_xy = compute_node_xy(room_ID, node_ID);
-                var node_x = node_xy[0];
-                var node_y = node_xy[1]; // draw and store device object initializer in deviceLocations object
+                var node_x = currentFloorPlan[_i].rooms[j].nodes[k].x;
+                var node_y = currentFloorPlan[_i].rooms[j].nodes[k].y; // draw and store device object initializer in deviceLocations object
 
                 nodeLocations[node_ID] = {};
                 nodeLocations[node_ID]["Icon"] = drawing.image("images/inlo-device.png", 15, 10);
