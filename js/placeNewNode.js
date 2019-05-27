@@ -1,4 +1,11 @@
+// placeNewNode.js
+//
+// user places new node
+
 'use strict';
+
+// Redirect user if logged out
+if (getAuth("Authorization").length === 0) window.location.href = "signin.html";
 
 /*class NavBar extends React.Component {
 	constructor(props) {
@@ -26,8 +33,12 @@ let roomData;
 
 SVG.on(document, 'DOMContentLoaded', function () {
 
+	function render_node() {
+		console.log("here")
+	}
 
 	let draw = new SVG('draw').size("100%", "100%")
+	$("defs").detach()
 	let rect = draw.rect(100, 100)
 									.attr({ 
 										fill: 'none', 
@@ -35,12 +46,11 @@ SVG.on(document, 'DOMContentLoaded', function () {
 										id: "room1"
 									})
 
-	$("#draw").on('click', '#room1', function(e){
-		draw.image("images/inlo-device.png", 15, 10);
-	})
+	$('#draw').on('click', 'rect#room1', function(){
+	  alert("clicked")
+	}, false);
 
-	
-	/*var encoded =  window.location.href,
+	var encoded =  window.location.href,
 		roomID,
 		roomData;
 
@@ -82,7 +92,7 @@ SVG.on(document, 'DOMContentLoaded', function () {
 
   $(window).bind('beforeunload', function(){
       if (changesMade === true) return 'Are you sure you want to leave?';
-  });*/
+  });
 
 
 });

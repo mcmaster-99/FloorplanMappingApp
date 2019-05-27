@@ -142,4 +142,4 @@ function getAuth(cname) {
       notifs.innerHTML = "Passwords do not match.";
     }
   }
-})
+})(jQuery);
