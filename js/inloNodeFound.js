@@ -27,8 +27,7 @@ const {
 	Select,
 	Typography,
 	withStyles,
-} = window['material-ui'];
-console.log(window['material-ui'])
+} = window['MaterialUI'];
 
 
 'use strict';
