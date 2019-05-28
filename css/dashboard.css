@@ -73,7 +73,8 @@ nav {
   #add-devices-dropdown #dropdown-menu > li {
     margin-top: 2vh;
     white-space: nowrap;
-    word-spacing: .1vw; }
+    word-spacing: .1vw;
+    cursor: pointer; }
 
 /* ---------------- NAVBAR END ---------------- */
 #prompt {

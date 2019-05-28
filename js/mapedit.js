@@ -345,7 +345,6 @@ SVG.on(document, 'DOMContentLoaded', function () {
     });
 
     function completeRequest(result) {
-      console.log("save complete");
       console.log("result is:", result);
     }
 
@@ -373,7 +372,6 @@ SVG.on(document, 'DOMContentLoaded', function () {
     }); //}
 
     function completeRequest(result) {
-      console.log("save complete");
       console.log("result is:", result);
     }
 
@@ -474,8 +472,9 @@ SVG.on(document, 'DOMContentLoaded', function () {
       floorPlanGroups[key].on("dragend", function (e) {
         e.preventDefault(); // Grab room_ID
 
-        var room_ID = e.target.children["0"].id; // Manually adjust room's new x/y coordinates
+        var room_ID = e.target.children["0"].id; 
 
+        // Manually adjust room's new x/y coordinates
         var new_room_x = e.target.firstChild.instance.x() + e.target.instance.transform().x,
             new_room_y = e.target.firstChild.instance.y() + e.target.instance.transform().y;
         $("#" + e.target.id).removeAttr("transform");
@@ -484,7 +483,8 @@ SVG.on(document, 'DOMContentLoaded', function () {
 
         if (e.target.children.length > 1) {
           var node_ID = e.target.children[1].id,
-              // use node compute function to grab node coordinates
+          
+          // use node compute function to grab node coordinates
           node_locations = compute_node_xy(room_ID, node_ID),
               node_x = node_locations[0],
               node_y = node_locations[1]; // Manually adjust node's new x/y coordinates
@@ -492,9 +492,9 @@ SVG.on(document, 'DOMContentLoaded', function () {
           $("#" + e.target.childNodes[1].id).removeAttr("transform");
           $("#" + e.target.children[1].id).attr("x", String(node_x));
           $("#" + e.target.children[1].id).attr("y", String(node_y));
-        } // update currentFloorPlan
+        } 
 
-
+        // update currentFloorPlan
         for (var i = 0; i < currentFloorPlan.length; i++) {
           for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
             if (currentFloorPlan[i].rooms[j].roomID === room_ID) {
@@ -541,8 +541,8 @@ SVG.on(document, 'DOMContentLoaded', function () {
 
                   // Grab SVG coordinates so we can subtract from element coordinates 
                   // to give us the actual coordinates on the SVG document.
-                  var svgX = document.getElementById(drawing.node.id).getBoundingClientRect().x,
-                      svgY = document.getElementById(drawing.node.id).getBoundingClientRect().y;
+                  var svgX = document.getElementById(drawing.node.id).instance.x(),
+                      svgY = document.getElementById(drawing.node.id).instance.y();
 
                   
                   var node_ID = e.target.instance.node.id;
@@ -564,8 +564,8 @@ SVG.on(document, 'DOMContentLoaded', function () {
                       }
                   }
 
-                  let new_node_x = document.getElementById(node_ID).getBoundingClientRect().x - svgX - roomX,
-                      new_node_y = document.getElementById(node_ID).getBoundingClientRect().y - svgY - roomY,
+                  let new_node_x = document.getElementById(node_ID).instance.x() - svgX,
+                      new_node_y = document.getElementById(node_ID).instance.y() - svgY,
 
                       new_node_frac_x = new_node_x/roomWidth,
                       new_node_frac_y = new_node_y/roomHeight,
@@ -574,9 +574,9 @@ SVG.on(document, 'DOMContentLoaded', function () {
                       node_x = node_locations[0],
                       node_y = node_locations[1],
 
-                  // Manually set X,Y coordinates of room
-                      new_room_x = e.target.getBoundingClientRect().x - svgX,
-                      new_room_y = e.target.getBoundingClientRect().y - svgY;
+                      // Manually set X,Y coordinates of room
+                      new_room_x = e.target.instance.x() - svgX,
+                      new_room_y = e.target.instance.y() - svgY;
 
                   // update currentFloorPlan nodes
                   for (var i = 0; i < currentFloorPlan.length; i++) {
