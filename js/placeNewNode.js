@@ -32,11 +32,11 @@ ReactDOM.render((
 
 SVG.on(document, 'DOMContentLoaded', function () {
 
-	let draw = new SVG('draw').size("100%", "100%").attr({id: "svg"}),
+	let drawing = new SVG('draw').size("100%", "100%").attr({id: "svg"}),
 			encoded =  window.location.href,
 			room,
 			roomID,
-			roomData;
+			roomData = [];
 
 	try {
 		// decoding URL to get params
@@ -51,27 +51,54 @@ SVG.on(document, 'DOMContentLoaded', function () {
 	const bind_click = function() {
 		
 		$("rect").click(function(e){	
+			let svgX = document.getElementById("svg").getBoundingClientRect().x
+			let svgY = document.getElementById("svg").getBoundingClientRect().y
+			let roomX = document.getElementById("room1").instance.x()
+			let roomY = document.getElementById("room1").instance.y()
+
+			console.log(e.clientX, e.clientY, svgX, svgY, roomX, roomY)
 			console.log(e)
-			draw.image("images/inlo-device.png", 15, 10).attr({x:e.offsetX, y:e.offsetY});
+
+			let nodeX = e.clientX - svgX;
+			let nodeY = e.clientY - svgY;
+
+			drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX, y:nodeY});
 		})
 	}
 
 	const render_room = function() {
-		room = draw.rect(100, 100)
+		room = drawing.rect(100, 100)
 								.attr({ 
-									x: 50,
-									y: 50,
+									x: 0,
+									y: 0,
 									fill: 'white', 
 									stroke: "black",		
 									id: "room1"
 								})
-		
-		console.log($("#draw"))
+	}
+	
+	/*let setScale(room_w, room_h) {
+		var jumbo_x = X
+		var jumbo_y = Y
+		var scale
+		if (w > h) { 
+			scale = room_w/jumbo_x
+		} else {
+			scale = room_h/jumbo_y
+		}
 	}
 
-	render_room()
-	bind_click()
-	
+	Render room
+	width = room_w*scale
+	height = room_h*scale
+
+	def saveNodeCoordinates(x, y, roomData) {
+		// convert to floorplan coordinate
+		node_x = room_x + x*scale
+		node_y = room_y + y*scale
+		
+		// API call to add node to room
+	}*/
 
 
 	const fetch_room_data = function(render_room, bind_click) {
@@ -91,6 +118,7 @@ SVG.on(document, 'DOMContentLoaded', function () {
 			for (let i = 0; i < result.length; i++) {
 				if (result[i].rooms.length > 0) {
 					for (let j = 0; j < result[i].rooms.length; j++) {
+						console.log("here")
 						if (result[i].rooms[j].roomID == roomID)
 							roomData = result[i].rooms[j];
 					}
@@ -98,6 +126,8 @@ SVG.on(document, 'DOMContentLoaded', function () {
 			}
 		}
 	}
+	fetch_room_data(render_room(), bind_click())
+	console.log(roomData)
 
 	//fetch_room_data(render_room, bind_click);
 
