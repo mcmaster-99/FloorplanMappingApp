@@ -104,7 +104,7 @@ class InloNodeFound extends React.Component {
 
 		var objStr = encodeURIComponent(roomID);
 		console.log(objStr)
-		window.location.href = 'place-new-node.html?' + "roomID=" + objStr; 
+		window.location.href = 'placeNewNode.html?' + "roomID=" + objStr; 
 	}
 
 	componentDidMount() {

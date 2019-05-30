@@ -58,6 +58,8 @@ nav {
       padding-left: 50px;
       padding-right: 50px; }
     #jumbotron-container #jumbotron #draw {
+      text-align: center;
+      margin-left: 100px;
       width: 300px;
       height: 300px; }
 
