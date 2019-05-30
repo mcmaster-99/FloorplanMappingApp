@@ -74,29 +74,6 @@ SVG.on(document, 'DOMContentLoaded', function () {
 							id: "room1"
 						})
 	}
-	
-	/*const setScale = function(room_w, room_h) {
-		let jumbo_x = X,
-			jumbo_y = Y,
-			scale;
-		if (w > h) { 
-			scale = room_w/jumbo_x
-		} else {
-			scale = room_h/jumbo_y
-		}
-	}
-
-	Render room
-	width = room_w*scale
-	height = room_h*scale
-
-	const saveNodeCoordinates = function(x, y, roomData) {
-		// convert to floorplan coordinate
-		node_x = room_x + x*scale
-		node_y = room_y + y*scale
-		
-		// API call to add node to room
-	}*/
 
 
 	const fetch_room_data = function() {
@@ -128,6 +105,40 @@ SVG.on(document, 'DOMContentLoaded', function () {
 					}
 				}
 			}
+			console.log(document.getElementById("jumbotron").getBoundingClientRect())
+			let room_w = roomData.width,
+				room_h = roomData.height,
+				jumbo_x = document.getElementById("draw").getBoundingClientRect().x,
+				jumbo_y = document.getElementById("draw").getBoundingClientRect().y,
+				scale;
+			const setScale = function(room_w, room_h) {
+				if (room_w > room_h) { 
+					scale = room_w/jumbo_x
+				} else {
+					scale = room_h/jumbo_y
+				}
+			}
+			setScale(room_w, room_h)
+			let scaled_width = room_w*scale,
+				scaled_height = room_h*scale;
+
+			/*const saveNodeCoordinates = function(x, y, roomData) {
+				// convert to floorplan coordinate
+				node_x = room_x + x*scale
+				node_y = room_y + y*scale
+				
+				// API call to add node to room
+			}*/
+			console.log(room_w, room_h, scaled_width, scaled_height)
+			room = drawing.rect(scaled_width, scaled_width)
+						.attr({ 
+							x: 0,
+							y: 0,
+							fill: 'white', 
+							stroke: "black",		
+							id: "room1"
+						})
+
 			$("rect").click(function(e){	
 				let svgX = document.getElementById("svg").getBoundingClientRect().x
 				let svgY = document.getElementById("svg").getBoundingClientRect().y
@@ -139,14 +150,7 @@ SVG.on(document, 'DOMContentLoaded', function () {
 
 				drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX, y:nodeY});
 			})
-			room = drawing.rect(roomData.width, roomData.height)
-						.attr({ 
-							x: 0,
-							y: 0,
-							fill: 'white', 
-							stroke: "black",		
-							id: "room1"
-						})
+			
 		}
 		
 	}
