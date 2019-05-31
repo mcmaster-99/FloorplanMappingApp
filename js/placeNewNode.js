@@ -105,17 +105,20 @@ SVG.on(document, 'DOMContentLoaded', function () {
 					}
 				}
 			}
-			console.log(document.getElementById("jumbotron").getBoundingClientRect())
+			console.log(document.getElementById("draw").getBoundingClientRect())
 			let room_w = roomData.width,
 				room_h = roomData.height,
-				jumbo_x = document.getElementById("draw").getBoundingClientRect().x,
-				jumbo_y = document.getElementById("draw").getBoundingClientRect().y,
+				jumbo_w = document.getElementById("draw").getBoundingClientRect().width,
+				jumbo_h = document.getElementById("draw").getBoundingClientRect().height,
 				scale;
 			const setScale = function(room_w, room_h) {
+				console.log(room_w, room_h, jumbo_w, jumbo_h)
 				if (room_w > room_h) { 
-					scale = room_w/jumbo_x
+					scale = jumbo_w/room_w
+					console.log(scale)
 				} else {
-					scale = room_h/jumbo_y
+					scale = jumbo_h/room_w
+					console.log(scale)
 				}
 			}
 			setScale(room_w, room_h)
