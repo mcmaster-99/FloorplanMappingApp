@@ -57,8 +57,8 @@ SVG.on(document, 'DOMContentLoaded', function () {
 			let roomX = document.getElementById("room1").instance.x()
 			let roomY = document.getElementById("room1").instance.y()
 
-			let nodeX = e.clientX - svgX;
-			let nodeY = e.clientY - svgY;
+			let nodeX = e.clientX - svgX - 50;
+			let nodeY = e.clientY - svgY - 50;
 
 			drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX, y:nodeY});
 		})
@@ -151,7 +151,7 @@ SVG.on(document, 'DOMContentLoaded', function () {
 				let nodeX = e.clientX - svgX;
 				let nodeY = e.clientY - svgY;
 
-				drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX, y:nodeY});
+				drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5});
 			})
 			
 		}
