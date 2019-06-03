@@ -50,31 +50,6 @@ SVG.on(document, 'DOMContentLoaded', function () {
 		}
 	}
 
-	const bind_click = function() {
-		$("rect").click(function(e){	
-			let svgX = document.getElementById("svg").getBoundingClientRect().x
-			let svgY = document.getElementById("svg").getBoundingClientRect().y
-			let roomX = document.getElementById("room1").instance.x()
-			let roomY = document.getElementById("room1").instance.y()
-
-			let nodeX = e.clientX - svgX - 50;
-			let nodeY = e.clientY - svgY - 50;
-
-			drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX, y:nodeY});
-		})
-	}
-
-	const render_room = function() {
-		room = drawing.rect(100, 100)
-						.attr({ 
-							x: 0,
-							y: 0,
-							fill: 'white', 
-							stroke: "black",		
-							id: "room1"
-						})
-	}
-
 
 	const fetch_room_data = function() {
 
@@ -143,15 +118,49 @@ SVG.on(document, 'DOMContentLoaded', function () {
 						})
 
 			$("rect").click(function(e){	
+
 				let svgX = document.getElementById("svg").getBoundingClientRect().x
 				let svgY = document.getElementById("svg").getBoundingClientRect().y
 				let roomX = document.getElementById("room1").instance.x()
 				let roomY = document.getElementById("room1").instance.y()
+				let roomWidth = document.getElementById("room1").instance.width()
+				let roomHeight = document.getElementById("room1").instance.height()
+				let mouseX = e.clientX - svgX
+				let mouseY = e.clientY - svgY
+				let clickMarginError = 15
 
 				let nodeX = e.clientX - svgX;
 				let nodeY = e.clientY - svgY;
 
-				drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5});
+				console.log("e", e)
+
+				console.log("mouseX", mouseX)
+				console.log("roomX", roomX)
+
+				console.log("roomY", roomY+roomHeight)
+				console.log("mouseY", mouseY)
+
+				if (mouseX < roomX + clickMarginError) console.log("true")
+				if (mouseY > roomY ) console.log("true")
+				if (mouseX > roomX - clickMarginError ) console.log("true")
+				if (mouseY < roomY + roomHeight ) console.log("true")
+
+				// Determine if user clicked the [LEFT] wall
+				if (mouseX < roomX + clickMarginError && mouseY > roomY && 
+		        	mouseX > roomX - clickMarginError && mouseY < roomY + roomHeight 
+		        ) 
+		        {
+		            var node = drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5});
+		        	node.rotate(-90)
+	          	} // Determine if user clicked the [RIGHT] wall
+	          	else if (mouseX < roomX + roomWidth + clickMarginError && mouseY > roomY && 
+		            	mouseX > roomX + roomWidth - clickMarginError && mouseY < roomY + roomHeight) 
+	          	{
+	              	var node = drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5});
+	        		node.rotate(90)
+	            } else {
+	            	drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5});
+	            }
 			})
 			
 		}
