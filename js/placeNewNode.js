@@ -119,6 +119,13 @@ SVG.on(document, 'DOMContentLoaded', function () {
 
 			$("rect").click(function(e){	
 
+				//document.getElementById("room1").remove()
+				console.log($(e.target))
+				if(document.getElementById("draw").contains(document.getElementById("node"))) {
+					console.log("has")
+					document.getElementById("svg").removeChild(document.getElementById("node"))
+				}
+
 				let svgX = document.getElementById("svg").getBoundingClientRect().x
 				let svgY = document.getElementById("svg").getBoundingClientRect().y
 				let roomX = document.getElementById("room1").instance.x()
@@ -128,39 +135,27 @@ SVG.on(document, 'DOMContentLoaded', function () {
 				let mouseX = e.clientX - svgX
 				let mouseY = e.clientY - svgY
 				let clickMarginError = 15
-
-				let nodeX = e.clientX - svgX;
-				let nodeY = e.clientY - svgY;
-
-				console.log("e", e)
-
-				console.log("mouseX", mouseX)
-				console.log("roomX", roomX)
-
-				console.log("roomY", roomY+roomHeight)
-				console.log("mouseY", mouseY)
-
-				if (mouseX < roomX + clickMarginError) console.log("true")
-				if (mouseY > roomY ) console.log("true")
-				if (mouseX > roomX - clickMarginError ) console.log("true")
-				if (mouseY < roomY + roomHeight ) console.log("true")
+				let nodeX = e.clientX - svgX
+				let nodeY = e.clientY - svgY
 
 				// Determine if user clicked the [LEFT] wall
 				if (mouseX < roomX + clickMarginError && mouseY > roomY && 
 		        	mouseX > roomX - clickMarginError && mouseY < roomY + roomHeight 
 		        ) 
 		        {
-		            var node = drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5});
+		            var node = drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5, id:"node"});
 		        	node.rotate(-90)
 	          	} // Determine if user clicked the [RIGHT] wall
 	          	else if (mouseX < roomX + roomWidth + clickMarginError && mouseY > roomY && 
 		            	mouseX > roomX + roomWidth - clickMarginError && mouseY < roomY + roomHeight) 
 	          	{
-	              	var node = drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5});
+	              	var node = drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5, id:"node"});
 	        		node.rotate(90)
 	            } else {
-	            	drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5});
+	            	drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5, id:"node"});
 	            }
+
+	            console.log(drawing)
 			})
 			
 		}
