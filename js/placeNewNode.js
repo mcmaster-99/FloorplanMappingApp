@@ -108,7 +108,7 @@ SVG.on(document, 'DOMContentLoaded', function () {
 				// API call to add node to room
 			}*/
 			console.log(room_w, room_h, scaled_width, scaled_height)
-			room = drawing.rect(scaled_width, scaled_width)
+			room = drawing.rect(scaled_width, scaled_height)
 						.attr({ 
 							x: 0,
 							y: 0,
