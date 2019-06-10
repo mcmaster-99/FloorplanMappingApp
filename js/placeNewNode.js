@@ -168,11 +168,16 @@ SVG.on(document, 'DOMContentLoaded', function () {
 
 	//fetch_room_data(render_room, bind_click);
 
-  // if user has made any changes, ask before exiting current page
+  	// if user has made any changes, ask before exiting current page
 
-  $(window).bind('beforeunload', function(){
-      if (changesMade === true) return 'Are you sure you want to leave?';
-  });
+ 	$(window).bind('beforeunload', function(){
+		if (changesMade === true) return 'Are you sure you want to leave?';
+	});
+
+
+	document.getElementById("backBtn").click(function(){
+		window.location.href = "inloNodeFound.html"
+	})
 
 
 });
