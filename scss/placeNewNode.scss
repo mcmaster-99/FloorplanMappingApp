@@ -85,6 +85,8 @@ nav {
   display: inline-block;
   cursor: pointer;
   font-weight: bold;
+  background-color: white;
+  border: none;
 }
 #nextBtn {
   cursor: pointer;
@@ -94,12 +96,17 @@ nav {
   margin-right: 50px;
   background-color: #116cd2;
   border-radius: 20px;
+  border: none;
   width: 125px;
   height: 35px;
   #nextTxt {
     text-decoration: none;
-    color: blue;
+    color: white;
     font-size: 14px;
     font-weight: bold;
   }
+}
+
+button:focus {
+  outline: none;
 }

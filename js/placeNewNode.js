@@ -108,7 +108,7 @@ SVG.on(document, 'DOMContentLoaded', function () {
 				// API call to add node to room
 			}*/
 			console.log(room_w, room_h, scaled_width, scaled_height)
-			room = drawing.rect(scaled_width, scaled_width)
+			room = drawing.rect(scaled_width, scaled_height)
 						.attr({ 
 							x: 0,
 							y: 0,
@@ -168,11 +168,16 @@ SVG.on(document, 'DOMContentLoaded', function () {
 
 	//fetch_room_data(render_room, bind_click);
 
-  // if user has made any changes, ask before exiting current page
+  	// if user has made any changes, ask before exiting current page
 
-  $(window).bind('beforeunload', function(){
-      if (changesMade === true) return 'Are you sure you want to leave?';
-  });
+ 	$(window).bind('beforeunload', function(){
+		if (changesMade === true) return 'Are you sure you want to leave?';
+	});
+
+
+	document.getElementById("backBtn").click(function(){
+		window.location.href = "inloNodeFound.html"
+	})
 
 
 });
