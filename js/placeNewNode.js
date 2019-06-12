@@ -32,6 +32,8 @@ ReactDOM.render((
 
 SVG.on(document, 'DOMContentLoaded', function () {
 
+	let changesMade = false;
+
 	let drawing = new SVG('draw').size("100%", "100%").attr({id: "svg"}),
 		encoded =  window.location.href,
 		room,
@@ -155,7 +157,7 @@ SVG.on(document, 'DOMContentLoaded', function () {
 	            	drawing.image("images/inlo-device.png", 15, 10).attr({x:nodeX-10, y:nodeY-5, id:"node"});
 	            }
 
-	            console.log(drawing)
+	            changesMade = true;
 			})
 			
 		}
@@ -168,15 +170,20 @@ SVG.on(document, 'DOMContentLoaded', function () {
 
 	//fetch_room_data(render_room, bind_click);
 
-  	// if user has made any changes, ask before exiting current page
 
- 	$(window).bind('beforeunload', function(){
-		if (changesMade === true) return 'Are you sure you want to leave?';
-	});
+	// click events for back and cancel buttons
+	$("#backBtn, #cancelBtn").click(function(){
+		if (changesMade == true) {
+			console.log("here")
+			var userResponse = confirm("Are you sure you want to cancel changes and go back?")
 
-
-	document.getElementById("backBtn").click(function(){
-		window.location.href = "inloNodeFound.html"
+			if (userResponse == true) {
+				window.location.href = "inloNodeFound.html"
+			}
+		} else {
+			window.location.href = "inloNodeFound.html"
+		}
+		
 	})
 
 
