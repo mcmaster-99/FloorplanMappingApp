@@ -45,8 +45,6 @@ SVG.on(document, 'DOMContentLoaded', function () {
 			let str = decodeURIComponent(encoded);
 			
 			roomID = str.substr(str.indexOf("=")+1);
-
-			console.log(roomID)
 		} catch(e) { // catches a malformed URI
 		  console.error(e);
 		}
@@ -73,7 +71,6 @@ SVG.on(document, 'DOMContentLoaded', function () {
 			for (let i = 0; i < result.length; i++) {
 				if (result[i].rooms.length > 0) {
 					for (let j = 0; j < result[i].rooms.length; j++) {
-						console.log(result[i].rooms[j].roomID)
 						if (String(result[i].rooms[j].roomID) == String(roomID)){
 							console.log("here")
 							roomData = result[i].rooms[j];
@@ -89,7 +86,6 @@ SVG.on(document, 'DOMContentLoaded', function () {
 				jumbo_h = document.getElementById("draw").getBoundingClientRect().height,
 				scale;
 			const setScale = function(room_w, room_h) {
-				console.log(room_w, room_h, jumbo_w, jumbo_h)
 				if (room_w > room_h) { 
 					scale = jumbo_w/room_w
 					console.log(scale)
@@ -109,7 +105,6 @@ SVG.on(document, 'DOMContentLoaded', function () {
 				
 				// API call to add node to room
 			}*/
-			console.log(room_w, room_h, scaled_width, scaled_height)
 			room = drawing.rect(scaled_width, scaled_height)
 						.attr({ 
 							x: 0,
@@ -121,24 +116,22 @@ SVG.on(document, 'DOMContentLoaded', function () {
 
 			$("rect").click(function(e){	
 
-				//document.getElementById("room1").remove()
-				console.log($(e.target))
-				if(document.getElementById("draw").contains(document.getElementById("node"))) {
+				if (document.getElementById("draw").contains(document.getElementById("node"))) {
 					console.log("has")
 					document.getElementById("svg").removeChild(document.getElementById("node"))
 				}
 
-				let svgX = document.getElementById("svg").getBoundingClientRect().x
-				let svgY = document.getElementById("svg").getBoundingClientRect().y
-				let roomX = document.getElementById("room1").instance.x()
-				let roomY = document.getElementById("room1").instance.y()
-				let roomWidth = document.getElementById("room1").instance.width()
-				let roomHeight = document.getElementById("room1").instance.height()
-				let mouseX = e.clientX - svgX
-				let mouseY = e.clientY - svgY
-				let clickMarginError = 15
-				let nodeX = e.clientX - svgX
-				let nodeY = e.clientY - svgY
+				let svgX = document.getElementById("svg").getBoundingClientRect().x,
+					svgY = document.getElementById("svg").getBoundingClientRect().y,
+					roomX = document.getElementById("room1").instance.x(),
+					roomY = document.getElementById("room1").instance.y(),
+					roomWidth = document.getElementById("room1").instance.width(),
+					roomHeight = document.getElementById("room1").instance.height(),
+					mouseX = e.clientX - svgX,
+					mouseY = e.clientY - svgY,
+					clickMarginError = 15,
+					nodeX = e.clientX - svgX,
+					nodeY = e.clientY - svgY;
 
 				// Determine if user clicked the [LEFT] wall
 				if (mouseX < roomX + clickMarginError && mouseY > roomY && 
@@ -168,22 +161,31 @@ SVG.on(document, 'DOMContentLoaded', function () {
 	fetch_room_data()
 
 
-	//fetch_room_data(render_room, bind_click);
 
+	/*=======================
+	==== EVENT HANDLERS =====
+	========================*/
 
 	// click events for back and cancel buttons
 	$("#backBtn, #cancelBtn").click(function(){
 		if (changesMade == true) {
-			console.log("here")
 			var userResponse = confirm("Are you sure you want to cancel changes and go back?")
-
 			if (userResponse == true) {
 				window.location.href = "inloNodeFound.html"
 			}
 		} else {
 			window.location.href = "inloNodeFound.html"
 		}
-		
+	})
+
+	// click events for next button
+	$("#nextBtn").click(function(){
+		if (changesMade == true) {
+			//window.location.href = "inloNodeFound.html"
+			alert("Placeholder alert. Will add redirection once page has been created.")
+		} else {
+			alert("Please add a node to continue")
+		}
 	})
 
 
