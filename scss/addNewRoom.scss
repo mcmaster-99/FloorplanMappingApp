@@ -1,0 +1,254 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+/* CSS Resets */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* Variables */
+$inlo-bg-color: #f9f8fb;
+$border-shadow-color: rgba(0,0,0,0.15);
+$save-changes-btn-color: #363636;
+$main-font: 'Roboto', sans-serif;
+
+html {
+  visibility: hidden;
+}
+
+body {
+  background-color: #f9f8fb;
+  overflow: hidden; // disable scrollbars
+}
+/* ---------------- NAVBAR ---------------- */
+#navbar-div {
+  background-color: white;
+  border-bottom: 1px solid #E0E0E0;
+  width: 100%;
+}
+
+nav {
+  width: 100%;
+  height: 3.5em;
+  padding: 10px;
+  text-align: center;
+  word-spacing: 15em;
+  /* give space between navbar icons */
+}
+
+#inlo-banner {
+  width: 100px;
+  height: 27px;
+  color: #00D0A7;
+  float: left;
+}
+
+.right-nav-icons {
+  width: 35px;
+  height: 30px;
+  float: right;
+  padding: 2px;
+  margin-right: 3vw;
+}
+#userIcon {
+  margin-top: -6px;
+  width: 40px;
+  height: 50px;
+}
+
+#home-icon-svg {
+  height: auto; // center
+  padding-bottom: 7px;
+  border-bottom: 6px solid #00D9A7;
+}
+
+#add-devices-dropdown {
+  float: right;
+  #dropdown-menu {
+    display: none;
+    width: 15vw;
+    height: 15vh;
+    background-color: silver;
+    position: absolute;
+    white-space: normal;
+    right: 2vw;
+    word-spacing: .1vw;
+  }
+  #dropdown-menu>li {
+    margin-top: 2vh;
+    white-space: nowrap;
+    word-spacing: .1vw;
+    cursor: pointer;
+  }
+}
+
+
+/* ---------------- NAVBAR END ---------------- */
+
+#prompt {
+  text-align: center;
+  margin-top: 200px;
+  display:none;
+  font-family: $main-font;
+}
+
+
+/* ---------------- VIEW SWITCHER BUTTONS ---------------- */
+#page-title {
+  display: inline-block;
+  margin-right: 15em;
+  margin-bottom: .5em;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: $main-font;
+}
+#views-div {
+  text-align: center;
+  padding: 10px;
+  box-shadow: 0px 4px 4px $border-shadow-color;
+}
+
+#edit-mode-btn-div {
+  text-align: center;
+}
+
+#inlo-home {
+  width: 20px;
+  height: 20px;
+}
+.btn-divs {
+  display: inline-block;
+}
+
+
+/* ---------------- MAP VIEW DIV ---------------- */
+
+@-moz-document url-prefix() {
+  /* moz specific CSS */
+  #map-view-div {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    /* webkit specific CSS */
+    #map-view-div { 
+      width: 100vw; 
+      height: 100vh;
+    }
+}
+#map-editing-div {
+  text-align: center;
+  //display: none; // hide on page load
+}
+#map-view-text {
+  display: none; // hide on page load
+  //margin-top: 200px;
+}
+#draw {
+  height: 100%;
+}
+
+#cancel-save-done-buttons-wrapper {
+  width: 100%;
+  height: 70px;
+  bottom: 250px;
+  position: relative;
+  text-align: center;
+}
+
+p#cancel-btn {
+  position: absolute;
+  bottom: 27.5px;
+  left: 43.5vw;
+  cursor: pointer;
+}
+p#save-btn {
+  position: absolute;
+  bottom: 27.5px;
+  left: 48.5vw;
+  cursor: pointer;
+}
+
+div#done-btn {
+  width: 60px;
+  height: 25px;
+  position: absolute;
+  text-align: center;
+  line-height: 25px;
+  bottom: 25px;
+  left: 52.5vw;
+  background-color: black;
+  color: white;
+  border-radius: 4vh;
+  cursor: pointer;
+}
+
+
+
+div.changes-div {
+  text-indent: 30%;
+}
+
+button {
+  border: none;
+  background: none;
+  font-family: $main-font;
+}
+
+
+
+
+/* The Modal (background) */
+#saveModal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}

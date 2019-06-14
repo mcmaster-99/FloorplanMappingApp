@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Serverless web application example">
+    <meta name="author" content="">
+    <link rel="icon" href="/images/inlo-icon.svg" type="image/gif" sizes="16x16">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/addNewRoom.css">
+    <link rel="stylesheet" href="node_modules/svg.select.js/dist/svg.select.css">
+
+    
+</head>
+
+
+
+<body>
+
+
+    <div id="navbar-div">
+      <nav>
+        <a href="#"><img src="images/logo-icon-name.svg" id="inlo-banner"></a>
+
+        <div id="right-nav-icons-div">
+            <div id="add-devices-dropdown">
+
+                <button id="dropdown-btn">
+                    <img src="images/account.svg" id="userIcon" class="right-nav-icons">
+                </button>
+                <div id="dropdown-menu">
+                    <li><a id="add-node" href="add-node.html">Add Inlo Device</a></li>
+                    <li><a id="add-device" href="add-device.html">Add Third Party Device</a></li>
+                    <li><a id="sign-out">Sign Out</a></li>
+                </div>
+                
+            </div>
+
+            <a class="selected" href="#">
+                <svg id="home-icon-svg" class="right-nav-icons" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path class="home-icon" fill-rule="evenodd" clip-rule="evenodd" d="M20 19C20 19.2432 19.9231 20.0511 19.5 20.5C19.0769 20.9489 18.2292 21 18 21H14V16H10V21H6C5.77083 21 4.92308 20.9489 4.5 20.5C4.07692 20.0511 4 19.2432 4 19V13H20V19Z" fill="#00D9A7"/>
+                    <path class="home-icon" fill-rule="evenodd" clip-rule="evenodd" d="M1 13C1 13 11.6122 3 12 3C12.3878 3 23 13 23 13H1Z" fill="#00D9A7"/>
+                </svg>
+            </a>
+
+        </div>
+
+      </nav>
+    </div>
+
+
+    <div id="views-div">
+
+        <h2 id="page-title">Edit Floor Plan</h2>
+
+        <div id="tools-div">
+            <div id="tools">
+
+                <div class="btn-divs" id="draw-door">
+                    <button>
+                        <div>
+                            <img src="images/draw-door.svg" id="draw-door">
+                        </div>
+                        ADD DOOR
+                    </button>
+                </div>
+
+                <div class="btn-divs" id="drag">
+                    <button>
+                        <div>
+                            <img src="images/drag.svg" id="drag-room">
+                        </div>
+                        DRAG
+                    </button>
+                </div>
+
+                <div class="btn-divs" id="drag-node">
+                    <button>
+                        <div>
+                            <img src="images/drag-node.svg" id="drag-node">
+                        </div>
+                        MOVE NODE
+                    </button>
+                </div>
+
+                <div class="btn-divs" id="resize">
+                    <button>
+                        <div>
+                            <img src="images/resize.svg" id="resize-room">
+                        </div>
+                        RESIZE
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+
+
+    <div id="map-view-div">
+        <!--<p id="map-view-text">Map view not yet available</p>-->
+
+        <div id="draw">
+
+            <svg id="svgGrid" xmlns="http://www.w3.org/2000/svg">
+            </svg>
+
+
+        </div>
+
+        <div id="cancel-save-done-buttons-wrapper">
+
+            <img id="mapEditButtonsBackdrop" src="images/mapEditButtonsBackdrop.png">
+            
+            <p id="cancel-btn" font-family="Roboto" family="Roboto">Cancel</p>
+        
+            <p id="save-btn" font-family="Roboto" family="Roboto">Save</p>
+
+            <div id="done-btn" font-family="Roboto" fill="white" family="Roboto">Done</div>
+
+        </div>
+
+ 
+    </div>
+
+   
+
+
+    <!-- The Modal -->
+    <div id="saveModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Your floorplan has been saved!.</p>
+      </div>
+
+    </div>
+
+
+
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.5/svg.js"></script>
+    <script src="node_modules/svg.select.js/dist/svg.select.js"></script>
+    <script src="node_modules/svg.resize.js/dist/svg.resize.js"></script>
+    <script src="node_modules/svg.draggable.js/dist/svg.draggable.js"></script>
+    <script src="node_modules/svg.draw.js/dist/svg.draw.js"></script>
+    <script src="node_modules/svg.panzoom.js/dist/svg.panzoom.js"></script>
+
+    <script src="js/vendor/jquery-3.1.0.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="https://js.arcgis.com/4.3/"></script>
+    <script src="js/config.js"></script>
+    <script src="js/cognito-auth.js"></script>
+    <script src="js/esri-map.js"></script>
+    <script src="js/addNewRoom.js"></script>
+</body>
+
+</html>

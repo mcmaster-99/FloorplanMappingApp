@@ -97,6 +97,7 @@ class InloNodeFound extends React.Component {
 			rooms: []
 		}
 		this.redirectToPlaceNewNode = this.redirectToPlaceNewNode.bind(this);
+		this.linkToNewRmPage = this.linkToNewRmPage.bind(this);
 	}
 
 	redirectToPlaceNewNode() {
@@ -105,6 +106,10 @@ class InloNodeFound extends React.Component {
 		var objStr = encodeURIComponent(roomID);
 		console.log(objStr)
 		window.location.href = 'placeNewNode.html?' + "roomID=" + objStr; 
+	}
+
+	linkToNewRmPage() {
+		window.location.href = 'addNewRoom.html'; 
 	}
 
 	componentDidMount() {
@@ -154,7 +159,7 @@ class InloNodeFound extends React.Component {
 					<SelectRoomMenu rooms={this.state.rooms} redirectToPlaceNewNode={this.redirectToPlaceNewNode}/>
 				)}
 
-				<p id={this.state.addNewRoomBtnId}>{this.state.or}<a style={{cursor: 'pointer'}} onClick={this.updateStateNewRm}><b>{this.state.addLink}</b></a></p>
+				<p id={this.state.addNewRoomBtnId}>{this.state.or}<a style={{cursor: 'pointer'}} onClick={this.linkToNewRmPage}><b>{this.state.addLink}</b></a></p>
 
 				<h1 id={this.state.backBtnId} onClick={this.revertToOriginalState}>
 					<p><b>{this.state.backLink}</b></p>
