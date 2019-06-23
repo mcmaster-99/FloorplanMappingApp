@@ -591,14 +591,14 @@ SVG.on(document, 'DOMContentLoaded', function () {
             // stop resizing for all rooms
             floorPlanGroups[key].node.children[0].instance.selectize(false).resize('stop')
 
-            // make all room groups draggable
+            // make all nodes in the rooms draggable
             for (var i = 1; i < floorPlanGroups[key].node.children.length; i++) {
                 floorPlanGroups[key].node.childNodes[i].instance.draggable({snapToGrid: 10})
 
                 // unbind event listener
                 floorPlanGroups[key].node.childNodes[i].instance.off('dragend')
 
-                // After the room has been dragged
+                // After the node has been dragged
                 floorPlanGroups[key].node.childNodes[i].instance.on("dragend", function(e){
 
                     // Grab room_ID
@@ -612,36 +612,9 @@ SVG.on(document, 'DOMContentLoaded', function () {
                   
                     var node_ID = e.target.instance.node.id;
 
-                    var roomX,
-                        roomY,
-                        roomWidth,
-                        roomHeight;
-                    // update currentFloorPlan
-                    for (var i = 0; i < currentFloorPlan.length; i++) {
-                        for (var j = 0; j < currentFloorPlan[i].rooms.length; j++) {
-                            if (currentFloorPlan[i].rooms[j].roomID === room_ID) {
-                                roomX = currentFloorPlan[i].rooms[j].x;
-                                roomY = currentFloorPlan[i].rooms[j].y;
-                                roomWidth = currentFloorPlan[i].rooms[j].width;
-                                roomHeight = currentFloorPlan[i].rooms[j].height;
-                            }
-                        }
-                    }
-
-                    // compute new node coordinates
+                    // Get new node coordinates
                     let new_node_x = document.getElementById(node_ID).instance.x() - svgX,
-                        new_node_y = document.getElementById(node_ID).instance.y() - svgY,
-
-                        new_node_frac_x = new_node_x/roomWidth,
-                        new_node_frac_y = new_node_y/roomHeight,
-
-                        node_locations = compute_node_xy(room_ID, node_ID),
-                        node_x = node_locations[0],
-                        node_y = node_locations[1],
-
-                        // Manually set X,Y coordinates of room
-                        new_room_x = e.target.instance.x() - svgX,
-                        new_room_y = e.target.instance.y() - svgY;
+                        new_node_y = document.getElementById(node_ID).instance.y() - svgY;
 
                     // update currentFloorPlan nodes
                     for (var i = 0; i < currentFloorPlan.length; i++) {
