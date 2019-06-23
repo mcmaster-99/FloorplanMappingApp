@@ -707,6 +707,7 @@ SVG.on(document, 'DOMContentLoaded', function () {
                         
                             console.log(currentFloorPlan[i].rooms[j].hasOwnProperty("nodes"));
 
+                            /* // Repositioning Node after room resize - turned off for now due to lack of fractional node position values 
                             if (currentFloorPlan[i].rooms[j].hasOwnProperty("nodes")) {
                                 for (var k = 0; k < currentFloorPlan[i].rooms[j].nodes.length; k++) {
                                     // get node_ID
@@ -736,7 +737,7 @@ SVG.on(document, 'DOMContentLoaded', function () {
                                         currentFloorPlan[i].rooms[j].nodes[k].x = new_node_x
                                         currentFloorPlan[i].rooms[j].nodes[k].y = new_node_y
                                 }
-                            }
+                            } */
 
                             // update currentFloorPlan room coordinates and dimensions
                             currentFloorPlan[i].rooms[j].x = new_room_x;
