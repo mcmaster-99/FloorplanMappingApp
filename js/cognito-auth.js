@@ -92,8 +92,8 @@ function getAuth(cname) {
   });
 
   function handleSignin(event) {
-    var email = $('#emailInputSignin').val();
-    var password = $('#passwordInputSignin').val();
+    var email = 'goyal.yash1990+test@gmail.com';
+    var password = 'yash123';
     event.preventDefault();
     signin(email, password, function signinSuccess(result) {
       console.log('Successfully Logged In'); // console.log("result", result);
